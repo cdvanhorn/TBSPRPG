@@ -1,6 +1,6 @@
 using System;
 
-namespace TbspApi
+namespace app
 {
     public class WeatherForecast
     {
