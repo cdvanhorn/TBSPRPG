@@ -13,6 +13,7 @@ using TbspApi.Utilities;
 
 namespace TbspApi.Services {
     public interface IUserService {
+        User GetById(int id);
         IEnumerable<User> GetAll();
         AuthenticateResponse Authenticate(AuthenticateRequest model);
     }
@@ -40,6 +41,10 @@ namespace TbspApi.Services {
             var token = generateJwtToken(user);
 
             return new AuthenticateResponse(user, token);
+        }
+
+        public User GetById(int id) {
+            return _users.Where(u => u.Id == id).FirstOrDefault();
         }
 
         public IEnumerable<User> GetAll() {

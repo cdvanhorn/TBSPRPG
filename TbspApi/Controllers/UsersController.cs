@@ -24,6 +24,7 @@ namespace TbspApi.Controllers {
             return Ok(response);
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult GetAll()
         {

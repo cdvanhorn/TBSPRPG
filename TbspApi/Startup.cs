@@ -47,7 +47,9 @@ namespace TbspApi
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseMiddleware<JwtMiddleware>();
+
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
