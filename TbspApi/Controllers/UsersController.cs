@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using TbspApi.Models;
 using TbspApi.Services;
 
 namespace TbspApi.Controllers {
@@ -10,6 +11,17 @@ namespace TbspApi.Controllers {
 
         public UsersController(IUserService userService) {
             _userService = userService;
+        }
+
+        [HttpPost("authenticate")]
+        public IActionResult Authenticate(AuthenticateRequest model)
+        {
+            var response = _userService.Authenticate(model);
+
+            if (response == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(response);
         }
 
         [HttpGet]
