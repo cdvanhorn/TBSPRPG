@@ -12,6 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using TbspApi.Services;
+using TbspApi.Utilities;
 
 namespace TbspApi
 {
@@ -29,6 +30,9 @@ namespace TbspApi
         {
             services.AddControllers();
             services.AddScoped<IUserService, UserService>();
+
+            //bind the configuations
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,7 +1,10 @@
+using Microsoft.Extensions.Options;
 using System.Collections.Generic;
 using System.Linq;
+
 using TbspApi.Entities;
 using TbspApi.Models;
+using TbspApi.Utilities;
 
 namespace TbspApi.Services {
     public interface IUserService {
@@ -15,7 +18,11 @@ namespace TbspApi.Services {
             new User {Id = 1, Username = "test", Password = "test"}
         };
 
-        public UserService() {}
+        private readonly JwtSettings _jwtSettings;
+
+        public UserService(IOptions<JwtSettings> jwtSettings) {
+            _jwtSettings = jwtSettings.Value;
+        }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
@@ -26,7 +33,7 @@ namespace TbspApi.Services {
 
             // authentication successful so generate jwt token
             //var token = generateJwtToken(user);
-            var token = "foo";
+            var token = _jwtSettings.secret;
 
             return new AuthenticateResponse(user, token);
         }
