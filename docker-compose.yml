@@ -1,0 +1,9 @@
+version: '3.3'
+services:
+  tbspapi:
+    build: TbspApi
+    ports:
+      - '8000:8000'
+    volumes:
+      - './TbspApi:/app'
+    command: dotnet watch run
