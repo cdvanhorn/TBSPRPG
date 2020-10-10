@@ -18,18 +18,13 @@ using TbspApi.Utilities;
 
 namespace TbspApi.Services {
     public interface IUserService {
-        User GetById(int id);
+        User GetById(string id);
         IEnumerable<User> GetAll();
         AuthenticateResponse Authenticate(AuthenticateRequest model);
     }
 
     public class UserService : IUserService {
-
-        private List<User> _lusers = new List<User>() {
-            new User {Id = "1", Username = "test", Password = "test"}
-        };
         private readonly IMongoCollection<User> _users;
-
         private readonly JwtSettings _jwtSettings;
         private readonly DatabaseSettings _databaseSettings;
 
@@ -48,8 +43,6 @@ namespace TbspApi.Services {
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _lusers.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
-
             //we'll need to add the salt and hash the password
             //then check that against the database value
             string hashedPw = Convert.ToBase64String(KeyDerivation.Pbkdf2(
@@ -58,6 +51,8 @@ namespace TbspApi.Services {
                 prf: KeyDerivationPrf.HMACSHA1,
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
+
+            var user = _users.Find<User>(user => user.Username == model.Username && user.Password == hashedPw).FirstOrDefault();
         
             // return null if user not found
             if (user == null) return null;
@@ -68,8 +63,8 @@ namespace TbspApi.Services {
             return new AuthenticateResponse(user, token);
         }
 
-        public User GetById(int id) {
-            return _lusers.Where(u => u.Id == id.ToString()).FirstOrDefault();
+        public User GetById(string id) {
+            return _users.Find<User>(u => u.Id == id).FirstOrDefault();
         }
 
         public IEnumerable<User> GetAll() {
