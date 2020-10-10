@@ -8,4 +8,6 @@ services:
       - './TbspApi:/app'
     environment:
       - 'JwtSettings__Secret=${JWTSECRET}'
+      - 'Database__Password=${DBPASSWORD}'
+      - 'Database__Salt=${DBSALT}'
     command: dotnet watch run

@@ -1,10 +1,13 @@
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 using TbspApi.Entities;
@@ -25,14 +28,25 @@ namespace TbspApi.Services {
         };
 
         private readonly JwtSettings _jwtSettings;
+        private readonly DatabaseSettings _databaseSettings;
 
-        public UserService(IOptions<JwtSettings> jwtSettings) {
+        public UserService(IOptions<JwtSettings> jwtSettings, IOptions<DatabaseSettings> databaseSettings) {
             _jwtSettings = jwtSettings.Value;
+            _databaseSettings = databaseSettings.Value;
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
             var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+
+            //we'll need to add the salt and hash the password
+            //then check that against the database value
+            string hashedPw = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: model.Password,
+                salt: Convert.FromBase64String(_databaseSettings.Salt),
+                prf: KeyDerivationPrf.HMACSHA1,
+                iterationCount: 10000,
+                numBytesRequested: 256 / 8));
         
             // return null if user not found
             if (user == null) return null;
@@ -42,6 +56,11 @@ namespace TbspApi.Services {
 
             return new AuthenticateResponse(user, token);
         }
+
+
+//var client = new MongoClient("mongodb+srv://TbspApiAdmin:<password>@tbsprpgdev.zqgsk.mongodb.net/<dbname>?retryWrites=true&w=majority");
+//var database = client.GetDatabase("test");
+
 
         public User GetById(int id) {
             return _users.Where(u => u.Id == id).FirstOrDefault();

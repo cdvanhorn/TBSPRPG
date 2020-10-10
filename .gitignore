@@ -360,3 +360,8 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+#other scripts
+dbshell.sh
+environment_vars.sh
+.env
