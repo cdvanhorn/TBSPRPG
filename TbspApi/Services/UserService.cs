@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
+using MongoDB.Driver;
+
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,9 +25,10 @@ namespace TbspApi.Services {
 
     public class UserService : IUserService {
 
-        private List<User> _users = new List<User>() {
-            new User {Id = 1, Username = "test", Password = "test"}
+        private List<User> _lusers = new List<User>() {
+            new User {Id = "1", Username = "test", Password = "test"}
         };
+        private readonly IMongoCollection<User> _users;
 
         private readonly JwtSettings _jwtSettings;
         private readonly DatabaseSettings _databaseSettings;
@@ -33,11 +36,19 @@ namespace TbspApi.Services {
         public UserService(IOptions<JwtSettings> jwtSettings, IOptions<DatabaseSettings> databaseSettings) {
             _jwtSettings = jwtSettings.Value;
             _databaseSettings = databaseSettings.Value;
+
+            var databaseName = "sys";
+            var clusterName = "tbsprpgdev.zqgsk.mongodb.net";
+            var connectionString = $"mongodb+srv://{_databaseSettings.Username}:{_databaseSettings.Password}@{clusterName}/{databaseName}?retryWrites=true&w=majority";
+            var client = new MongoClient(connectionString);
+            var database = client.GetDatabase(databaseName);
+
+            _users = database.GetCollection<User>("users");
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+            var user = _lusers.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
 
             //we'll need to add the salt and hash the password
             //then check that against the database value
@@ -57,17 +68,12 @@ namespace TbspApi.Services {
             return new AuthenticateResponse(user, token);
         }
 
-
-//var client = new MongoClient("mongodb+srv://TbspApiAdmin:<password>@tbsprpgdev.zqgsk.mongodb.net/<dbname>?retryWrites=true&w=majority");
-//var database = client.GetDatabase("test");
-
-
         public User GetById(int id) {
-            return _users.Where(u => u.Id == id).FirstOrDefault();
+            return _lusers.Where(u => u.Id == id.ToString()).FirstOrDefault();
         }
 
         public IEnumerable<User> GetAll() {
-            return _users;
+            return _users.Find(user => true).ToList();
         }
 
         private string generateJwtToken(User user)
