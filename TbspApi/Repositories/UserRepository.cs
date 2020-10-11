@@ -23,7 +23,6 @@ namespace TbspApi.Repositories {
             _dbSettings = databaseSettings.Value;
 
             var connectionString = $"mongodb+srv://{_dbSettings.Username}:{_dbSettings.Password}@{_dbSettings.Url}/{_dbSettings.Name}?retryWrites=true&w=majority";
-            Console.WriteLine(connectionString);
             var client = new MongoClient(connectionString);
             var database = client.GetDatabase(_dbSettings.Name);
 
