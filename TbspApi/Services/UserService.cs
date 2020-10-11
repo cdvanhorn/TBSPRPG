@@ -2,8 +2,6 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
-using MongoDB.Driver;
-
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,6 +12,7 @@ using System.Text;
 
 using TbspApi.Entities;
 using TbspApi.Models;
+using TbspApi.Repositories;
 using TbspApi.Utilities;
 
 namespace TbspApi.Services {
@@ -24,21 +23,14 @@ namespace TbspApi.Services {
     }
 
     public class UserService : IUserService {
-        private readonly IMongoCollection<User> _users;
         private readonly JwtSettings _jwtSettings;
         private readonly DatabaseSettings _databaseSettings;
+        private IUserRepository _userRepository;
 
-        public UserService(IOptions<JwtSettings> jwtSettings, IOptions<DatabaseSettings> databaseSettings) {
+        public UserService(IOptions<JwtSettings> jwtSettings, IOptions<DatabaseSettings> databaseSettings, IUserRepository userRepository) {
             _jwtSettings = jwtSettings.Value;
             _databaseSettings = databaseSettings.Value;
-
-            var databaseName = "sys";
-            var clusterName = "tbsprpgdev.zqgsk.mongodb.net";
-            var connectionString = $"mongodb+srv://{_databaseSettings.Username}:{_databaseSettings.Password}@{clusterName}/{databaseName}?retryWrites=true&w=majority";
-            var client = new MongoClient(connectionString);
-            var database = client.GetDatabase(databaseName);
-
-            _users = database.GetCollection<User>("users");
+            _userRepository = userRepository;
         }
 
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
@@ -52,7 +44,7 @@ namespace TbspApi.Services {
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
 
-            var user = _users.Find<User>(user => user.Username == model.Username && user.Password == hashedPw).FirstOrDefault();
+            var user = _userRepository.GetUserByUsernameAndPassword(model.Username, hashedPw);
         
             // return null if user not found
             if (user == null) return null;
@@ -64,11 +56,11 @@ namespace TbspApi.Services {
         }
 
         public User GetById(string id) {
-            return _users.Find<User>(u => u.Id == id).FirstOrDefault();
+            return _userRepository.GetUserById(id);
         }
 
         public IEnumerable<User> GetAll() {
-            return _users.Find(user => true).ToList();
+            return _userRepository.GetAllUsers();
         }
 
         private string generateJwtToken(User user)

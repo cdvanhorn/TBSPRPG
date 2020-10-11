@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using TbspApi.Repositories;
 using TbspApi.Services;
 using TbspApi.Utilities;
 
@@ -30,6 +31,7 @@ namespace TbspApi
         {
             services.AddControllers();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
 
             //bind the configuations
             services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
