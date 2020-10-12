@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 using System;
@@ -23,13 +22,13 @@ namespace TbspApi.Services {
     }
 
     public class UserService : IUserService {
-        private readonly JwtSettings _jwtSettings;
-        private readonly DatabaseSettings _databaseSettings;
+        private readonly IJwtSettings _jwtSettings;
+        private readonly IDatabaseSettings _databaseSettings;
         private IUserRepository _userRepository;
 
-        public UserService(IOptions<JwtSettings> jwtSettings, IOptions<DatabaseSettings> databaseSettings, IUserRepository userRepository) {
-            _jwtSettings = jwtSettings.Value;
-            _databaseSettings = databaseSettings.Value;
+        public UserService(IJwtSettings jwtSettings, IDatabaseSettings databaseSettings, IUserRepository userRepository) {
+            _jwtSettings = jwtSettings;
+            _databaseSettings = databaseSettings;
             _userRepository = userRepository;
         }
 
@@ -67,7 +66,7 @@ namespace TbspApi.Services {
         {
             // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtSettings.secret);
+            var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),

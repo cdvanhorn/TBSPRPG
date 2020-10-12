@@ -13,12 +13,12 @@ namespace TbspApi.Utilities
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;
-        private readonly JwtSettings _jwtSettings;
+        private readonly IJwtSettings _jwtSettings;
 
-        public JwtMiddleware(RequestDelegate next, IOptions<JwtSettings> jwtSettings)
+        public JwtMiddleware(RequestDelegate next, IJwtSettings jwtSettings)
         {
             _next = next;
-            _jwtSettings = jwtSettings.Value;
+            _jwtSettings = jwtSettings;
         }
 
         public async Task Invoke(HttpContext context, IUserService userService)
@@ -36,7 +36,7 @@ namespace TbspApi.Utilities
             try
             {
                 var tokenHandler = new JwtSecurityTokenHandler();
-                var key = Encoding.ASCII.GetBytes(_jwtSettings.secret);
+                var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
                 tokenHandler.ValidateToken(token, new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,

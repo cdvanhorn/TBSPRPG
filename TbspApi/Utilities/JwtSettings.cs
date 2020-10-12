@@ -1,5 +1,9 @@
 namespace TbspApi.Utilities {
-    public class JwtSettings {
-        public string secret { get; set; }
+    public class JwtSettings : IJwtSettings{
+        public string Secret { get; set; }
+    }
+
+    public interface IJwtSettings {
+        string Secret { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 using TbspApi.Repositories;
 using TbspApi.Services;
@@ -35,7 +36,12 @@ namespace TbspApi
 
             //bind the configuations
             services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
+            services.AddSingleton<IJwtSettings>(sp =>
+                sp.GetRequiredService<IOptions<JwtSettings>>().Value);
+
             services.Configure<DatabaseSettings>(Configuration.GetSection("Database"));
+            services.AddSingleton<IDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
