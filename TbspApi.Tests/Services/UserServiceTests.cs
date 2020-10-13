@@ -30,10 +30,18 @@ namespace TbspApi.Tests.Services {
                 Username = "test",
                 Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4=" //hashed version of "test"
             });
+            users.Add(new User() {
+                Id = "8675310",
+                Username = "testtwo",
+                Password = "g4XyaMMxqIwlm0gklTRldD3PrM/xYTDWmpvfyKc8Gi4=" //hashed version of "test"
+            });
             var murepo = new Mock<IUserRepository>();
             murepo.Setup(repo => repo.GetUserByUsernameAndPassword(
                 It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(
                     (string u, string p) => users.Find(usr => usr.Username == u && usr.Password == p));
+            murepo.Setup(repo => repo.GetUserById(It.IsAny<string>()))
+                .ReturnsAsync((string id) => users.Find(usr => usr.Id == id));
+            murepo.Setup(repo => repo.GetAllUsers()).ReturnsAsync(users);
 
             //create a jwtHelper
             var jwtHelper = new JwtHelper(mjwt.Object);
@@ -91,12 +99,37 @@ namespace TbspApi.Tests.Services {
 
         [Fact]
         public async void GetById_ValidId_ReturnUser() {
+            //arrange
+            string id = "8675309";
 
+            //act
+            var user = await _userService.GetById(id);
+
+            //assert
+            Assert.Equal("8675309", user.Id);
+            Assert.Equal("test", user.Username);
         }
 
         [Fact]
         public async void GetById_InvalidId_ReturnNull() {
-            
+            //arrange
+            string id = "8675308";
+
+            //act
+            var user = await _userService.GetById(id);
+
+            //assert
+            Assert.Null(user);
+        }
+
+        [Fact]
+        public async void GetAll_ReturnAll() {
+            //arrange
+            //act
+            var users = await _userService.GetAll();
+
+            //assert
+            Assert.Equal(2, users.Count);
         }
     }
 }
