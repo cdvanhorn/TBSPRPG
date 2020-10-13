@@ -2,6 +2,7 @@ using Microsoft.IdentityModel.Tokens;
 
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
@@ -10,6 +11,7 @@ using TbspApi.Entities;
 namespace TbspApi.Utilities {
     public interface IJwtHelper {
         string GenerateToken(User user);
+        string ValidateToken(string token);
     }
 
     public class JwtHelper : IJwtHelper{
@@ -18,6 +20,22 @@ namespace TbspApi.Utilities {
         public JwtHelper(IJwtSettings jwtSettings) {
             _jwtSettings = jwtSettings;
             _tokenHandler = new JwtSecurityTokenHandler();
+        }
+
+        public string ValidateToken(string token) {
+            var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+            _tokenHandler.ValidateToken(token, new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(key),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                // set clockskew to zero so tokens expire exactly at token expiration time (instead of 5 minutes later)
+                ClockSkew = TimeSpan.Zero
+            }, out SecurityToken validatedToken);
+
+            var jwtToken = (JwtSecurityToken)validatedToken;
+            return jwtToken.Claims.First(x => x.Type == "id").Value;
         }
 
         public string GenerateToken(User user) {
