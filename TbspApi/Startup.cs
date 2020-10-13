@@ -33,6 +33,7 @@ namespace TbspApi
             services.AddControllers();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IJwtHelper, JwtHelper>();
 
             //bind the configuations
             services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));

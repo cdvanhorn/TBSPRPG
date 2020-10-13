@@ -35,7 +35,10 @@ namespace TbspApi.Tests.Services {
                 It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(
                     (string u, string p) => users.Find(usr => usr.Username == u && usr.Password == p));
 
-            _userService = new UserService(mjwt.Object, mdb.Object, murepo.Object);
+            //create a jwtHelper
+            var jwtHelper = new JwtHelper(mjwt.Object);
+
+            _userService = new UserService(mdb.Object, jwtHelper, murepo.Object);
         }
 
         [Fact]
@@ -85,7 +88,15 @@ namespace TbspApi.Tests.Services {
             //assert
             Assert.Null(response);
         }
-    }
 
-    
+        [Fact]
+        public async void GetById_ValidId_ReturnUser() {
+
+        }
+
+        [Fact]
+        public async void GetById_InvalidId_ReturnNull() {
+            
+        }
+    }
 }
