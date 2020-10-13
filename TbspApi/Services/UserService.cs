@@ -8,6 +8,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 using TbspApi.Entities;
 using TbspApi.Models;
@@ -16,9 +17,9 @@ using TbspApi.Utilities;
 
 namespace TbspApi.Services {
     public interface IUserService {
-        User GetById(string id);
-        IEnumerable<User> GetAll();
-        AuthenticateResponse Authenticate(AuthenticateRequest model);
+        Task<User> GetById(string id);
+        Task<List<User>> GetAll();
+        Task<AuthenticateResponse> Authenticate(AuthenticateRequest model);
     }
 
     public class UserService : IUserService {
@@ -32,7 +33,7 @@ namespace TbspApi.Services {
             _userRepository = userRepository;
         }
 
-        public AuthenticateResponse Authenticate(AuthenticateRequest model)
+        public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model)
         {
             //we'll need to add the salt and hash the password
             //then check that against the database value
@@ -43,7 +44,7 @@ namespace TbspApi.Services {
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
 
-            var user = _userRepository.GetUserByUsernameAndPassword(model.Username, hashedPw);
+            var user = await _userRepository.GetUserByUsernameAndPassword(model.Username, hashedPw);
         
             // return null if user not found
             if (user == null) return null;
@@ -54,11 +55,11 @@ namespace TbspApi.Services {
             return new AuthenticateResponse(user, token);
         }
 
-        public User GetById(string id) {
+        public Task<User> GetById(string id) {
             return _userRepository.GetUserById(id);
         }
 
-        public IEnumerable<User> GetAll() {
+        public Task<List<User>> GetAll() {
             return _userRepository.GetAllUsers();
         }
 

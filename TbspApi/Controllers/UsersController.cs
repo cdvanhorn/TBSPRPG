@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+
+using System.Threading.Tasks;
+
 using TbspApi.Models;
 using TbspApi.Services;
 
@@ -14,9 +17,9 @@ namespace TbspApi.Controllers {
         }
 
         [HttpPost("authenticate")]
-        public IActionResult Authenticate(AuthenticateRequest model)
+        public async Task<IActionResult> Authenticate(AuthenticateRequest model)
         {
-            var response = _userService.Authenticate(model);
+            var response = await _userService.Authenticate(model);
 
             if (response == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
@@ -26,9 +29,9 @@ namespace TbspApi.Controllers {
 
         [Authorize]
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var users = _userService.GetAll();
+            var users = await _userService.GetAll();
             return Ok(users);
         }
     }

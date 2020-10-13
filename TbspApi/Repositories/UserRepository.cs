@@ -4,15 +4,16 @@ using MongoDB.Driver;
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using TbspApi.Entities;
 using TbspApi.Utilities;
 
 namespace TbspApi.Repositories {
     public interface IUserRepository {
-        User GetUserById(string id);
-        IEnumerable<User> GetAllUsers();
-        User GetUserByUsernameAndPassword(string username, string password);
+        Task<User> GetUserById(string id);
+        Task<List<User>> GetAllUsers();
+        Task<User> GetUserByUsernameAndPassword(string username, string password);
     }
 
     public class UserRepository : IUserRepository{
@@ -29,16 +30,16 @@ namespace TbspApi.Repositories {
             _users = database.GetCollection<User>("users");
         }
 
-        public User GetUserById(string id) {
-            return _users.Find<User>(u => u.Id == id).FirstOrDefault();
+        public Task<User> GetUserById(string id) {
+            return _users.Find<User>(u => u.Id == id).FirstOrDefaultAsync();
         }
 
-        public User GetUserByUsernameAndPassword(string username, string password) {
-            return _users.Find<User>(user => user.Username == username && user.Password == password).FirstOrDefault();
+        public Task<User> GetUserByUsernameAndPassword(string username, string password) {
+            return _users.Find<User>(user => user.Username == username && user.Password == password).FirstOrDefaultAsync();
         }
 
-        public IEnumerable<User> GetAllUsers() {
-            return _users.Find(user => true).ToList();
+        public Task<List<User>> GetAllUsers() {
+            return _users.Find(user => true).ToListAsync();
         }
     }
 }
