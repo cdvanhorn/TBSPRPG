@@ -32,14 +32,14 @@ namespace TbspApi.Tests.Services {
             });
             var murepo = new Mock<IUserRepository>();
             murepo.Setup(repo => repo.GetUserByUsernameAndPassword(
-                It.IsAny<string>(), It.IsAny<string>())).Returns(
+                It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(
                     (string u, string p) => users.Find(usr => usr.Username == u && usr.Password == p));
 
             _userService = new UserService(mjwt.Object, mdb.Object, murepo.Object);
         }
 
         [Fact]
-        public void Authenticate_IsValid_ReturnResponse() {
+        public async void Authenticate_IsValid_ReturnResponse() {
             //arrange
             AuthenticateRequest req = new AuthenticateRequest() {
                 Username = "test",
@@ -47,10 +47,43 @@ namespace TbspApi.Tests.Services {
             };
 
             //act
-            var response = _userService.Authenticate(req);
+            var response = await _userService.Authenticate(req);
 
             //assert
             Assert.NotNull(response);
+            Assert.NotEmpty(response.Token);
+            Assert.Equal("test", response.Username);
+            Assert.Equal("8675309", response.Id);
+        }
+
+        [Fact]
+        public async void Authenticate_InvalidPassword_ReturnNull() {
+            //arrange
+            AuthenticateRequest req = new AuthenticateRequest() {
+                Username = "test",
+                Password = "testt"
+            };
+
+            //act
+            var response = await _userService.Authenticate(req);
+
+            //assert
+            Assert.Null(response);
+        }
+
+        [Fact]
+        public async void Authenticate_InvalidUsername_ReturnNull() {
+            //arrange
+            AuthenticateRequest req = new AuthenticateRequest() {
+                Username = "testt",
+                Password = "test"
+            };
+
+            //act
+            var response = await _userService.Authenticate(req);
+
+            //assert
+            Assert.Null(response);
         }
     }
 
