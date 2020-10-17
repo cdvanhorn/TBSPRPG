@@ -1,3 +1,6 @@
+using AdventureApi.Repositories;
+using AdventureApi.Services;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +13,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+using TbspApi.Utilities;
 
 namespace AdventureApi
 {
@@ -26,6 +32,12 @@ namespace AdventureApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddScoped<IAdventuresService, AdventuresService>();
+            services.AddScoped<IAdventuresRepository, AdventuresRepository>();
+
+            services.Configure<DatabaseSettings>(Configuration.GetSection("Database"));
+            services.AddSingleton<IDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,7 +52,7 @@ namespace AdventureApi
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
