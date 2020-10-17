@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using TbspApi.Utilities;
+using AdventureApi.Utilities;
 
 namespace AdventureApi.Repositories {
     public interface IAdventuresRepository {
