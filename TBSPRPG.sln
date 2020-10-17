@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TbspApi.Tests", "TbspApi.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureApi", "AdventureApi\AdventureApi.csproj", "{359B1AA6-4A6C-4C3D-BE1E-62821B60D0A4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdventureApi.Tests", "AdventureApi.Tests\AdventureApi.Tests.csproj", "{0F915145-4880-4537-A064-3FBCBE6B0ADE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,17 @@ Global
 		{359B1AA6-4A6C-4C3D-BE1E-62821B60D0A4}.Release|x64.Build.0 = Release|Any CPU
 		{359B1AA6-4A6C-4C3D-BE1E-62821B60D0A4}.Release|x86.ActiveCfg = Release|Any CPU
 		{359B1AA6-4A6C-4C3D-BE1E-62821B60D0A4}.Release|x86.Build.0 = Release|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Debug|x64.Build.0 = Debug|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Debug|x86.Build.0 = Debug|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Release|x64.ActiveCfg = Release|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Release|x64.Build.0 = Release|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Release|x86.ActiveCfg = Release|Any CPU
+		{0F915145-4880-4537-A064-3FBCBE6B0ADE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
