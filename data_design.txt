@@ -1,0 +1,193 @@
+Data Design Document
+===============================================================================
+
+Game Flow
+===============================================================================
+- User hovers over text in the content, if the item is examinable, then a pop
+up will display the detail text about the objects
+
+- User selects a verb, the words in the content that you can use that verb on
+highlight, the user then picks on of the highlighted words, if the verb can
+take an indirect object the user can select another highlighted object.  The
+command is posted to the backend server.  The backend server updates the entire
+game state.  The various sections of the frontend update their views.
+
+- Like before, if a user goes a direction it is posted to the backend as a
+command and all game state is updated
+
+- If user sends a command to talk to someone, conversation is initiated.  The
+content will display what the conversation target is saying and the user will
+be presented with their possible replies.  The reply is submitted as a command
+game state is updated and the next part of the conversation is displayed as
+content.
+
+- There will be turn based combat, I'll cross that bridge when I come to it.
+
+- When a command is submitted and the game is updated, I would like NPCs to go
+about their business, so it's like a living world.
+
+Objects In Database
+===============================================================================
+Game - represents a instance of a game being played by a player
+    - Id
+    - Id of adventure being played
+    - Id of current area in adventure
+    - List of objects in inventory
+    - List of valid movement directions
+    - User playing game
+    - List of adventure flags raised
+    
+Commands - all the commands given during the current game
+    - Id
+    - Verb
+    - Object - what are you verbing
+    - Direction - if moving
+    - Indirect Object - like destination of what you're giving
+
+Content - results of commands, what text is displayed to the player
+    - Id
+    - GameId - id of game this output belongs to
+    - CopyId - id of text in adventure content table
+How are we going to annotate the content, like what words can be used as
+direct or indirect objects in commands?  Maybe have the backend produce text
+that the frontend can parse and annotate.
+
+Adventure Specific
+=======================================
+Adventure - it's an adventure
+    - Id
+    - Name
+Object - interactable thing in the adventure
+    - Id
+    - Name - Copy Id
+    - Type - NPC, thing, etc., may not be needed
+    - State
+    - Verbs that can be used with this object
+    - conditions the verb will work
+    - Id of adventure it belongs to
+Object State - valid object states
+    - Id
+    - State CopyId
+Copy - All the text content in the game
+    - Id
+    - Text
+    - Objects in this block of text
+    - Id of adventure it belongs to, may not be necessary
+Verbs - All of the verbs in this game
+Area - all of the areas in an adventure
+    - Id
+    - id of adventure it belongs to
+    - Name - Copy Id
+    - Copy Id
+    - Links to other areas
+AdventureFlags - things that can be done during the adventure
+    - Id
+    - Name - for example "talk to bob"
+    - verb and object(s) that raise the flag
+Dialog - dialogs in the adventure
+    - Id
+    - Giver - npc talking too
+    - Conditions
+    - Copy Id
+    - List of responses
+Dialog Response - response in a dialog
+    - Id
+    - Copy Id
+    - Conditions
+    - Response Copy Id
+
+Potential Microservices
+===============================================================================
+GameService - serves games, commands, contents endpoints
+AdventureService - serves adventure, verbs, copy, areas, flags, dialogs,
+    dialogresponses
+
+Copy may get it's own service
+
+API Endpoints
+===============================================================================
+/games  - GET - get a list of all games in the database, only needed for admin
+        - POST - add a new game, called when starting game
+        
+/games/id   - GET - get the game with given id, if user anonymous they will
+                    needed to track their id
+            - DELETE - remove a game
+            - PUT - set game at given id to be game in request
+            - PATCH - update the game at the given id
+
+/commands   - GET - get all of the commands for the game id in the request, if
+                no game id given, will get all commands for all games, admin
+                only can get all commands, security to make sure have access to
+                requested game
+            - POST - add a new command, this will trigger game state to update
+                This will be where most of the action happens
+
+/commands/id    - GET - get command with the given id, security
+                - DELETE - remove a command, doesn't make much sense
+                - PUT - doesn't make much sense
+                - PATCH - doesn't make much sense
+
+/contents   - GET - get all of the contents, should filter by game id otherwise
+                    could get output content for all games
+            - POST - add new content to a game
+
+/contents/id    - GET - get specific content by id
+                - DELETE - delete a game's content, security
+                - PUT - replace content, security
+                - PATCH - update content, security
+
+/adventures - GET - get all of the available adventures
+            - POST - create a new adventure
+
+/adventures/id  - GET - get details on specific adventure
+                - DELETE - delete a specific adventure, security
+                - PUT - replace adventure, security
+                - PATCH - update adventure, security
+
+/verbs  - GET - get all of the verbs based on filter
+        - POST - add a verb to an adventure, security
+
+/verbs/id   - GET - get verb with given id
+            - DELETE - remove a verb, security
+            - PUT - replace verb, security
+            - PATCH - update verb, security
+
+/copy   - GET - get all of the copy for all of the adventures
+        - POST - new copy
+
+/copy/id    - GET - get a specific bit of copy
+            - DELETE - delete some copy, security
+            - PUT - replace copy, security
+            - PATCH - update copy, security
+
+/areas  - GET - get all of the areas in all adventures, can filter by adventure
+        - POST - add an area
+
+/areas/id   - GET - get an area by id
+            - DELETE - delete an area, security
+            - PUT - replace area, security
+            - PATCH - update area, security
+
+/dialogs    - GET - get all of the dialogs based on filters
+            - POST - add a new dialog to an adventure
+
+/dialogs/id - GET - get a specific dialog by id
+            - DELETE - delete a dialog, security
+            - PUT - replace a dialog, security
+            - PATCH - update a dialog, security
+
+/dialogresponses    - GET - get all of the responses based on filters
+                    - POST - add a dialog response
+
+/dialogresponses/id - GET - get a specific dialog response
+                    - DELETE - delete a dialog response, security
+                    - PUT - replace a dialog response, security
+                    - PATCH - update a dialog response, security
+
+/flags  - GET - get all of the flags based on filters
+        - POST - add a new flag to an adventure
+
+/flags/id   - GET - get a specific flag
+            - DELETE - delete a flag, security
+            - PUT - replace a flag, security
+            - PATCH - update a flag, security
