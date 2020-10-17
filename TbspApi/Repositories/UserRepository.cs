@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Options;
-
 using MongoDB.Driver;
 
 using System.Collections.Generic;
@@ -16,11 +14,11 @@ namespace TbspApi.Repositories {
     }
 
     public class UserRepository : IUserRepository{
-        private readonly DatabaseSettings _dbSettings;
+        private readonly IDatabaseSettings _dbSettings;
         private readonly IMongoCollection<User> _users;
 
-        public UserRepository(IOptions<DatabaseSettings> databaseSettings) {
-            _dbSettings = databaseSettings.Value;
+        public UserRepository(IDatabaseSettings databaseSettings) {
+            _dbSettings = databaseSettings;
 
             var connectionString = $"mongodb+srv://{_dbSettings.Username}:{_dbSettings.Password}@{_dbSettings.Url}/{_dbSettings.Name}?retryWrites=true&w=majority";
             var client = new MongoClient(connectionString);
