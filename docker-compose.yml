@@ -11,6 +11,8 @@ services:
       - 'Database__Password=${DBPASSWORD}'
       - 'Database__Salt=${DBSALT}'
     command: dotnet watch run
+    depends_on: 
+      - adventureapi
 
   adventureapi:
     build: AdventureApi
