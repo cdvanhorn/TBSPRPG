@@ -25,7 +25,6 @@ namespace TbspApi.Controllers {
             IRestResponse response = await client.ExecuteAsync(request);
 
             return Ok(response.Content);
-            //return Ok(null);
         }
     }
 }
