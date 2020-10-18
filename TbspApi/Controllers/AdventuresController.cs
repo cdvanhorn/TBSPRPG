@@ -10,7 +10,7 @@ using TbspApi.Services;
 namespace TbspApi.Controllers {
     
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class AdventuresController : ControllerBase {
 
         public AdventuresController() {
