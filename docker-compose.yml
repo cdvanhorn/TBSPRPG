@@ -9,14 +9,7 @@ services:
       - /app/node_modules
     command: ng serve --host 0.0.0.0 --port 4200
     depends_on:
-      - mockapi
-  mockapi:
-    build: MockApi
-    ports:
-      - '3000:3000'
-    volumes:
-      - './MockApi:/app'
-    command: json-server --watch /app/db.json --host 0.0.0.0 --routes /app/routes.json
+      - tbspapi
   tbspapi:
     build: TbspApi
     ports:
