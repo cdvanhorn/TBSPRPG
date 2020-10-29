@@ -10,6 +10,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+
+using PublicApi.Utilities;
 
 namespace PublicApi
 {
@@ -26,6 +29,12 @@ namespace PublicApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            //add settings
+            services.AddScoped<IJwtHelper, JwtHelper>();
+            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
+            services.AddSingleton<IJwtSettings>(sp =>
+                sp.GetRequiredService<IOptions<JwtSettings>>().Value);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -40,7 +49,9 @@ namespace PublicApi
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseMiddleware<JwtMiddleware>();
+
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

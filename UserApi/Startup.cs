@@ -33,12 +33,6 @@ namespace UserApi
             services.AddControllers();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<IJwtHelper, JwtHelper>();
-
-            //bind the configuations
-            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
-            services.AddSingleton<IJwtSettings>(sp =>
-                sp.GetRequiredService<IOptions<JwtSettings>>().Value);
 
             services.Configure<DatabaseSettings>(Configuration.GetSection("Database"));
             services.AddSingleton<IDatabaseSettings>(sp =>
@@ -56,8 +50,6 @@ namespace UserApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
-            app.UseMiddleware<JwtMiddleware>();
 
             //app.UseAuthorization();
 

@@ -6,11 +6,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
-using UserApi.Entities;
-
-namespace UserApi.Utilities {
+namespace PublicApi.Utilities {
     public interface IJwtHelper {
-        string GenerateToken(User user);
+        string GenerateToken(string userId);
         string ValidateToken(string token);
     }
 
@@ -38,12 +36,12 @@ namespace UserApi.Utilities {
             return jwtToken.Claims.First(x => x.Type == "id").Value;
         }
 
-        public string GenerateToken(User user) {
+        public string GenerateToken(string userId) {
             // generate token that is valid for 7 days
             var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
+                Subject = new ClaimsIdentity(new[] { new Claim("id", userId) }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

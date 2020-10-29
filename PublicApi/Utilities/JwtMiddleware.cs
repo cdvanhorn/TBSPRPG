@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Threading.Tasks;
-using UserApi.Services;
 
-namespace UserApi.Utilities
+namespace PublicApi.Utilities
 {
     public class JwtMiddleware
     {
@@ -16,23 +15,23 @@ namespace UserApi.Utilities
             _jwtSettings = jwtSettings;
         }
 
-        public async Task Invoke(HttpContext context, IUserService userService, IJwtHelper jwtHelper)
+        public async Task Invoke(HttpContext context, IJwtHelper jwtHelper)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
-                await attachUserToContext(context, userService, jwtHelper, token);
+                attachUserToContext(context, jwtHelper, token);
 
             await _next(context);
         }
 
-        private async Task attachUserToContext(HttpContext context, IUserService userService, IJwtHelper jwtHelper, string token)
+        private void attachUserToContext(HttpContext context, IJwtHelper jwtHelper, string token)
         {
             try
             {
                 var userId = jwtHelper.ValidateToken(token);
                 // attach user to context on successful jwt validation
-                context.Items["User"] = await userService.GetById(userId);
+                context.Items["UserId"] = userId;
             }
             catch
             {

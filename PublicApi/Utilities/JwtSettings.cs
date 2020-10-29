@@ -1,4 +1,4 @@
-namespace UserApi.Utilities {
+namespace PublicApi.Utilities {
     public class JwtSettings : IJwtSettings{
         public string Secret { get; set; }
     }

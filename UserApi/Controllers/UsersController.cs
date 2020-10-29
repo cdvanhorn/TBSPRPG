@@ -27,7 +27,6 @@ namespace UserApi.Controllers {
             return Ok(response);
         }
 
-        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

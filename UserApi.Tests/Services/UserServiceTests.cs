@@ -17,9 +17,7 @@ namespace UserApi.Tests.Services {
         private readonly UserService _userService;
 
         public UserServiceTests() {
-            //need to mock database settings and jwtsettings
-            var mjwt = new Mock<IJwtSettings>();
-            mjwt.Setup(jwt => jwt.Secret).Returns("SUPER DUPER SECRET");
+            //need to mock database settings
             var mdb = new Mock<IDatabaseSettings>();
             mdb.Setup(db => db.Salt).Returns("y728sfLla98YUZpTgCM4VA==");
 
@@ -43,10 +41,7 @@ namespace UserApi.Tests.Services {
                 .ReturnsAsync((string id) => users.Find(usr => usr.Id == id));
             murepo.Setup(repo => repo.GetAllUsers()).ReturnsAsync(users);
 
-            //create a jwtHelper
-            var jwtHelper = new JwtHelper(mjwt.Object);
-
-            _userService = new UserService(mdb.Object, jwtHelper, murepo.Object);
+            _userService = new UserService(mdb.Object, murepo.Object);
         }
 
         [Fact]
@@ -62,7 +57,6 @@ namespace UserApi.Tests.Services {
 
             //assert
             Assert.NotNull(response);
-            Assert.NotEmpty(response.Token);
             Assert.Equal("test", response.Username);
             Assert.Equal("8675309", response.Id);
         }

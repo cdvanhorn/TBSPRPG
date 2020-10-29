@@ -17,13 +17,11 @@ namespace UserApi.Services {
     }
 
     public class UserService : IUserService {
-        private readonly IJwtHelper _jwtHelper;
         private readonly IDatabaseSettings _databaseSettings;
         private IUserRepository _userRepository;
 
-        public UserService(IDatabaseSettings databaseSettings, IJwtHelper jwtHelper, IUserRepository userRepository) {
+        public UserService(IDatabaseSettings databaseSettings, IUserRepository userRepository) {
             _databaseSettings = databaseSettings;
-            _jwtHelper = jwtHelper;
             _userRepository = userRepository;
         }
 
@@ -43,10 +41,7 @@ namespace UserApi.Services {
             // return null if user not found
             if (user == null) return null;
 
-            // authentication successful so generate jwt token
-            var token = _jwtHelper.GenerateToken(user);
-
-            return new AuthenticateResponse(user, token);
+            return new AuthenticateResponse(user);
         }
 
         public Task<User> GetById(string id) {

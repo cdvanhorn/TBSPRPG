@@ -9,24 +9,34 @@ services:
       - /app/node_modules
     command: ng serve --host 0.0.0.0 --port 4200
 
-  userapi:
-    build: UserApi
+  publicapi:
+    build: PublicApi
     ports:
       - '8000:8000'
     volumes:
-      - './UserApi:/app'
+      - './PublicApi:/app'
     environment:
       - 'JwtSettings__Secret=${JWTSECRET}'
-      - 'Database__Password=${DBPASSWORD}'
-      - 'Database__Salt=${DBSALT}'
     command: dotnet watch run
     depends_on: 
       - adventureapi
+      - userapi
+
+  userapi:
+    build: UserApi
+    ports:
+      - '8001:8001'
+    volumes:
+      - './UserApi:/app'
+    environment:
+      - 'Database__Password=${DBPASSWORD}'
+      - 'Database__Salt=${DBSALT}'
+    command: dotnet watch run
 
   adventureapi:
     build: AdventureApi
     ports:
-      - '8001:8001'
+      - '8002:8002'
     volumes:
       - './AdventureApi:/app'
     environment:
