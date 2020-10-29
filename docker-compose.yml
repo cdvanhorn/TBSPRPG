@@ -10,11 +10,11 @@ services:
     command: ng serve --host 0.0.0.0 --port 4200
 
   publicapi:
-    build: PublicApi
+    build: ./backend/PublicApi
     ports:
       - '8000:8000'
     volumes:
-      - './PublicApi:/app'
+      - './backend/PublicApi:/app'
     environment:
       - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
@@ -23,22 +23,22 @@ services:
       - userapi
 
   userapi:
-    build: UserApi
+    build: ./backend/UserApi
     ports:
       - '8001:8001'
     volumes:
-      - './UserApi:/app'
+      - './backend/UserApi:/app'
     environment:
       - 'Database__Password=${DBPASSWORD}'
       - 'Database__Salt=${DBSALT}'
     command: dotnet watch run
 
   adventureapi:
-    build: AdventureApi
+    build: ./backend/AdventureApi
     ports:
       - '8002:8002'
     volumes:
-      - './AdventureApi:/app'
+      - './backend/AdventureApi:/app'
     environment:
       - 'Database__Password=${DBPASSWORD}'
     command: dotnet watch run
