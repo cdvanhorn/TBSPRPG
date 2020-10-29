@@ -1,4 +1,4 @@
-namespace TbspApi.Utilities {
+namespace UserApi.Utilities {
     public class JwtSettings : IJwtSettings{
         public string Secret { get; set; }
     }

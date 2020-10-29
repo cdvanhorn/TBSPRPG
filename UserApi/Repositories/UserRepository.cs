@@ -3,10 +3,10 @@ using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using TbspApi.Entities;
-using TbspApi.Utilities;
+using UserApi.Entities;
+using UserApi.Utilities;
 
-namespace TbspApi.Repositories {
+namespace UserApi.Repositories {
     public interface IUserRepository {
         Task<User> GetUserById(string id);
         Task<List<User>> GetAllUsers();

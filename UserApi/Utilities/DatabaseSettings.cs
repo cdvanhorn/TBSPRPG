@@ -1,4 +1,4 @@
-namespace TbspApi.Utilities {
+namespace UserApi.Utilities {
     public class DatabaseSettings : IDatabaseSettings{
         public string Username { get; set; }
         public string Password { get; set; }

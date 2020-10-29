@@ -2,10 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 
 using System.Threading.Tasks;
 
-using TbspApi.Models;
-using TbspApi.Services;
+using UserApi.Models;
+using UserApi.Services;
 
-namespace TbspApi.Controllers {
+namespace UserApi.Controllers {
     
     [ApiController]
     [Route("[controller]")]

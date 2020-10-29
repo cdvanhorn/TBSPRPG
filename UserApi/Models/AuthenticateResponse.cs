@@ -1,6 +1,6 @@
-using TbspApi.Entities;
+using UserApi.Entities;
 
-namespace TbspApi.Models
+namespace UserApi.Models
 {
     public class AuthenticateResponse
     {

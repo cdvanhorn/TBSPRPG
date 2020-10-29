@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace TbspApi.Models {
+namespace UserApi.Models {
     public class AuthenticateRequest {
         [Required]
         public string Username { get; set; }

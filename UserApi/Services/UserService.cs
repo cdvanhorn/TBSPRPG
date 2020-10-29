@@ -4,12 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using TbspApi.Entities;
-using TbspApi.Models;
-using TbspApi.Repositories;
-using TbspApi.Utilities;
+using UserApi.Entities;
+using UserApi.Models;
+using UserApi.Repositories;
+using UserApi.Utilities;
 
-namespace TbspApi.Services {
+namespace UserApi.Services {
     public interface IUserService {
         Task<User> GetById(string id);
         Task<List<User>> GetAll();

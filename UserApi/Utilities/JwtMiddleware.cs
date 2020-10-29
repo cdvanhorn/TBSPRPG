@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Threading.Tasks;
-using TbspApi.Services;
+using UserApi.Services;
 
-namespace TbspApi.Utilities
+namespace UserApi.Utilities
 {
     public class JwtMiddleware
     {

@@ -12,11 +12,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-using TbspApi.Repositories;
-using TbspApi.Services;
-using TbspApi.Utilities;
+using UserApi.Repositories;
+using UserApi.Services;
+using UserApi.Utilities;
 
-namespace TbspApi
+namespace UserApi
 {
     public class Startup
     {

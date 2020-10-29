@@ -2,7 +2,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
-namespace TbspApi.Entities {
+namespace UserApi.Entities {
     public class User {
 
         [BsonId]

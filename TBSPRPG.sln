@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TbspApi", "TbspApi\TbspApi.csproj", "{68C49160-40C0-4388-B0BA-9DC31C74A6D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserApi", "UserApi\UserApi.csproj", "{68C49160-40C0-4388-B0BA-9DC31C74A6D0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TbspApi.Tests", "TbspApi.Tests\TbspApi.Tests.csproj", "{B53C28F5-FED2-435C-A3D2-4D42B56085D3}"
 EndProject

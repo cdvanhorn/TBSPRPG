@@ -6,9 +6,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
-using TbspApi.Entities;
+using UserApi.Entities;
 
-namespace TbspApi.Utilities {
+namespace UserApi.Utilities {
     public interface IJwtHelper {
         string GenerateToken(User user);
         string ValidateToken(string token);
