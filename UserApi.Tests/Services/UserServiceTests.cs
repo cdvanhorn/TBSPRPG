@@ -4,15 +4,15 @@ using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 
-using TbspApi.Entities;
-using TbspApi.Models;
-using TbspApi.Services;
-using TbspApi.Repositories;
-using TbspApi.Utilities;
+using UserApi.Entities;
+using UserApi.Models;
+using UserApi.Services;
+using UserApi.Repositories;
+using UserApi.Utilities;
 
 using Xunit;
 
-namespace TbspApi.Tests.Services {
+namespace UserApi.Tests.Services {
     public class UserServiceTests {
         private readonly UserService _userService;
 

@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TbspApi\TbspApi.csproj" />
+    <ProjectReference Include="..\UserApi\UserApi.csproj" />
   </ItemGroup>
 
 </Project>
