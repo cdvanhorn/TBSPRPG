@@ -24,8 +24,8 @@ services:
 
   userapi:
     build: ./backend/UserApi
-    ports:
-      - '8001:8001'
+    #ports:
+    #  - '8001:8001'
     volumes:
       - './backend/UserApi:/app'
     environment:
@@ -35,8 +35,8 @@ services:
 
   adventureapi:
     build: ./backend/AdventureApi
-    ports:
-      - '8002:8002'
+    #ports:
+    #  - '8002:8002'
     volumes:
       - './backend/AdventureApi:/app'
     environment:
