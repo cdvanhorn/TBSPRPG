@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -9,16 +10,21 @@ import { Router } from '@angular/router';
 export class LoginComponent implements OnInit {
   hide : boolean;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private userService: UserService) { }
 
   ngOnInit(): void {
   }
 
   login(): void {
-    //authenticate
+    //authenticate, post to api/users/authenticate
+    this.userService.authenticate().subscribe(
+      usr => { 
+        console.log(usr);
+        localStorage.setItem("jwttoken", usr.token);
+        this.router.navigate(['/console', {}]);
+      });
     //post to authenticate api endpoint
     //add jwt token to local storage
     //go to the console
-    this.router.navigate(['/console', {}]);
   }
 }
