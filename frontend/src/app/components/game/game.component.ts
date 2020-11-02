@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Console } from 'console';
 
 @Component({
   selector: 'app-game',
@@ -9,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 export class GameComponent implements OnInit {
   adventure: string;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit(): void {
     this.route.params.subscribe( params => {
@@ -20,6 +21,9 @@ export class GameComponent implements OnInit {
     //so this could be one of the most used entry points
 
     //check if someone is logged in, if not kick back to login screen
+    if(localStorage.getItem("jwttoken") === null) {
+      this.router.navigate(['/login', {}]);
+    }
 
     //check if we have an adventure and it's valid,
     //if not we'll kick back to console, eventually let them pick from a dialog box
