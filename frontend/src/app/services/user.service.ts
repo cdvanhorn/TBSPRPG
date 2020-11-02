@@ -19,10 +19,10 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  authenticate() : Observable<User> {
+  authenticate(email: string, password: string) : Observable<User> {
     return this.http.post<User>(this.userUrl + '/authenticate', {
-      username: 'test',
-      password: 'test'
+      username: email,
+      password: password
     }, this.httpOptions);
   }
 }

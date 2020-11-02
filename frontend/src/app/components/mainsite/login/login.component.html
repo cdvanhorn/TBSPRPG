@@ -1,19 +1,21 @@
 <app-toolbar></app-toolbar>
 <div>
-    <mat-form-field appearance="fill">
-        <mat-label>Enter your email</mat-label>
-        <input matInput placeholder="pat@example.com" required>
-        <!-- <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error> -->
-    </mat-form-field>
-    <br>
-    <mat-form-field appearance="fill">
-        <mat-label>Enter your password</mat-label>
-        <input matInput [type]="hide ? 'password' : 'text'">
-        <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-        </button>
-    </mat-form-field>
-    <br>
-    <button mat-flat-button color="accent" (click)="login()">login</button>
+    <form (ngSubmit)="login(loginForm.value)" [formGroup]="loginForm">
+        <mat-form-field appearance="fill">
+            <mat-label>Enter your email</mat-label>
+            <input id="email" matInput placeholder="pat@example.com" required formControlName="email">
+            <!-- <mat-error *ngIf="email.invalid">{{getErrorMessage()}}</mat-error> -->
+        </mat-form-field>
+        <br>
+        <mat-form-field appearance="fill">
+            <mat-label>Enter your password</mat-label>
+            <input id="password" matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+        </mat-form-field>
+        <br>
+        <button mat-flat-button color="accent" type="submit">login</button>
+    </form>
 </div>
 <p>Or authenticate with Google</p>

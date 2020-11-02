@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
+
 import { UserService } from '../../../services/user.service';
+
 
 @Component({
   selector: 'app-login',
@@ -9,15 +12,24 @@ import { UserService } from '../../../services/user.service';
 })
 export class LoginComponent implements OnInit {
   hide : boolean;
+  loginForm;
 
-  constructor(private router: Router, private userService: UserService) { }
+  constructor(private router: Router,
+    private formBuilder: FormBuilder,
+    private userService: UserService) { 
+      this.loginForm = this.formBuilder.group({
+        email: '',
+        password: ''
+      });
+    }
 
   ngOnInit(): void {
   }
 
-  login(): void {
+  login(loginData): void {
+    console.log(loginData);
     //authenticate, post to api/users/authenticate
-    this.userService.authenticate().subscribe(
+    this.userService.authenticate(loginData.email, loginData.password).subscribe(
       usr => { 
         console.log(usr);
         localStorage.setItem("jwttoken", usr.token);
