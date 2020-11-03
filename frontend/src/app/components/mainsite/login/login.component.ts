@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { UserService } from '../../../services/user.service';
@@ -12,22 +12,21 @@ import { UserService } from '../../../services/user.service';
 })
 export class LoginComponent implements OnInit {
   hide : boolean;
-  loginForm;
+  loginForm = new FormGroup({
+    email: new FormControl(''),
+    password: new FormControl('')
+  });
 
   constructor(private router: Router,
-    private formBuilder: FormBuilder,
-    private userService: UserService) { 
-      this.loginForm = this.formBuilder.group({
-        email: '',
-        password: ''
-      });
-    }
+    private userService: UserService) { }
 
   ngOnInit(): void {
   }
 
-  login(loginData): void {
-    console.log(loginData);
+  get email() { return this.loginForm.get('email'); }
+
+  login(): void {
+    var loginData = this.loginForm.value;
     //authenticate, post to api/users/authenticate
     this.userService.authenticate(loginData.email, loginData.password).subscribe(
       usr => { 
