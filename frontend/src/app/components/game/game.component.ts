@@ -22,11 +22,6 @@ export class GameComponent implements OnInit {
     //I would like for people to be able to just click a link and be in the game
     //so this could be one of the most used entry points
 
-    //check if someone is logged in, if not kick back to login screen
-    if(localStorage.getItem("jwttoken") === null) {
-      this.router.navigate(['/login', {}]);
-    }
-
     //check if we have an adventure and it's valid,
     //if not we'll kick back to console, eventually let them pick from a dialog box
     //have to make a get request to see if an adventure exists with this name
