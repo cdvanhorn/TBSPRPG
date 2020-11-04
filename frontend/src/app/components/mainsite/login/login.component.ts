@@ -12,6 +12,7 @@ import { UserService } from '../../../services/user.service';
 })
 export class LoginComponent implements OnInit {
   hide : boolean;
+  loginError: boolean;
   loginForm = new FormGroup({
     email: new FormControl(''),
     password: new FormControl('')
@@ -21,21 +22,21 @@ export class LoginComponent implements OnInit {
     private userService: UserService) { }
 
   ngOnInit(): void {
+    this.loginError = false;
   }
 
   get email() { return this.loginForm.get('email'); }
 
   login(): void {
     var loginData = this.loginForm.value;
-    //authenticate, post to api/users/authenticate
     this.userService.authenticate(loginData.email, loginData.password).subscribe(
-      usr => { 
-        console.log(usr);
+      usr => {
         localStorage.setItem("jwttoken", usr.token);
         this.router.navigate(['/console', {}]);
-      });
-    //post to authenticate api endpoint
-    //add jwt token to local storage
-    //go to the console
+      },
+      error => {
+        this.loginError = true;
+      }
+    );
   }
 }
