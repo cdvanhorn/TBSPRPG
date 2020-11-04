@@ -9,6 +9,7 @@ using AdventureApi.Repositories;
 namespace AdventureApi.Services {
     public interface IAdventuresService {
         Task<List<Adventure>> GetAll();
+        Task<Adventure> GetByName(string name);
     }
 
     public class AdventuresService : IAdventuresService {
@@ -20,6 +21,10 @@ namespace AdventureApi.Services {
         
         public Task<List<Adventure>> GetAll() {
             return _adventuresRespository.GetAllAdventures();
+        }
+
+        public Task<Adventure> GetByName(string name) {
+            return _adventuresRespository.GetAdventureByName(name);
         }
     }
 }

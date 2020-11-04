@@ -21,5 +21,12 @@ namespace AdventureApi.Controllers {
             var adventures = await _adventuresService.GetAll();
             return Ok(adventures);
         }
+
+
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetByName(string name) {
+            var adventure = await _adventuresService.GetByName(name);
+            return Ok(adventure);
+        }
     }
 }

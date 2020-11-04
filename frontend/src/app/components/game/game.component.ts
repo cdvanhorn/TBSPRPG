@@ -25,6 +25,7 @@ export class GameComponent implements OnInit {
     //check if we have an adventure and it's valid,
     //if not we'll kick back to console, eventually let them pick from a dialog box
     //have to make a get request to see if an adventure exists with this name
+    console.log(this.adventure);
     this.adventureService.getAdventures().subscribe(adv => console.log(adv));
 
     //contact the games service to see if they've started this game,

@@ -45,5 +45,14 @@ namespace PublicApi.Controllers {
                 return BadRequest( new { message = response.ErrorMessage });
             return Ok(response.Content);
         }
+
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetByName(string name) {
+            var request = new RestRequest($"adventures/{name}", DataFormat.Json);
+            var response = await _client.ExecuteGetAsync(request);
+            if(!response.IsSuccessful)
+                return BadRequest( new { message = response.ErrorMessage });
+            return Ok(response.Content);
+        }
     }
 }
