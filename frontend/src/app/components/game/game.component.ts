@@ -1,5 +1,6 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AdventureService } from '../../services/adventure.service';
 
 @Component({
   selector: 'app-game',
@@ -9,7 +10,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class GameComponent implements OnInit {
   adventure: string;
 
-  constructor(private route: ActivatedRoute, private router: Router) { }
+  constructor(private route: ActivatedRoute,
+    private router: Router,
+    private adventureService: AdventureService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe( params => {
@@ -26,6 +29,8 @@ export class GameComponent implements OnInit {
 
     //check if we have an adventure and it's valid,
     //if not we'll kick back to console, eventually let them pick from a dialog box
+    //have to make a get request to see if an adventure exists with this name
+    this.adventureService.getAdventures().subscribe(adv => console.log(adv));
 
     //contact the games service to see if they've started this game,
     //if so pick up from where they left off

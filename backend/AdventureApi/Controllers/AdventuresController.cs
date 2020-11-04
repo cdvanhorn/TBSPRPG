@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AdventureApi.Controllers {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("/api/[controller]")]
     public class AdventuresController : ControllerBase {
         IAdventuresService _adventuresService;
 
