@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AdventureService } from '../../services/adventure.service';
+import { Adventure } from '../../models/adventure';
 
 @Component({
   selector: 'app-game',
@@ -8,25 +9,20 @@ import { AdventureService } from '../../services/adventure.service';
   styleUrls: ['./game.component.scss']
 })
 export class GameComponent implements OnInit {
-  adventure: string;
+  adventure: Adventure;
 
   constructor(private route: ActivatedRoute,
     private router: Router,
     private adventureService: AdventureService) { }
 
   ngOnInit(): void {
-    this.route.params.subscribe( params => {
-      this.adventure = params['adventure'];
-    });
-
     //I would like for people to be able to just click a link and be in the game
     //so this could be one of the most used entry points
-
-    //check if we have an adventure and it's valid,
-    //if not we'll kick back to console, eventually let them pick from a dialog box
-    //have to make a get request to see if an adventure exists with this name
-    console.log(this.adventure);
-    this.adventureService.getAdventures().subscribe(adv => console.log(adv));
+    this.route.params.subscribe( params => {
+      this.adventureService.getAdventureByName(params['adventure']).subscribe(
+        adv => this.adventure = adv
+      );
+    });
 
     //contact the games service to see if they've started this game,
     //if so pick up from where they left off
