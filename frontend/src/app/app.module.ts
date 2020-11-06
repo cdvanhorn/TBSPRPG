@@ -1,3 +1,6 @@
+//interceptors
+import { httpInterceptorProviders } from './app.interceptors';
+
 //angular stuff
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -80,7 +83,9 @@ import { InventoryComponent } from './components/game/inventory/inventory.compon
     MatFormFieldModule,
     MatDividerModule
   ],
-  providers: [],
+  providers: [
+    httpInterceptorProviders
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

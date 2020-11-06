@@ -46,6 +46,7 @@ namespace PublicApi.Controllers {
             return Ok(response.Content);
         }
 
+        [Authorize]
         [HttpGet("{name}")]
         public async Task<IActionResult> GetByName(string name) {
             var request = new RestRequest($"adventures/{name}", DataFormat.Json);
