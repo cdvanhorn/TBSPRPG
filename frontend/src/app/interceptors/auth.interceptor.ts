@@ -7,14 +7,16 @@ import {
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+import { UserService } from '../services/user.service';
+
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor() {}
+  constructor(private userService: UserService) {}
 
   //insert the authorization bearer token for each request to the back end
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const jwttoken = localStorage.getItem("jwttoken");
+    const jwttoken = this.userService.getAuthToken();
     if(jwttoken) {
       const clonedReq = request.clone({
         headers: request.headers.set("Authorization", "Bearer " + jwttoken)

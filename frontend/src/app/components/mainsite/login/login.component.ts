@@ -31,7 +31,6 @@ export class LoginComponent implements OnInit {
     var loginData = this.loginForm.value;
     this.userService.authenticate(loginData.email, loginData.password).subscribe(
       usr => {
-        localStorage.setItem("jwttoken", usr.token);
         this.router.navigate(['/console', {}]);
       },
       error => {
