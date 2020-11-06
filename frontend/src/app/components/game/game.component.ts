@@ -1,7 +1,9 @@
-import { Component, OnInit, HostListener } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { AdventureService } from '../../services/adventure.service';
 import { Adventure } from '../../models/adventure';
+
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-game',
@@ -12,16 +14,17 @@ export class GameComponent implements OnInit {
   adventure: Adventure;
 
   constructor(private route: ActivatedRoute,
-    private router: Router,
     private adventureService: AdventureService) { }
 
   ngOnInit(): void {
     //I would like for people to be able to just click a link and be in the game
     //so this could be one of the most used entry points
-    this.route.params.subscribe( params => {
-      this.adventureService.getAdventureByName(params['adventure']).subscribe(
-        adv => this.adventure = adv
-      );
+
+    //let's try this using switch map
+    this.route.params.pipe(
+        switchMap( params => this.adventureService.getAdventureByName(params['adventure']) )
+    ).subscribe( adv => {
+      this.adventure = adv;
     });
 
     //contact the games service to see if they've started this game,
