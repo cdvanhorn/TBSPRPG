@@ -22,7 +22,7 @@ export class GameComponent implements OnInit {
 
     //let's try this using switch map
     this.route.params.pipe(
-        switchMap( params => this.adventureService.getAdventureByName(params['adventure']) )
+      switchMap( params => this.adventureService.getAdventureByName(params['adventure']) )
     ).subscribe( adv => {
       this.adventure = adv;
     });
