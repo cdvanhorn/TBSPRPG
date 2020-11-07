@@ -31,3 +31,6 @@ These values will be uniqe for your environment.
 - `JWTSECRET` is used to encrypt JWT tokens, used for authorization (64 character string letters and numbers)
 - `DBPASSWORD` is the password for your mongo database
 - `DBSALT` is used to encrypt user passwords (base64 encoded)
+
+## Final Note
+I'm using [git-crypt](https://github.com/AGWA/git-crypt) to encrypt my .env file.
