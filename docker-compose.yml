@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   frontend:
-    build: frontend
+    build: ./TBSPRPG_UI/tbsprpg
     ports:
       - '4200:4200'
     volumes:
@@ -12,11 +12,11 @@ services:
       - publicapi
 
   publicapi:
-    build: ./backend/PublicApi
+    build: ./TBSPRPG_PAPI/PublicApi
     ports:
       - '8000:8000'
     volumes:
-      - './backend/PublicApi:/app'
+      - './TBSPRPG_PAPI/PublicApi:/app'
     environment:
       - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
@@ -25,22 +25,30 @@ services:
       - userapi
 
   userapi:
-    build: ./backend/UserApi
+    build: ./TBSPRPG_UserAPI/UserApi
     #ports:
     #  - '8001:8001'
     volumes:
-      - './backend/UserApi:/app'
+      - './TBSPRPG_UserAPI/UserApi:/app'
     environment:
       - 'Database__Password=${DBPASSWORD}'
       - 'Database__Salt=${DBSALT}'
     command: dotnet watch run
 
   adventureapi:
-    build: ./backend/AdventureApi
+    build: ./TBSPRPG_AdventureAPI/AdventureApi
     #ports:
     #  - '8002:8002'
     volumes:
-      - './backend/AdventureApi:/app'
+      - './TBSPRPG_AdventureAPI/AdventureApi:/app'
     environment:
       - 'Database__Password=${DBPASSWORD}'
     command: dotnet watch run
+
+  frontend_node_modules:
+    build: ./TBSPRPG_UI/tbsprpg
+    ports:
+      - '4200:4200'
+    volumes:
+      - './TBSPRPG_UI/tbsprpg:/app'
+    command: npm install
