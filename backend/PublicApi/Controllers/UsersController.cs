@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using PublicApi.Models;
 using PublicApi.Utilities;
 
-namespace UserApi.Controllers {
+namespace PublicApi.Controllers {
     
     [ApiController]
     [Route("api/[controller]")]

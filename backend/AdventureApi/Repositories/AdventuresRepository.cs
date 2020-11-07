@@ -11,6 +11,7 @@ using AdventureApi.Utilities;
 namespace AdventureApi.Repositories {
     public interface IAdventuresRepository {
         Task<List<Adventure>> GetAllAdventures();
+        Task<Adventure> GetAdventureByName(string name);
     }
 
     public class AdventuresRepository : IAdventuresRepository {
@@ -30,6 +31,10 @@ namespace AdventureApi.Repositories {
 
         public Task<List<Adventure>> GetAllAdventures() {
             return _adventures.Find(adventure => true).ToListAsync();
+        }
+
+        public Task<Adventure> GetAdventureByName(string name) {
+            return _adventures.Find(adventure => adventure.Name.ToLower() == name.ToLower()).FirstOrDefaultAsync();
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace AdventureApi.Controllers {
 
     [ApiController]
-    [Route("[controller]")]
+    [Route("/api/[controller]")]
     public class AdventuresController : ControllerBase {
         IAdventuresService _adventuresService;
 
@@ -20,6 +20,13 @@ namespace AdventureApi.Controllers {
         {
             var adventures = await _adventuresService.GetAll();
             return Ok(adventures);
+        }
+
+
+        [HttpGet("{name}")]
+        public async Task<IActionResult> GetByName(string name) {
+            var adventure = await _adventuresService.GetByName(name);
+            return Ok(adventure);
         }
     }
 }
