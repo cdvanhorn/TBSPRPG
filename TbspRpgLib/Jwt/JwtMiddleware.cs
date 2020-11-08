@@ -7,27 +7,30 @@ namespace TbspRgpLib.Jwt
     public class JwtMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly IJwtHelper _jwtHelper;
 
-        public JwtMiddleware(RequestDelegate next)
+
+        public JwtMiddleware(RequestDelegate next, IJwtSettings jwtSettings)
         {
             _next = next;
+            _jwtHelper = new JwtHelper(jwtSettings.Secret);
         }
 
-        public async Task Invoke(HttpContext context, IJwtHelper jwtHelper)
+        public async Task Invoke(HttpContext context)
         {
             var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
 
             if (token != null)
-                attachUserToContext(context, jwtHelper, token);
+                attachUserToContext(context, token);
 
             await _next(context);
         }
 
-        private void attachUserToContext(HttpContext context, IJwtHelper jwtHelper, string token)
+        private void attachUserToContext(HttpContext context, string token)
         {
             try
             {
-                var userId = jwtHelper.ValidateToken(token);
+                var userId = _jwtHelper.ValidateToken(token);
                 // attach user to context on successful jwt validation
                 context.Items["UserId"] = userId;
             }
