@@ -1,0 +1,5 @@
+https://docs.github.com/en/free-pro-team@latest/packages/using-github-packages-with-your-projects-ecosystem/configuring-dotnet-cli-for-use-with-github-packages
+add nuget.config
+configure .csproj
+dotnet pack --configuration Release
+dotnet nuget push "bin/Release/TbspRpgLib.1.0.0.nupkg" --api-key "XXX" --source "github"
