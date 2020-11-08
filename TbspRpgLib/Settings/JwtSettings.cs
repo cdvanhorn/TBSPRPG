@@ -1,4 +1,4 @@
-namespace TbspRgpLib.Jwt {
+namespace TbspRgpLib.Settings {
     public class JwtSettings : IJwtSettings{
         public string Secret { get; set; }
     }
