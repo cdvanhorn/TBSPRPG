@@ -23,6 +23,7 @@ services:
     depends_on: 
       - adventureapi
       - userapi
+      - gameapi
 
   userapi:
     build: ./TBSPRPG_UserAPI/UserApi
@@ -43,6 +44,17 @@ services:
       - './TBSPRPG_AdventureAPI/AdventureApi:/app'
     environment:
       - 'Database__Password=${DBPASSWORD}'
+    command: dotnet watch run
+
+  gameapi:
+    build: ./TBSPRPG_GameAPI/GameApi
+    #ports:
+    #  - '8003:8003'
+    volumes:
+      - './TBSPRPG_GameAPI/GameApi:/app'
+    environment:
+      - 'Database__Password=${DBPASSWORD}'
+      - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
 
   frontend_node_modules:
