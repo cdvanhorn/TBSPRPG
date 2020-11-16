@@ -6,9 +6,10 @@ using System;
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
 public class AuthorizeAttribute : Attribute, IAuthorizationFilter
 {
+    public const string USER_ID_CONTEXT_KEY = "UserId";
     public void OnAuthorization(AuthorizationFilterContext context)
     {
-        var userId = (string)context.HttpContext.Items["UserId"];
+        var userId = (string)context.HttpContext.Items[USER_ID_CONTEXT_KEY];
         if (userId == null)
         {
             // not logged in
