@@ -4,6 +4,8 @@ namespace TbspRgpLib.Settings {
         public string Password { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
+        public string SystemDatabaseUrl { get; set; }
+        public string SystemDatabaseName { get; set; }
     }
 
     public interface IDatabaseSettings {
@@ -11,5 +13,7 @@ namespace TbspRgpLib.Settings {
         string Password { get; set; }
         string Name { get; set; }
         string Url { get; set; }
+        string SystemDatabaseUrl { get; set; }
+        string SystemDatabaseName { get; set; }
     }
 }
