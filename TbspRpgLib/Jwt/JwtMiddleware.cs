@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Http;
 using System.Linq;
 using System.Threading.Tasks;
 
-using TbspRgpLib.Settings;
+using TbspRpgLib.Settings;
 
-namespace TbspRgpLib.Jwt
+namespace TbspRpgLib.Jwt
 {
     public class JwtMiddleware
     {

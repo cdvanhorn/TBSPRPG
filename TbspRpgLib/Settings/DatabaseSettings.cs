@@ -1,4 +1,4 @@
-namespace TbspRgpLib.Settings {
+namespace TbspRpgLib.Settings {
     public class DatabaseSettings : IDatabaseSettings{
         public string Username { get; set; }
         public string Password { get; set; }

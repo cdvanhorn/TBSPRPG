@@ -6,7 +6,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
-namespace TbspRgpLib.Jwt {
+namespace TbspRpgLib.Jwt {
     public interface IJwtHelper {
         string GenerateToken(string userId);
         string ValidateToken(string token);
