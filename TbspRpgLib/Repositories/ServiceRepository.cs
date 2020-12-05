@@ -42,11 +42,15 @@ namespace TbspRpgLib.Repositories {
         }
 
         public void UpdateService(Service service, string eventName) {
+            var newPosition = service.EventIndexes.Where(ei => ei.EventName == eventName).First().Index;
             var filter = Builders<Service>.Filter.Eq(doc => doc.Id, service.Id)
                 & Builders<Service>.Filter.ElemMatch(doc => doc.EventIndexes, 
-                    Builders<EventIndex>.Filter.Eq(ei => ei.EventName, eventName));
-            var update = Builders<Service>.Update.Set(doc => doc.EventIndexes[-1].Index,
-                service.EventIndexes.Where(ei => ei.EventName == eventName).First().Index
+                    Builders<EventIndex>.Filter.Eq(ei => ei.EventName, eventName)
+                    & Builders<EventIndex>.Filter.Lt(ei => ei.Index, newPosition));
+            
+            var update = Builders<Service>.Update.Set(
+                doc => doc.EventIndexes[-1].Index,
+                newPosition
             );
             var result = _services.UpdateOneAsync(filter, update);
         }
