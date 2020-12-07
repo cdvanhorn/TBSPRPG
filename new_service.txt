@@ -1,0 +1,22 @@
+dotnet new gitignore
+git config user.name "cdvanhorn"
+git config user.email "cdavid.vanhorn@gmail.com"
+
+#create main service project
+dotnet new webapi -o MapApi
+
+#create a project for tests
+dotnet new xuint -o MapApi.Tests
+
+#tie them together with a solution
+dotnet new sln --name mapapi
+dotnet sln add MapApi/MapApi.csproj
+dotnet sln add MapApi.Tests/MapApi.Tests.csproj
+
+#create usual directories
+cd MapApi
+mkdir Repositories
+mkdir Services
+mkdir Processors
+mkdir Entities
+mkdir Adapters
