@@ -20,3 +20,15 @@ mkdir Services
 mkdir EventProcessors
 mkdir Entities
 mkdir Adapters
+
+#add the nuget.conf file and add the TbspRpgLib
+cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/nuget.config ./MapApi
+echo MapApi/nuget.config >> .gitignore
+cd MapApi
+dotnet add package TbspRpgLib
+cd ..
+
+#setup dependency injection and settings template
+cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/appsettings.json ./MapApi
+cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/Startup.cs ./MapApi
+#update the namespace of the startup file copied

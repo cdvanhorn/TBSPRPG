@@ -365,3 +365,4 @@ FodyWeavers.xsd
 dbshell.sh
 environment_vars.sh
 TbspRpgLib/nuget.config
+boilerplate/nuget.config
