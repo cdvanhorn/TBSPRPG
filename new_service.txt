@@ -17,6 +17,6 @@ dotnet sln add MapApi.Tests/MapApi.Tests.csproj
 cd MapApi
 mkdir Repositories
 mkdir Services
-mkdir Processors
+mkdir EventProcessors
 mkdir Entities
 mkdir Adapters
