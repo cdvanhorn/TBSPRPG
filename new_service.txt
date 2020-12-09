@@ -32,3 +32,5 @@ cd ..
 cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/appsettings.json ./MapApi
 cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/Startup.cs ./MapApi
 #update the namespace of the startup file copied
+
+#we are now at the point where we can start to develop controllers, repositories, and services
