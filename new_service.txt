@@ -34,3 +34,13 @@ cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/Startup.cs ./MapApi
 #update the namespace of the startup file copied
 
 #we are now at the point where we can start to develop controllers, repositories, and services
+
+#copy a service docker file in to the project
+cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/Dockerfile ./MapApi
+#add the service to docker-compose for testing
+
+#start adding event listeners
+cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/NewGameEventProcessor.cs ./MapApi/EventProcessors/
+#wrote game aggregrate adapter to convert from a game aggregrate object to the service's game object
+#add the aggregate adapter to startup for dependency injection
+#add the worker to startup so a worker starts
