@@ -3,8 +3,8 @@ using TbspRpgLib.Settings;
 
 namespace TbspRpgLib.EventProcessors {
     public abstract class NewGameEventProcessor : EventProcessor {
-        public NewGameEventProcessor(IEventStoreSettings eventStoreSettings, IDatabaseSettings databaseSettings) : 
-            base("game", eventStoreSettings, databaseSettings) {
+        public NewGameEventProcessor(string serviceName, IEventStoreSettings eventStoreSettings, IDatabaseSettings databaseSettings) : 
+            base(serviceName, eventStoreSettings, databaseSettings) {
 
         }
 
