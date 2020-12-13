@@ -7,6 +7,8 @@ dotnet new webapi -o MapApi
 
 #create a project for tests
 dotnet new xuint -o MapApi.Tests
+dotnet add package Moq
+dotnet add reference ../MapApi/MapApi.csproj
 
 #tie them together with a solution
 dotnet new sln --name mapapi
