@@ -49,5 +49,11 @@ namespace TbspRpgLib.Tests.Aggregate {
             Assert.Equal("1", game.Id);
             Assert.Equal("Demo", game.AdventureName);
         }
+
+        [Fact]
+        public async void BuildAggregate_NewGameEvent_InvalidId() {
+            var aggregate = await aggregateService.BuildAggregate("15", "GameAggregate");
+            Assert.Null(aggregate.Id);
+        }
     }
 }
