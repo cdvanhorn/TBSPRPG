@@ -55,5 +55,11 @@ namespace TbspRpgLib.Tests.Aggregate {
             var aggregate = await aggregateService.BuildAggregate("15", "GameAggregate");
             Assert.Null(aggregate.Id);
         }
+
+        [Fact]
+        public async void BuildAggregate_NewGameEvent_InvalidType() {
+            var exception = await Assert.ThrowsAsync<ArgumentException>(() => aggregateService.BuildAggregate("15", "Banana"));
+            Assert.Equal("invalid aggregate type name Banana", exception.Message);
+        }
     }
 }
