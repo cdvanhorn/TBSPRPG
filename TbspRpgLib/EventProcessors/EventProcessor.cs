@@ -51,6 +51,7 @@ namespace TbspRpgLib.EventProcessors {
                 (aggregate, eventId, position) => {
                     HandleEvent(aggregate, eventId, position);
                 },
+                _service.EventPrefix,
                 startPosition
             );
         }

@@ -6,7 +6,7 @@ using TbspRpgLib.Events;
 namespace TbspRpgLib.Aggregates {
     public interface IAggregateService {
         Task<Aggregate> BuildAggregate(string aggregateId, string aggregateTypeName);
-        void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, ulong subscriptionStart = 0);
+        void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, string servicePrefix, ulong subscriptionStart = 0);
     }
 
     public class AggregateService : IAggregateService {
@@ -16,7 +16,7 @@ namespace TbspRpgLib.Aggregates {
             _eventService = eventService;
         }
 
-        public void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, ulong subscriptionStart = 0) {
+        public void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, string servicePrefix, ulong subscriptionStart = 0) {
             _eventService.SubscribeByType(
                 typeName,
                 async (evnt) => {
@@ -25,8 +25,12 @@ namespace TbspRpgLib.Aggregates {
                     if(aggregateId == null) //we can't parse this event
                         return;
 
-                    //need to get aggregate type name in a programitc way
-                    eventHandler(await BuildAggregate(aggregateId, "GameAggregate"), evnt.EventId.ToString(), evnt.Position);
+                    //check if the event id prefixed with the service id exists in the list of processed ids in the aggregrate
+                    var aggregate = await BuildAggregate(aggregateId, "GameAggregate");
+                    //only call the event handler if we haven't processed this event
+                    var processedId = $"{servicePrefix}_{evnt.EventId}";
+                    if(!aggregate.ProcessedEventIds.Contains(processedId))
+                        eventHandler(aggregate, evnt.EventId.ToString(), evnt.Position);
                 },
                 subscriptionStart
             );
@@ -44,6 +48,9 @@ namespace TbspRpgLib.Aggregates {
             var events = await _eventService.GetEventsInStreamAsync(aggregateId);
             foreach(var evnt in events) {
                 evnt.UpdateAggregate(aggregate);
+                if(!string.IsNullOrEmpty(evnt.GetProcessedEventId())) {
+                    aggregate.ProcessedEventIds.Add(evnt.GetProcessedEventId());
+                }
             }
             return aggregate;
         }
