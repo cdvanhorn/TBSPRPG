@@ -13,9 +13,10 @@ using TbspRpgLib.Events.Content;
 namespace TbspRpgLib.Tests.Aggregate {
     public class AggregateServiceTests {
         private AggregateService aggregateService;
+        private List<Event> events;
 
         public AggregateServiceTests() {
-            List<Event> events = new List<Event>();
+            events = new List<Event>();
             events.Add(
                 new NewGameEvent(
                     new NewGame {
@@ -52,14 +53,65 @@ namespace TbspRpgLib.Tests.Aggregate {
 
         [Fact]
         public async void BuildAggregate_NewGameEvent_InvalidId() {
+            //act
             var aggregate = await aggregateService.BuildAggregate("15", "GameAggregate");
+            //assert
             Assert.Null(aggregate.Id);
         }
 
         [Fact]
         public async void BuildAggregate_NewGameEvent_InvalidType() {
+            //act, assert
             var exception = await Assert.ThrowsAsync<ArgumentException>(() => aggregateService.BuildAggregate("15", "Banana"));
             Assert.Equal("invalid aggregate type name Banana", exception.Message);
+        }
+
+        [Fact]
+        public void HandleEvent_UnProcessed_ExecuteHandler() {
+            //arrange
+            var evnt = events.FirstOrDefault();
+            bool didItRun = false;
+            //act
+            aggregateService.HandleEvent(evnt,
+                (aggregate, eventid, position) => {
+                    didItRun = true;
+                },
+                "foo"
+            );
+            //assert
+            Assert.True(didItRun);
+        }
+
+        [Fact]
+        public void HandleEvent_Processed_DontExecuteHandler() {
+            //arrange
+            var evnt = events.FirstOrDefault();
+            var processedEvents = new List<Event>();
+            processedEvents.Add(evnt);
+            processedEvents.Add(
+                new NewGameEvent(
+                    new NewGame {
+                        Id = "1",
+                        UserId = "1",
+                        AdventureName = "Demo",
+                        AdventureId = "1",
+                        ProcessedEventId = $"foo_{evnt.EventId}"
+                    }
+                )
+            );
+            var originalEvents = events;
+            events = processedEvents;
+            bool didItRun = false;
+            //act
+            aggregateService.HandleEvent(evnt,
+                (aggregate, eventid, position) => {
+                    didItRun = true;
+                },
+                "foo"
+            );
+            //assert
+            Assert.False(didItRun);
+            events = originalEvents;
         }
     }
 }

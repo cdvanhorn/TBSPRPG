@@ -36,7 +36,7 @@ namespace TbspRpgLib.Aggregates {
             var aggregate = await BuildAggregate(aggregateId, "GameAggregate");
             //only call the event handler if we haven't processed this event
             var processedId = $"{servicePrefix}_{evnt.EventId}";
-            if(!aggregate.ProcessedEventIds.Contains(processedId))
+            if(!aggregate.HasEventIdBeenProcessed(processedId))
                 eventHandler(aggregate, evnt.EventId.ToString(), evnt.Position);
         }
 
@@ -53,7 +53,7 @@ namespace TbspRpgLib.Aggregates {
             foreach(var evnt in events) {
                 evnt.UpdateAggregate(aggregate);
                 if(!string.IsNullOrEmpty(evnt.GetProcessedEventId())) {
-                    aggregate.ProcessedEventIds.Add(evnt.GetProcessedEventId());
+                    aggregate.AddProcessedEventId(evnt.GetProcessedEventId());
                 }
             }
             return aggregate;
