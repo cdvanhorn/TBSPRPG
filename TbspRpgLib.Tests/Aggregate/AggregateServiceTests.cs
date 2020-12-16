@@ -27,6 +27,14 @@ namespace TbspRpgLib.Tests.Aggregate {
                     }
                 )
             );
+            events.Add(
+                new EnterLocationEvent(
+                    new EnterLocation {
+                        Id = "1",
+                        Destination = "foo"
+                    }
+                )
+            );
             //we need to mock _eventService.GetEventsInStreamAsync for BuildAggregate
             //it needs to return a list of event like objects
             var mockEventService = new Mock<IEventService>();
@@ -49,6 +57,7 @@ namespace TbspRpgLib.Tests.Aggregate {
             //assert
             Assert.Equal("1", game.Id);
             Assert.Equal("Demo", game.AdventureName);
+            Assert.Equal("foo", game.Destination);
         }
 
         [Fact]
@@ -89,12 +98,10 @@ namespace TbspRpgLib.Tests.Aggregate {
             var processedEvents = new List<Event>();
             processedEvents.Add(evnt);
             processedEvents.Add(
-                new NewGameEvent(
-                    new NewGame {
+                new EnterLocationEvent(
+                    new EnterLocation {
                         Id = "1",
-                        UserId = "1",
-                        AdventureName = "Demo",
-                        AdventureId = "1",
+                        Destination = "foo",
                         ProcessedEventId = $"foo_{evnt.EventId}"
                     }
                 )
