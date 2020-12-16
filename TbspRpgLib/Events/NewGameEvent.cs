@@ -4,9 +4,7 @@ using TbspRpgLib.Aggregates;
 using TbspRpgLib.Events.Content;
 
 namespace TbspRpgLib.Events {
-    public class NewGameEvent : Event {
-        public NewGame Data { get; set; }
-
+    public class NewGameEvent : EventCore {
         public NewGameEvent(NewGame data) : base() {
             Type = NEW_GAME_EVENT_TYPE;
             Data = data;
@@ -18,14 +16,11 @@ namespace TbspRpgLib.Events {
 
         public override void UpdateAggregate(Aggregate agg) {
             GameAggregate aggregate = (GameAggregate)agg;
+            NewGame gdata = (NewGame)Data;
             aggregate.Id = Data.Id;
-            aggregate.UserId = Data.UserId;
-            aggregate.AdventureId = Data.AdventureId;
-            aggregate.AdventureName = Data.AdventureName;
-        }
-
-        protected override EventContent GetData() {
-            return Data;
+            aggregate.UserId = gdata.UserId;
+            aggregate.AdventureId = gdata.AdventureId;
+            aggregate.AdventureName = gdata.AdventureName;
         }
 
         protected override void SetData(string jsonString) {
@@ -36,15 +31,7 @@ namespace TbspRpgLib.Events {
 
         public override string GetDataJson()
         {
-            return JsonSerializer.Serialize(Data);
-        }
-
-        public override string GetStreamId() {
-            return Data.Id;
-        }
-
-        public override string ToString() {
-            return $"{EventId}\n{Type}\n{GetDataJson()}";
+            return JsonSerializer.Serialize((NewGame)Data);
         }
     }
 }
