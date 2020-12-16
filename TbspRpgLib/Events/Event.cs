@@ -10,6 +10,7 @@ namespace TbspRpgLib.Events
 {
     public abstract class Event {
         public const string NEW_GAME_EVENT_TYPE = "new_game";
+        public const string ENTER_LOCATION_EVENT_TYPE = "enter_location";
 
         public Event() {
             EventId = Guid.NewGuid();
