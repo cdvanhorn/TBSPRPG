@@ -19,7 +19,7 @@ namespace TbspRpgLib.EventProcessors {
 
         private IEventService _eventService;
         private IAggregateService _aggregateService;
-        private IServiceService _serviceService;
+        protected IServiceService _serviceService;
         private Task<Service> _serviceTask;
         protected Service _service;
 
