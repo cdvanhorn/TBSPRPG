@@ -13,6 +13,10 @@ namespace TbspRpgLib.Services {
     }
 
     public class ServiceService : IServiceService{
+        public const string GAME_SERVICE_NAME = "game";
+        public const string MAP_SERVICE_NAME = "map";
+        public const string ADVENTURE_SERVICE_NAME = "adventure";
+        
         private IServiceRepository _serviceRepository;
 
         public ServiceService(IServiceRepository serviceRepository) {
