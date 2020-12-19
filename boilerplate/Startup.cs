@@ -12,9 +12,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-using TbspRpgLib.Jwt;
-using TbspRpgLib.Settings;
-using TbspRpgLib.Events;
+using TbspRpgLib;
 
 namespace GameApi
 {
@@ -31,20 +29,7 @@ namespace GameApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddScoped<IEventAdapter, EventAdapter>();
-            services.AddScoped<IEventService, EventService>();
-
-            services.Configure<DatabaseSettings>(Configuration.GetSection("Database"));
-            services.AddSingleton<IDatabaseSettings>(sp =>
-                sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);
-                
-            services.Configure<JwtSettings>(Configuration.GetSection("JwtSettings"));
-            services.AddSingleton<IJwtSettings>(sp =>
-                sp.GetRequiredService<IOptions<JwtSettings>>().Value);
-            
-            services.Configure<EventStoreSettings>(Configuration.GetSection("EventStore"));
-            services.AddSingleton<IEventStoreSettings>(sp =>
-                sp.GetRequiredService<IOptions<EventStoreSettings>>().Value);
+            LibStartup.ConfigureTbspRpgServices(Configuration, services);
 
             //start workers
             //services.AddHostedService<MyNewGameEventProcessor>();
@@ -62,7 +47,7 @@ namespace GameApi
 
             app.UseRouting();
 
-            app.UseMiddleware<JwtMiddleware>();
+            LibStartup.ConfigureTbspRpg(app);
 
             //app.UseAuthorization();
 

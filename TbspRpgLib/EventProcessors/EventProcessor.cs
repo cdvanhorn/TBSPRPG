@@ -9,6 +9,7 @@ using TbspRpgLib.Entities;
 using TbspRpgLib.Events;
 using TbspRpgLib.Aggregates;
 using TbspRpgLib.Settings;
+using TbspRpgLib.Services;
 
 namespace TbspRpgLib.EventProcessors {
     public abstract class EventProcessor : IHostedService, IDisposable
@@ -18,15 +19,16 @@ namespace TbspRpgLib.EventProcessors {
 
         private IEventService _eventService;
         private IAggregateService _aggregateService;
-        private IServiceRespository _serviceRepository;
+        private IServiceService _serviceService;
         private Task<Service> _serviceTask;
         protected Service _service;
 
         public EventProcessor(string serviceName, IEventStoreSettings eventStoreSettings, IDatabaseSettings databaseSettings) {
             _eventService = new EventService(eventStoreSettings);
             _aggregateService = new AggregateService(_eventService);
-            _serviceRepository = new ServiceRepository(databaseSettings);
-            _serviceTask = _serviceRepository.GetServiceByName(serviceName);
+            var serviceRepository = new ServiceRepository(databaseSettings);
+            _serviceService = new ServiceService(serviceRepository);
+            _serviceTask = _serviceService.GetServiceByName(serviceName);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -62,7 +64,7 @@ namespace TbspRpgLib.EventProcessors {
             var eventIndex = _service.EventIndexes.Where(ei => ei.EventName == GetEventName()).First();
             if(eventIndex.Index < position) {
                 eventIndex.Index = position;
-                _serviceRepository.UpdateService(_service, GetEventName());
+                _serviceService.UpdateService(_service, GetEventName());
             }
         }
 

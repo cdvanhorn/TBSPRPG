@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using TbspRpgLib.Settings;
 
 namespace TbspRpgLib.Repositories {
-    public interface IServiceRespository {
+    public interface IServiceRepository {
         Task<List<Service>> GetAllServices();
 
         Task<Service> GetServiceByName(string name);
@@ -17,19 +17,11 @@ namespace TbspRpgLib.Repositories {
         void UpdateService(Service service, string eventName);
     }
 
-    public class ServiceRepository : IServiceRespository {
-        private readonly IDatabaseSettings _dbSettings;
-
+    public class ServiceRepository : MongoRepository, IServiceRepository {
         private readonly IMongoCollection<Service> _services;
 
-        public ServiceRepository(IDatabaseSettings databaseSettings) {
-            _dbSettings = databaseSettings;
-
-            var connectionString = $"mongodb+srv://{_dbSettings.Username}:{_dbSettings.Password}@{_dbSettings.SystemDatabaseUrl}/{_dbSettings.SystemDatabaseName}?retryWrites=true&w=majority";
-            var client = new MongoClient(connectionString);
-            var database = client.GetDatabase(_dbSettings.SystemDatabaseName);
-
-            _services = database.GetCollection<Service>("services");
+        public ServiceRepository(IDatabaseSettings databaseSettings) : base(databaseSettings) {
+            _services = _mongoDatabase.GetCollection<Service>("services");
         }
 
         public Task<List<Service>> GetAllServices() {

@@ -12,6 +12,9 @@ namespace TbspRpgLib.Entities {
         [BsonElement("name")]
         public string Name { get; set; }
 
+        [BsonElement("url")]
+        public string Url { get; set; }
+
         [BsonElement("event_prefix")]
         public string EventPrefix { get; set;}
 
