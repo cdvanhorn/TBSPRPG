@@ -17,10 +17,15 @@ namespace TbspRpgLib.Repositories {
         void UpdateService(Service service, string eventName);
     }
 
-    public class ServiceRepository : MongoRepository, IServiceRepository {
+    public class ServiceRepository : IServiceRepository {
         private readonly IMongoCollection<Service> _services;
 
-        public ServiceRepository(IDatabaseSettings databaseSettings) : base(databaseSettings) {
+        protected IMongoDatabase _mongoDatabase;
+
+        public ServiceRepository(IDatabaseSettings dbSettings) {
+            var connectionString = $"mongodb+srv://{dbSettings.Username}:{dbSettings.Password}@{dbSettings.SystemDatabaseUrl}/{dbSettings.SystemDatabaseName}?retryWrites=true&w=majority";
+            var client = new MongoClient(connectionString);
+            _mongoDatabase = client.GetDatabase(dbSettings.SystemDatabaseName);
             _services = _mongoDatabase.GetCollection<Service>("services");
         }
 
