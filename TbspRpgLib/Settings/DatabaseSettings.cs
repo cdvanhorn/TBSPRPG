@@ -6,6 +6,7 @@ namespace TbspRpgLib.Settings {
         public string Url { get; set; }
         public string SystemDatabaseUrl { get; set; }
         public string SystemDatabaseName { get; set; }
+        public string Salt { get; set; }
     }
 
     public interface IDatabaseSettings {
@@ -15,5 +16,6 @@ namespace TbspRpgLib.Settings {
         string Url { get; set; }
         string SystemDatabaseUrl { get; set; }
         string SystemDatabaseName { get; set; }
+        string Salt { get; set; }
     }
 }
