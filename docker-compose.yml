@@ -12,9 +12,9 @@ services:
       - publicapi
 
   publicapi:
-    build: ./TBSPRPG_PAPI/PublicApi
+    build: ./TBSPRPG_PAPI
     ports:
-      - '8000:8000'
+      - '8000:5000'
     volumes:
       - './TBSPRPG_PAPI/PublicApi:/app'
     environment:
@@ -26,9 +26,9 @@ services:
       - gameapi
 
   userapi:
-    build: ./TBSPRPG_UserAPI/UserApi
-    #ports:
-    #  - '8001:8001'
+    build: ./TBSPRPG_UserAPI
+    ports:
+      - '8001:5000'
     volumes:
       - './TBSPRPG_UserAPI/UserApi:/app'
     environment:
@@ -37,9 +37,9 @@ services:
     command: dotnet watch run
 
   adventureapi:
-    build: ./TBSPRPG_AdventureAPI/AdventureApi
-    #ports:
-    #  - '8002:8002'
+    build: ./TBSPRPG_AdventureAPI
+    ports:
+      - '8002:5000'
     volumes:
       - './TBSPRPG_AdventureAPI/AdventureApi:/app'
     environment:
@@ -47,9 +47,9 @@ services:
     command: dotnet watch run
 
   gameapi:
-    build: ./TBSPRPG_GameAPI/GameApi
+    build: ./TBSPRPG_GameAPI
     ports:
-      - '8003:8003'
+      - '8003:5000'
     volumes:
       - './TBSPRPG_GameAPI/GameApi:/app'
     environment:
@@ -60,7 +60,7 @@ services:
       - eventstore
 
   mapapi:
-    build: ./TBSPRPG_MapAPI/MapApi
+    build: ./TBSPRPG_MapAPI
     ports:
       - '8004:5000'
     volumes:
@@ -69,8 +69,8 @@ services:
       - 'Database__Password=${DBPASSWORD}'
       - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
-    #depends_on:
-    #  - eventstore
+    depends_on:
+      - eventstore
 
   eventstore:
     image: eventstore/eventstore:latest

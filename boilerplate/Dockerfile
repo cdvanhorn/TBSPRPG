@@ -1,5 +1,8 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-alpine
 
+WORKDIR /Packages
+COPY ./Packages/*.nupkg /Packages/
+
 WORKDIR /app
 
 #copy the code in
