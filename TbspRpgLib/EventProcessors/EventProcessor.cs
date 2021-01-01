@@ -60,11 +60,24 @@ namespace TbspRpgLib.EventProcessors {
 
         protected abstract void HandleEvent(Aggregate aggregate, string eventId, ulong position);
 
+        private void SavePosition(EventIndex eventIndex, ulong position) {
+            eventIndex.Index = position;
+            _serviceService.UpdateService(_service, GetEventName());
+        }
+
         protected void UpdatePosition(ulong position) {
-            var eventIndex = _service.EventIndexes.Where(ei => ei.EventName == GetEventName()).First();
-            if(eventIndex.Index < position) {
-                eventIndex.Index = position;
-                _serviceService.UpdateService(_service, GetEventName());
+            var eventIndexes = _service.EventIndexes.Where(ei => ei.EventName == GetEventName());
+            if(eventIndexes.Count() > 0) {
+                var eventIndex = eventIndexes.First();
+                if(eventIndex.Index < position) {
+                    SavePosition(eventIndex, position);
+                }
+            }
+            else {
+                //create and insert a new event index
+                EventIndex eventIndex = new EventIndex();
+                eventIndex.EventName = GetEventName();
+                SavePosition(eventIndex, position);
             }
         }
 
