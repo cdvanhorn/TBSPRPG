@@ -42,11 +42,6 @@ namespace TbspRpgLib.EventProcessors {
         protected async void PreTask() {
             //get where we need to start reading from
             _service = await _serviceTask;
-            EventIndex ei = _service.EventIndexes.Where(ei => ei.EventName == GetEventName()).FirstOrDefault();
-            ulong startPosition = 0;
-            if(ei != null && ei.Index > 0)
-                startPosition = ei.Index;
-            Console.WriteLine($"Start position: {startPosition}");
 
             _aggregateService.SubscribeByType(
                 GetEventName(),
@@ -54,31 +49,15 @@ namespace TbspRpgLib.EventProcessors {
                     HandleEvent(aggregate, eventId, position);
                 },
                 _service.EventPrefix,
-                startPosition
+                _service.GetStartPosition(GetEventName())
             );
         }
 
         protected abstract void HandleEvent(Aggregate aggregate, string eventId, ulong position);
 
-        private void SavePosition(EventIndex eventIndex, ulong position) {
-            eventIndex.Index = position;
-            _serviceService.UpdateService(_service, GetEventName());
-        }
-
         protected void UpdatePosition(ulong position) {
-            var eventIndexes = _service.EventIndexes.Where(ei => ei.EventName == GetEventName());
-            if(eventIndexes.Count() > 0) {
-                var eventIndex = eventIndexes.First();
-                if(eventIndex.Index < position) {
-                    SavePosition(eventIndex, position);
-                }
-            }
-            else {
-                //create and insert a new event index
-                EventIndex eventIndex = new EventIndex();
-                eventIndex.EventName = GetEventName();
-                SavePosition(eventIndex, position);
-            }
+            if(_service.UpdatePosition(position, GetEventName()))
+                _serviceService.UpdateService(_service, GetEventName());
         }
 
         protected abstract string GetEventName();
