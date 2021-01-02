@@ -15,11 +15,8 @@ namespace TbspRpgLib.Tests.Entities {
             service.Id = "1";
             service.Name = "test";
             
-            //act
-            var position = service.GetStartPosition("new_game");
-
-            //assert
-            Assert.Equal<ulong>(0, position);
+            //act and assert
+            Assert.Throws<InvalidOperationException>(() => service.GetStartPosition("new_game"));
         }
 
         [Fact]
@@ -30,11 +27,8 @@ namespace TbspRpgLib.Tests.Entities {
             service.Name = "test";
             service.EventIndexes = new List<EventIndex>();
             
-            //act
-            var position = service.GetStartPosition("new_game");
-
-            //assert
-            Assert.Equal<ulong>(0, position);
+            //act and assert
+            Assert.Throws<InvalidOperationException>(() => service.GetStartPosition("new_game"));
         }
 
         [Fact]
@@ -62,15 +56,9 @@ namespace TbspRpgLib.Tests.Entities {
             Service service = new Service();
             service.Id = "1";
             service.Name = "test";
-            
-            //act
-            var shouldUpdate = service.UpdatePosition(42, "new_game");
 
-            //assert
-            Assert.True(shouldUpdate);
-            Assert.Single(service.EventIndexes);
-            Assert.Equal<ulong>(42, service.EventIndexes.First().Index);
-            Assert.Equal("new_game", service.EventIndexes.First().EventName);
+            //act and assert
+            Assert.Throws<InvalidOperationException>(() => service.UpdatePosition(42, "new_game"));
         }
 
         [Fact]
@@ -81,14 +69,8 @@ namespace TbspRpgLib.Tests.Entities {
             service.Name = "test";
             service.EventIndexes = new List<EventIndex>();
             
-            //act
-            var shouldUpdate = service.UpdatePosition(42, "new_game");
-
-            //assert
-            Assert.True(shouldUpdate);
-            Assert.Single(service.EventIndexes);
-            Assert.Equal<ulong>(42, service.EventIndexes.First().Index);
-            Assert.Equal("new_game", service.EventIndexes.First().EventName);
+            //act and assert
+            Assert.Throws<InvalidOperationException>(() => service.UpdatePosition(42, "new_game"));
         }
 
         [Fact]
