@@ -24,32 +24,35 @@ services:
       - adventureapi
       - userapi
       - gameapi
+      - mapapi
 
   userapi:
     build: ./TBSPRPG_UserAPI
     ports:
-      - '8001:5000'
+      - '8001:8001'
     volumes:
       - './TBSPRPG_UserAPI/UserApi:/app'
     environment:
       - 'Database__Password=${DBPASSWORD}'
       - 'Database__Salt=${DBSALT}'
+      - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
 
   adventureapi:
     build: ./TBSPRPG_AdventureAPI
     ports:
-      - '8002:5000'
+      - '8002:8002'
     volumes:
       - './TBSPRPG_AdventureAPI/AdventureApi:/app'
     environment:
       - 'Database__Password=${DBPASSWORD}'
+      - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
 
   gameapi:
     build: ./TBSPRPG_GameAPI
     ports:
-      - '8003:5000'
+      - '8003:8003'
     volumes:
       - './TBSPRPG_GameAPI/GameApi:/app'
     environment:
@@ -62,7 +65,7 @@ services:
   mapapi:
     build: ./TBSPRPG_MapAPI
     ports:
-      - '8004:5000'
+      - '8004:8004'
     volumes:
       - './TBSPRPG_MapAPI/MapApi:/app'
     environment:
