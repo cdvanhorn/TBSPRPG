@@ -14,8 +14,20 @@ namespace TbspRpgLib.Entities {
         [BsonElement("name")]
         public string Name { get; set; }
 
+        private string _url { get; set; }
+
         [BsonElement("url")]
-        public string Url { get; set; }
+        public string Url 
+        {
+             get {
+                 return _url;
+             } 
+             set {
+                 if(string.IsNullOrEmpty(value))
+                    throw new ArgumentNullException($"service url can't be null");
+                _url = value;
+             }
+        }
 
         [BsonElement("event_prefix")]
         public string EventPrefix { get; set;}

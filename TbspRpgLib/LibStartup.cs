@@ -15,6 +15,7 @@ namespace TbspRpgLib {
             //services.AddScoped<IEventAdapter, EventAdapter>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IServiceRepository, ServiceRepository>();
+            services.AddScoped<IServiceService, ServiceService>();
 
             services.Configure<DatabaseSettings>(configuration.GetSection("Database"));
             services.AddSingleton<IDatabaseSettings>(sp =>
