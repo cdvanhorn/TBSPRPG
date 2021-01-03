@@ -10,7 +10,11 @@ using TbspRpgLib.Jwt;
 using TbspRpgLib.Settings;
 
 namespace TbspRpgLib.InterServiceCommunication {
-    public class ServiceCommunication {
+    public interface IServiceCommunication {
+        Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId);
+    }
+
+    public class ServiceCommunication : IServiceCommunication {
         private Dictionary<string, RestClient> _clients;
         private Dictionary<string, string> _tokens;
         private IServiceService _serviceService;
@@ -29,6 +33,7 @@ namespace TbspRpgLib.InterServiceCommunication {
                 Service service = await _serviceService.GetServiceByName(serviceName);
                 if(service == null)
                     throw new ArgumentException($"invalid service name {serviceName}");
+                Console.WriteLine($"creating service with url {service.Url}");
                 _clients.Add(serviceName, new RestClient(service.Url));
             }
             return _clients[serviceName];
@@ -38,32 +43,11 @@ namespace TbspRpgLib.InterServiceCommunication {
             if(!_tokens.ContainsKey(userId)) {
                 _tokens.Add(userId, _jwtHelper.GenerateToken(userId));
             }
+            Console.WriteLine($"getting token {_tokens[userId]}");
             return _tokens[userId];
         }
 
-        //need to figure out the end point in the public api
-        //produce a jwt token, maybe maintain a hash of jwt tokens in this
-        //library, maybe a cache of 100
-        //make a call to the endpoint
-        //return response
-        //should I provide convenience methods (that could be a lot of methods)?
-        //should the public api use this library?
-        public async void GetInitialLocation(string adventureId, string userId) {
-            //string url = {http://localhost:8000/api}/adventures/initiallocation/{adventureId}
-            //url would actually be {http://adventureapi:8002/api}/adventures/initiallocation/{adventureId}
-            //look up jwt token for user id, if there isn't one generate one and cache it
-            //each service will end up with it's own cache in memory
-            //need the service name to find the base url
-            //then I believe a request can be made
-            var response = await MakeRequestForUser(
-                "adventure", 
-                $"adventures/initiallocation{adventureId}",
-                userId);
-            //check if the response was successfull, if so return the location id
-            //if unsucessful 
-        }
-
-        protected async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId) {
+        public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId) {
             var clientTask = GetClientForServiceName(serviceName);
             var token = GetTokenForUserId(userId);
             return await MakeGetServiceRequest(await clientTask, endPoint, token);
@@ -71,6 +55,7 @@ namespace TbspRpgLib.InterServiceCommunication {
 
         private Task<IRestResponse> MakeGetServiceRequest(RestClient client, string endPoint, string jwtToken) {
             var request = new RestRequest(endPoint, DataFormat.Json);
+            Console.WriteLine($"calling endpoint {endPoint}");
 
             //if jwtToken is null assume no authorization
             if(jwtToken != null)
