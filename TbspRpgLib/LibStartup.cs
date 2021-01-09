@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Microsoft.EntityFrameworkCore;
 
 using TbspRpgLib.Jwt;
 using TbspRpgLib.Settings;
@@ -10,10 +11,20 @@ using TbspRpgLib.Repositories;
 using TbspRpgLib.Services;
 using TbspRpgLib.InterServiceCommunication;
 
+using System;
+
 namespace TbspRpgLib {
     public class LibStartup {
         public static void ConfigureTbspRpgServices(IConfiguration configuration, IServiceCollection services) {
             //services.AddScoped<IEventAdapter, EventAdapter>();
+            var connectionString = Environment.GetEnvironmentVariable("SERVICE_CONNECTION_STRING");
+
+            if(connectionString != null && !string.IsNullOrWhiteSpace(connectionString)) {
+                services.AddDbContext<ServiceContext>(
+                    options => options.UseNpgsql(connectionString)
+                );  
+            }
+
             services.Configure<DatabaseSettings>(configuration.GetSection("Database"));
             services.AddSingleton<IDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<DatabaseSettings>>().Value);

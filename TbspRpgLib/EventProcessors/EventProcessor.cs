@@ -26,7 +26,7 @@ namespace TbspRpgLib.EventProcessors {
         public EventProcessor(string serviceName, IEventStoreSettings eventStoreSettings, IDatabaseSettings databaseSettings) {
             _eventService = new EventService(eventStoreSettings);
             _aggregateService = new AggregateService(_eventService);
-            var serviceRepository = new ServiceRepository(databaseSettings);
+            var serviceRepository = new ServiceRepository();
             _serviceService = new ServiceService(serviceRepository);
             _serviceTask = _serviceService.GetServiceByName(serviceName);
         }
