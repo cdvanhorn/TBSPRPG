@@ -10,6 +10,7 @@ namespace TbspRpgLib.Services {
         Service GetServiceByName(string name);
         List<Service> GetAllServices();
         //void UpdateService(Service service, string eventName);
+        EventType GetEventTypeByName(string name);
     }
 
     public class ServiceService : IServiceService{
@@ -38,6 +39,10 @@ namespace TbspRpgLib.Services {
         public string GetUrlForService(string name) {
             var service = GetServiceByName(name);
             return service.Url;
+        }
+
+        public EventType GetEventTypeByName(string name) {
+            return _serviceRepository.GetEventTypeByName(name);
         }
     }
 }
