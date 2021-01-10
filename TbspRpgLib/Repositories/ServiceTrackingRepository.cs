@@ -11,6 +11,8 @@ namespace TbspRpgLib.Repositories {
         Task<EventTypePosition> GetEventTypePosition(Guid serviceId, Guid eventId);
         void SaveChanges();
         void InsertEventTypePosition(EventTypePosition eventTypePosition);
+        Task<ProcessedEvent> GetProcessedEvent(Guid serviceId, Guid eventId);
+        void InsertProcessedEvent(ProcessedEvent processedEvent);
     }
 
     public class ServiceTrackingRepository : IServiceTrackingRepository{
@@ -35,6 +37,21 @@ namespace TbspRpgLib.Repositories {
             var etp = await GetEventTypePosition(eventTypePosition.ServiceId, eventTypePosition.EventTypeId);
             if(etp == null) {
                 _context.EventTypePostions.Add(eventTypePosition);
+                SaveChanges();
+            }
+        }
+
+        public Task<ProcessedEvent> GetProcessedEvent(Guid serviceId, Guid eventId) {
+            return _context.ProcessedEvents.AsQueryable()
+                    .Where(pe => pe.ServiceId == serviceId)
+                    .Where(pe => pe.EventId == eventId)
+                    .FirstOrDefaultAsync();
+        }
+
+        public async void InsertProcessedEvent(ProcessedEvent processedEvent) {
+            var pe = await GetProcessedEvent(processedEvent.ServiceId, processedEvent.EventId);
+            if(pe == null) {
+                _context.ProcessedEvents.Add(processedEvent);
                 SaveChanges();
             }
         }

@@ -8,6 +8,8 @@ namespace TbspRpgLib.Services {
     public interface IServiceTrackingService {
         void UpdatePosition(Guid serviceId, Guid eventTypeId, ulong position);
         Task<ulong> GetPosition(Guid serviceId, Guid eventTypeId);
+        Task<bool> HasBeenProcessed(Guid serviceId, Guid eventId);
+        void EventProcessed(Guid serviceId, Guid eventId);
     }
 
     public class ServiceTrackingService : IServiceTrackingService {
@@ -36,6 +38,20 @@ namespace TbspRpgLib.Services {
                     Position = position
                 });
             }
+        }
+
+        public async Task<bool> HasBeenProcessed(Guid serviceId, Guid eventId) {
+            var pe = await _serviceTrackingRepository.GetProcessedEvent(serviceId, eventId);
+            if(pe == null)
+                return false;
+            return true;
+        }
+
+        public void EventProcessed(Guid serviceId, Guid eventId) {
+            _serviceTrackingRepository.InsertProcessedEvent(new ProcessedEvent() {
+                ServiceId = serviceId,
+                EventId = eventId
+            });
         }
     }
 }

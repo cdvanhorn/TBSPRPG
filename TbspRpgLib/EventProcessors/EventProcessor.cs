@@ -25,13 +25,13 @@ namespace TbspRpgLib.EventProcessors {
         protected ServiceTrackingService _serviceTrackingService;
 
         public EventProcessor(IEventStoreSettings eventStoreSettings, ServiceTrackingContext serviceTrackingContext) {
-            //used to retrieve events
-            _eventService = new EventService(eventStoreSettings);
-            _aggregateService = new AggregateService(_eventService);
-
             //context used to update the status of the service reading events
             var strepo = new ServiceTrackingRepository(serviceTrackingContext);
             _serviceTrackingService = new ServiceTrackingService(strepo);
+
+            //used to retrieve events
+            _eventService = new EventService(eventStoreSettings);
+            _aggregateService = new AggregateService(_eventService, _serviceTrackingService);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -51,14 +51,20 @@ namespace TbspRpgLib.EventProcessors {
                 (aggregate, eventId, position) => {
                     HandleEvent(aggregate, eventId, position);
                 },
+                _service.Id,
                 position
             );
         }
 
         protected abstract void HandleEvent(Aggregate aggregate, string eventId, ulong position);
 
-        protected void UpdatePosition(ulong position) {
+        private void UpdatePosition(ulong position) {
             _serviceTrackingService.UpdatePosition(_service.Id, _eventType.Id, position);
+        }
+
+        protected void UpdateEventTracking(string eventId, ulong position) {
+            _serviceTrackingService.EventProcessed(_service.Id, new Guid(eventId));
+            UpdatePosition(position);
         }
 
         protected abstract string GetEventName();
