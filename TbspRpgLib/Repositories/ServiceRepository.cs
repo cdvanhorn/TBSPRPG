@@ -2,53 +2,47 @@ using TbspRpgLib.Entities;
 
 using Microsoft.EntityFrameworkCore;
 
+using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using TbspRpgLib.Settings;
-
 namespace TbspRpgLib.Repositories {
     public interface IServiceRepository {
-        Task<List<Service>> GetAllServices();
+        List<Service> GetAllServices();
 
-        Task<Service> GetServiceByName(string name);
-
-        void UpdateService(Service service, string eventName);
+        Service GetServiceByName(string name);
     }
 
     public class ServiceRepository : IServiceRepository {
+        List<Service> _services;
 
         public ServiceRepository() {
-
+            _services = new List<Service>();
+            //create service objects
+            _services.Add(new Service () {
+                Id = new Guid("828786b0-e046-48a6-bb94-64b79bb24eaf"),
+                Name = "game",
+                Url = "http://gameapi:8003/api"
+            });
+            _services.Add(new Service () {
+                Id = new Guid("94600c72-0d4c-4c9f-b247-56b366589534"),
+                Name = "map",
+                Url = "http://mapapi:8004/api"
+            });
+            _services.Add(new Service () {
+                Id = new Guid("352ed331-75e2-4ab4-9a70-91cee0d2214c"),
+                Name = "adventure",
+                Url = "http://adventureapi:8002/api"
+            });
         }
 
-        public Task<List<Service>> GetAllServices() {
-            //return _services.Find(service => true).ToListAsync();
-            return null;
+        public List<Service> GetAllServices() {
+            return _services;
         }
 
-        public Task<Service> GetServiceByName(string name) {
-            // return _services.Find(service => 
-            //     name.ToLower() == service.Name.ToLower()).FirstOrDefaultAsync();
-            return null;
-        }
-
-        public void UpdateService(Service service, string eventName) {
-            // var newPosition = service.EventIndexes.Where(ei => ei.EventName == eventName).First().Index;
-            // FilterDefinition<Service> idFilter = Builders<Service>.Filter.Eq(doc => doc.Id, service.Id);
-            // FilterDefinition<Service> indexPositionFilter = Builders<Service>.Filter.ElemMatch(doc => doc.EventIndexes, 
-            //         Builders<EventIndex>.Filter.Eq(ei => ei.EventName, eventName)
-            //         & Builders<EventIndex>.Filter.Lt(ei => ei.Index, newPosition));
-            // var filter = Builders<Service>.Filter.And(idFilter, indexPositionFilter);
-            
-            
-            // var update = Builders<Service>.Update.Set(
-            //     doc => doc.EventIndexes[-1].Index,
-            //     newPosition
-            // );
-            
-            // var result = _services.UpdateOneAsync(filter, update);
+        public Service GetServiceByName(string name) {
+            return _services.Where(ser => ser.Name == name.ToLower()).FirstOrDefault();
         }
     }
 }

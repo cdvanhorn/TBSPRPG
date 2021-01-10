@@ -17,13 +17,6 @@ namespace TbspRpgLib {
     public class LibStartup {
         public static void ConfigureTbspRpgServices(IConfiguration configuration, IServiceCollection services) {
             //services.AddScoped<IEventAdapter, EventAdapter>();
-            var connectionString = Environment.GetEnvironmentVariable("SERVICE_CONNECTION_STRING");
-
-            if(connectionString != null && !string.IsNullOrWhiteSpace(connectionString)) {
-                services.AddDbContext<ServiceContext>(
-                    options => options.UseNpgsql(connectionString)
-                );  
-            }
 
             services.Configure<DatabaseSettings>(configuration.GetSection("Database"));
             services.AddSingleton<IDatabaseSettings>(sp =>

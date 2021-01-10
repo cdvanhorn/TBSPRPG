@@ -6,7 +6,7 @@ using TbspRpgLib.Events;
 namespace TbspRpgLib.Aggregates {
     public interface IAggregateService {
         Task<Aggregate> BuildAggregate(string aggregateId, string aggregateTypeName);
-        void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, string servicePrefix, ulong subscriptionStart = 0);
+        void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, ulong subscriptionStart = 0);
     }
 
     public class AggregateService : IAggregateService {
@@ -16,28 +16,26 @@ namespace TbspRpgLib.Aggregates {
             _eventService = eventService;
         }
 
-        public void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, string servicePrefix, ulong subscriptionStart = 0) {
+        public void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, ulong subscriptionStart = 0) {
             _eventService.SubscribeByType(
                 typeName,
                 (evnt) => {
-                    HandleEvent(evnt, eventHandler, servicePrefix);
+                    HandleEvent(evnt, eventHandler);
                 },
                 subscriptionStart
             );
         }
 
-        public async void HandleEvent(Event evnt, Action<Aggregate, string, ulong> eventHandler, string servicePrefix) {
+        public async void HandleEvent(Event evnt, Action<Aggregate, string, ulong> eventHandler) {
             //check if the aggregate id is ok, produce an aggregate
             var aggregateId = evnt.GetStreamId();
             if(aggregateId == null) //we can't parse this event
                 return;
 
-            //check if the event id prefixed with the service id exists in the list of processed ids in the aggregrate
+            //build the aggregate
             var aggregate = await BuildAggregate(aggregateId, "GameAggregate");
-            //only call the event handler if we haven't processed this event
-            var processedId = $"{servicePrefix}_{evnt.EventId}";
-            if(!aggregate.HasEventIdBeenProcessed(processedId))
-                eventHandler(aggregate, evnt.EventId.ToString(), evnt.Position);
+            //TODO: Add check if this event has been processed, which will be a db request
+            eventHandler(aggregate, evnt.EventId.ToString(), evnt.Position);
         }
 
         public async Task<Aggregate> BuildAggregate(string aggregateId, string aggregateTypeName) {
@@ -52,9 +50,6 @@ namespace TbspRpgLib.Aggregates {
             var events = await _eventService.GetEventsInStreamAsync(aggregateId);
             foreach(var evnt in events) {
                 evnt.UpdateAggregate(aggregate);
-                if(!string.IsNullOrEmpty(evnt.GetProcessedEventId())) {
-                    aggregate.AddProcessedEventId(evnt.GetProcessedEventId());
-                }
             }
             return aggregate;
         }

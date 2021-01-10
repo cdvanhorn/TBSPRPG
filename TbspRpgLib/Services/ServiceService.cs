@@ -6,10 +6,10 @@ using TbspRpgLib.Entities;
 
 namespace TbspRpgLib.Services {
     public interface IServiceService {
-        Task<string> GetUrlForService(string name);
-        Task<Service> GetServiceByName(string name);
-        Task<List<Service>> GetAllServices();
-        void UpdateService(Service service, string eventName);
+        string GetUrlForService(string name);
+        Service GetServiceByName(string name);
+        List<Service> GetAllServices();
+        //void UpdateService(Service service, string eventName);
     }
 
     public class ServiceService : IServiceService{
@@ -23,20 +23,20 @@ namespace TbspRpgLib.Services {
             _serviceRepository = serviceRepository;
         }
 
-        public Task<List<Service>> GetAllServices() {
+        public List<Service> GetAllServices() {
             return _serviceRepository.GetAllServices();
         }
 
-        public Task<Service> GetServiceByName(string name) {
+        public Service GetServiceByName(string name) {
             return _serviceRepository.GetServiceByName(name);
         }
 
-        public void UpdateService(Service service, string eventName) {
-            _serviceRepository.UpdateService(service, eventName);
-        }
+        // public void UpdateService(Service service, string eventName) {
+        //     _serviceRepository.UpdateService(service, eventName);
+        // }
 
-        public async Task<string> GetUrlForService(string name) {
-            var service = await GetServiceByName(name);
+        public string GetUrlForService(string name) {
+            var service = GetServiceByName(name);
             return service.Url;
         }
     }

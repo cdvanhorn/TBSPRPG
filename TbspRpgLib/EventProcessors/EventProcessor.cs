@@ -20,15 +20,23 @@ namespace TbspRpgLib.EventProcessors {
         private IEventService _eventService;
         private IAggregateService _aggregateService;
         protected IServiceService _serviceService;
-        private Task<Service> _serviceTask;
         protected Service _service;
+        protected ServiceTrackingContext _serviceTrackingContext;
 
-        public EventProcessor(string serviceName, IEventStoreSettings eventStoreSettings, IDatabaseSettings databaseSettings) {
+        public EventProcessor(string serviceName, IEventStoreSettings eventStoreSettings, ServiceTrackingContext serviceTrackingContext) {
+            //used to retrieve events
             _eventService = new EventService(eventStoreSettings);
             _aggregateService = new AggregateService(_eventService);
+
+            //ServiceService and ServiceRepository used to get service information
             var serviceRepository = new ServiceRepository();
             _serviceService = new ServiceService(serviceRepository);
-            _serviceTask = _serviceService.GetServiceByName(serviceName);
+
+            //the service using this processor
+            _service = _serviceService.GetServiceByName(serviceName);
+
+            //context used to update the status of the service reading events
+            _serviceTrackingContext = serviceTrackingContext;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -39,16 +47,12 @@ namespace TbspRpgLib.EventProcessors {
             return Task.CompletedTask;
         }
 
-        protected async void PreTask() {
-            //get where we need to start reading from
-            _service = await _serviceTask;
-
+        protected void PreTask() {
             _aggregateService.SubscribeByType(
                 GetEventName(),
                 (aggregate, eventId, position) => {
                     HandleEvent(aggregate, eventId, position);
                 },
-                _service.EventPrefix,
                 _service.GetStartPosition(GetEventName())
             );
         }
@@ -56,8 +60,9 @@ namespace TbspRpgLib.EventProcessors {
         protected abstract void HandleEvent(Aggregate aggregate, string eventId, ulong position);
 
         protected void UpdatePosition(ulong position) {
-            if(_service.UpdatePosition(position, GetEventName()))
-                _serviceService.UpdateService(_service, GetEventName());
+            // if(_service.UpdatePosition(position, GetEventName()))
+            //     _serviceService.UpdateService(_service, GetEventName());
+            //this will be a database call
         }
 
         protected abstract string GetEventName();

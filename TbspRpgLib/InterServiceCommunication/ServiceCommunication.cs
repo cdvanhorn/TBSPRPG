@@ -27,10 +27,10 @@ namespace TbspRpgLib.InterServiceCommunication {
             _jwtHelper = new JwtHelper(jwtSettings.Secret);
         }
 
-        private async Task<RestClient> GetClientForServiceName(string serviceName) {
+        private RestClient GetClientForServiceName(string serviceName) {
             if(!_clients.ContainsKey(serviceName)) {
                 //create the client
-                Service service = await _serviceService.GetServiceByName(serviceName);
+                Service service = _serviceService.GetServiceByName(serviceName);
                 if(service == null)
                     throw new ArgumentException($"invalid service name {serviceName}");
                 Console.WriteLine($"creating service with url {service.Url}");
@@ -50,7 +50,7 @@ namespace TbspRpgLib.InterServiceCommunication {
         public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId) {
             var clientTask = GetClientForServiceName(serviceName);
             var token = GetTokenForUserId(userId);
-            return await MakeGetServiceRequest(await clientTask, endPoint, token);
+            return await MakeGetServiceRequest(clientTask, endPoint, token);
         }
 
         private Task<IRestResponse> MakeGetServiceRequest(RestClient client, string endPoint, string jwtToken) {

@@ -6,8 +6,11 @@ namespace TbspRpgLib.Repositories {
     public class ServiceContext : DbContext {
         public ServiceContext(DbContextOptions<ServiceContext> options) : base(options){}
 
+        // public DbSet<Service> Services { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder){
-        }
+        // public DbSet<EventType> EventTypes { get; set; }
+
+        // protected override void OnModelCreating(ModelBuilder modelBuilder){
+        // }
     }
 }
