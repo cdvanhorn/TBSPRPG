@@ -16,13 +16,6 @@ namespace TbspRpgLib.Tests.Services {
         private List<EventTypePosition> eventTypePositions;
 
         public ServiceTrackingServiceTests() {
-            //need to moq the ServiceTrackingRepository
-            // var services = new List<Service>();
-            // services.Add(new Service() {
-            //     Id = "1",
-            //     Name = "map",
-            //     Url = "http://mapapi:8001"
-            // });
             _service = new Service() {
                 Id = Guid.NewGuid(),
                 Name = "service"

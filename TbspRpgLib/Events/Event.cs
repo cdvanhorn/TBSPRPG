@@ -29,11 +29,6 @@ namespace TbspRpgLib.Events
 
         protected abstract void SetData(string jsonString);
 
-        public string GetProcessedEventId() {
-            var data = GetData();
-            return data.ProcessedEventId;
-        }
-
         public abstract string GetDataJson();
 
         public abstract string GetStreamId();

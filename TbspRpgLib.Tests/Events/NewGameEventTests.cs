@@ -14,8 +14,7 @@ namespace TbspRpgLib.Tests.Events {
                     Id = "1",
                     UserId = "1",
                     AdventureId = "1",
-                    AdventureName = "Demo",
-                    ProcessedEventId = $"bar_{Guid.NewGuid().ToString()}"
+                    AdventureName = "Demo"
                 }
             );
         }
@@ -27,21 +26,6 @@ namespace TbspRpgLib.Tests.Events {
             //assert
             Assert.IsType<Guid>(newGame.EventId);
             Assert.Equal(Event.NEW_GAME_EVENT_TYPE, newGame.Type);
-        }
-
-        [Fact]
-        public void NewGameEvent_GetProcessedEventId_ReturnsId() {
-            //arrange
-            var ngame = CreateNewGameEvent();
-            //act
-            var eventid = ngame.GetProcessedEventId();
-            var splitevent = eventid.Split('_');
-            var prefix = splitevent[0];
-            var eid = splitevent[1];
-            //assert
-            Assert.Equal("bar", prefix);
-            Guid outGuid;
-            Assert.True(Guid.TryParse(eid, out outGuid));
         }
 
         [Fact]

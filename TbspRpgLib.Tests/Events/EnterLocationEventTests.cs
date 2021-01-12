@@ -12,8 +12,7 @@ namespace TbspRpgLib.Tests.Events {
             return new EnterLocationEvent(
                 new EnterLocation {
                     Id = "2",
-                    Destination = "foo",
-                    ProcessedEventId = $"bar_{Guid.NewGuid().ToString()}"
+                    Destination = "foo"
                 }
             );
         }
