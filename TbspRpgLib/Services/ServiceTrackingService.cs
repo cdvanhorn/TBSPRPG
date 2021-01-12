@@ -28,7 +28,7 @@ namespace TbspRpgLib.Services {
 
         public async void UpdatePosition(Guid serviceId, Guid eventTypeId, ulong position) {
             var etp = await _serviceTrackingRepository.GetEventTypePosition(serviceId, eventTypeId);
-            if(etp != null) {
+            if(etp != null && etp.Position < position) {
                 etp.Position = position;
                 _serviceTrackingRepository.SaveChanges();
             } else {

@@ -38,6 +38,8 @@ namespace TbspRpgLib.Services {
 
         public string GetUrlForService(string name) {
             var service = GetServiceByName(name);
+            if(service == null)
+                return null;
             return service.Url;
         }
 
