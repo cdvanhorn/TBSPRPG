@@ -31,7 +31,7 @@ namespace TbspRpgLib.Services {
             if(etp != null && etp.Position < position) {
                 etp.Position = position;
                 _serviceTrackingRepository.SaveChanges();
-            } else {
+            } else if(etp == null){
                 _serviceTrackingRepository.InsertEventTypePosition(new EventTypePosition() {
                     ServiceId = serviceId,
                     EventTypeId = eventTypeId,
