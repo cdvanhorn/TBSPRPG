@@ -2,6 +2,7 @@ using Moq;
 using Xunit;
 using TbspRpgLib.Entities;
 using TbspRpgLib.Services;
+using TbspRpgLib.Tests.Mocks;
 using TbspRpgLib.Repositories;
 using System.Collections.Generic;
 using System;
@@ -12,9 +13,6 @@ namespace TbspRpgLib.Tests.Services {
         private ServiceTrackingService _serviceTrackingService;
         private Service _service;
         private EventType _eventType;
-        private bool _changesSaved;
-        private List<EventTypePosition> eventTypePositions;
-        private List<ProcessedEvent> processedEvents;
         private Guid _eventId;
 
         public ServiceTrackingServiceTests() {
@@ -26,59 +24,38 @@ namespace TbspRpgLib.Tests.Services {
                 Id = Guid.NewGuid(),
                 TypeName = "new_test"
             };
-
-            eventTypePositions = new List<EventTypePosition>();
-            eventTypePositions.Add(new EventTypePosition() {
-                Id = Guid.NewGuid(),
-                ServiceId = _service.Id,
-                EventTypeId = _eventType.Id,
-                Position = 8
-            });
-
             _eventId = Guid.NewGuid();
-            processedEvents = new List<ProcessedEvent>();
-            processedEvents.Add(new ProcessedEvent() {
-                Id = Guid.NewGuid(),
-                ServiceId = _service.Id,
-                EventId = _eventId
-            });
+
+            _serviceTrackingService = ServiceTrackingServiceMock.MockServiceTrackingService();
+
+            // eventTypePositions = new List<EventTypePosition>();
+            // eventTypePositions.Add(new EventTypePosition() {
+            //     Id = Guid.NewGuid(),
+            //     ServiceId = _service.Id,
+            //     EventTypeId = _eventType.Id,
+            //     Position = 8
+            // });
+
             
-            var mstrepo = new Mock<IServiceTrackingRepository>();
-            //get an event type position
-            mstrepo.Setup(repo => repo.GetEventTypePosition(It.IsAny<Guid>(), It.IsAny<Guid>()))
-                 .ReturnsAsync((Guid ser, Guid et) => eventTypePositions.Where(
-                     etp => etp.ServiceId == ser && etp.EventTypeId == et).FirstOrDefault()
-                );
-                
-            //insert event type position
-            mstrepo.Setup(repo =>
-                repo.InsertEventTypePosition(It.IsAny<EventTypePosition>())
-            ).Callback<EventTypePosition>((etp) => eventTypePositions.Add(etp));
-
-            //save changes
-            _changesSaved = false;
-            mstrepo.Setup(repo =>
-                repo.SaveChanges()
-            ).Callback(() => _changesSaved = true);
-
-            //get processed event
-            mstrepo.Setup(repo => repo.GetProcessedEvent(It.IsAny<Guid>(), It.IsAny<Guid>()))
-                 .ReturnsAsync((Guid ser, Guid et) => processedEvents.Where(
-                     etp => etp.ServiceId == ser && etp.EventId == et).FirstOrDefault()
-                );
-
-            //event processed
-            mstrepo.Setup(repo =>
-                repo.InsertProcessedEvent(It.IsAny<ProcessedEvent>())
-            ).Callback<ProcessedEvent>((pe) => processedEvents.Add(pe));
-
-            // msrepo.Setup(repo => repo.GetAllServices()).ReturnsAsync(services);
-            _serviceTrackingService = new ServiceTrackingService(mstrepo.Object);
+            // processedEvents = new List<ProcessedEvent>();
+            // processedEvents.Add(new ProcessedEvent() {
+            //     Id = Guid.NewGuid(),
+            //     ServiceId = _service.Id,
+            //     EventId = _eventId
+            // });
+            
+            
         }
 
         [Fact]
         public async void GetStartPosition_ValidInput() {
             //arrange
+            _serviceTrackingService.UpdatePosition(
+                _service.Id,
+                _eventType.Id,
+                8
+            );
+
             //act
             var position = await _serviceTrackingService.GetPosition(
                 _service.Id,
@@ -104,7 +81,7 @@ namespace TbspRpgLib.Tests.Services {
 
         //test update position
         [Fact]
-        public void UpdatePosition_NewPosition() {
+        public async void UpdatePosition_NewPosition() {
             //arrange
             var sguid = Guid.NewGuid();
             var etguid = Guid.NewGuid();
@@ -113,41 +90,50 @@ namespace TbspRpgLib.Tests.Services {
             _serviceTrackingService.UpdatePosition(sguid, etguid, 42);
 
             //assert
-            Assert.Equal(2, eventTypePositions.Count());
             Assert.Equal<ulong>(42, 
-                eventTypePositions.Where(etp => etp.ServiceId == sguid).First().Position);
+                await _serviceTrackingService.GetPosition(sguid, etguid));
         }
 
         [Fact]
-        public void UpdatePosition_CurrentPosition() {
+        public async void UpdatePosition_CurrentPosition() {
             //arrange
+            _serviceTrackingService.UpdatePosition(
+                _service.Id,
+                _eventType.Id,
+                8
+            );
+
             //act
             _serviceTrackingService.UpdatePosition(_service.Id, _eventType.Id, 42);
 
             //assert
-            Assert.Single(eventTypePositions);
             Assert.Equal<ulong>(42, 
-                eventTypePositions.First().Position);
-            Assert.True(_changesSaved);
+                await _serviceTrackingService.GetPosition(_service.Id, _eventType.Id));
         }
 
         [Fact]
-        public void UpdatePosition_OutdatedPosition() {
+        public async void UpdatePosition_OutdatedPosition() {
             //arrange
+            _serviceTrackingService.UpdatePosition(
+                _service.Id,
+                _eventType.Id,
+                8
+            );
+
             //act
             _serviceTrackingService.UpdatePosition(_service.Id, _eventType.Id, 4);
 
             //assert
-            Assert.Single(eventTypePositions);
             Assert.Equal<ulong>(8, 
-                eventTypePositions.First().Position);
-            Assert.False(_changesSaved);
+                await _serviceTrackingService.GetPosition(_service.Id, _eventType.Id));
         }
 
         //test has been processed
         [Fact]
         public async void HasBeenProcessed_Processed_ValidInput() {
             //arrange
+            _serviceTrackingService.EventProcessed(_service.Id, _eventId);
+
             //act
             bool processed = await _serviceTrackingService.HasBeenProcessed(_service.Id, _eventId);
 
@@ -177,7 +163,6 @@ namespace TbspRpgLib.Tests.Services {
             _serviceTrackingService.EventProcessed(_service.Id, newEvent);
 
             //assert
-            Assert.Equal(2, processedEvents.Count);
             Assert.True(await _serviceTrackingService.HasBeenProcessed(_service.Id, newEvent));
         }
     }
