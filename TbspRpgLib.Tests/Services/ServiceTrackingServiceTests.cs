@@ -14,6 +14,8 @@ namespace TbspRpgLib.Tests.Services {
         private EventType _eventType;
         private bool _changesSaved;
         private List<EventTypePosition> eventTypePositions;
+        private List<ProcessedEvent> processedEvents;
+        private Guid _eventId;
 
         public ServiceTrackingServiceTests() {
             _service = new Service() {
@@ -31,6 +33,14 @@ namespace TbspRpgLib.Tests.Services {
                 ServiceId = _service.Id,
                 EventTypeId = _eventType.Id,
                 Position = 8
+            });
+
+            _eventId = Guid.NewGuid();
+            processedEvents = new List<ProcessedEvent>();
+            processedEvents.Add(new ProcessedEvent() {
+                Id = Guid.NewGuid(),
+                ServiceId = _service.Id,
+                EventId = _eventId
             });
             
             var mstrepo = new Mock<IServiceTrackingRepository>();
@@ -50,6 +60,17 @@ namespace TbspRpgLib.Tests.Services {
             mstrepo.Setup(repo =>
                 repo.SaveChanges()
             ).Callback(() => _changesSaved = true);
+
+            //get processed event
+            mstrepo.Setup(repo => repo.GetProcessedEvent(It.IsAny<Guid>(), It.IsAny<Guid>()))
+                 .ReturnsAsync((Guid ser, Guid et) => processedEvents.Where(
+                     etp => etp.ServiceId == ser && etp.EventId == et).FirstOrDefault()
+                );
+
+            //event processed
+            mstrepo.Setup(repo =>
+                repo.InsertProcessedEvent(It.IsAny<ProcessedEvent>())
+            ).Callback<ProcessedEvent>((pe) => processedEvents.Add(pe));
 
             // msrepo.Setup(repo => repo.GetAllServices()).ReturnsAsync(services);
             _serviceTrackingService = new ServiceTrackingService(mstrepo.Object);
@@ -124,6 +145,40 @@ namespace TbspRpgLib.Tests.Services {
         }
 
         //test has been processed
+        [Fact]
+        public async void HasBeenProcessed_Processed_ValidInput() {
+            //arrange
+            //act
+            bool processed = await _serviceTrackingService.HasBeenProcessed(_service.Id, _eventId);
+
+            //assert
+            Assert.True(processed);
+        }
+
+        [Fact]
+        public async void HasBeenProcessed_NotProcessed_ValidInput() {
+            //arrange, new event id
+            Guid newEvent = Guid.NewGuid();
+
+            //act
+            bool processed = await _serviceTrackingService.HasBeenProcessed(_service.Id, newEvent);
+
+            //assert
+            Assert.False(processed);
+        }
+
         //test event processed
+        [Fact]
+        public async void EventProcessed_NewEvent() {
+            //arrange, new event
+            Guid newEvent = Guid.NewGuid();
+
+            //act
+            _serviceTrackingService.EventProcessed(_service.Id, newEvent);
+
+            //assert
+            Assert.Equal(2, processedEvents.Count);
+            Assert.True(await _serviceTrackingService.HasBeenProcessed(_service.Id, newEvent));
+        }
     }
 }
