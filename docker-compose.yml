@@ -21,10 +21,10 @@ services:
       - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
     depends_on: 
-      - adventureapi
       - userapi
-      - gameapi
-      - mapapi
+        #- adventureapi
+        # - gameapi
+        #- mapapi
 
   userapi:
     build: ./TBSPRPG_UserAPI
@@ -33,10 +33,12 @@ services:
     volumes:
       - './TBSPRPG_UserAPI/UserApi:/app'
     environment:
-      - 'Database__Password=${DBPASSWORD}'
+      - 'CONNECTION_STRING=User ID=${POSTGRESUSER};Password=${POSTGRESPASSWORD};Server=${POSTGRESURL};Port=5432;Database=tbsprpg_user;Integrated Security=true;Pooling=true;'
       - 'Database__Salt=${DBSALT}'
       - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
+    depends_on:
+      - postgres
 
   adventureapi:
     build: ./TBSPRPG_AdventureAPI
