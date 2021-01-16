@@ -24,13 +24,16 @@ namespace TbspRpgLib.EventProcessors {
         protected EventType _eventType;
         protected ServiceTrackingService _serviceTrackingService;
 
-        public EventProcessor(IEventStoreSettings eventStoreSettings, ServiceTrackingContext serviceTrackingContext) {
+        public EventProcessor(IEventStoreSettings eventStoreSettings) {
+            //used to retrieve events
+            _eventService = new EventService(eventStoreSettings);
+        }
+
+        protected void InitializeServices(ServiceTrackingContext serviceTrackingContext) {
             //context used to update the status of the service reading events
             var strepo = new ServiceTrackingRepository(serviceTrackingContext);
             _serviceTrackingService = new ServiceTrackingService(strepo);
-
-            //used to retrieve events
-            _eventService = new EventService(eventStoreSettings);
+            //aggregate service used to subscribe to events
             _aggregateService = new AggregateService(_eventService, _serviceTrackingService);
         }
 
