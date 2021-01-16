@@ -61,13 +61,15 @@ namespace TbspRpgLib.EventProcessors {
 
         protected abstract void HandleEvent(Aggregate aggregate, string eventId, ulong position);
 
-        private void UpdatePosition(ulong position) {
-            _serviceTrackingService.UpdatePosition(_service.Id, _eventType.Id, position);
+        private async Task<bool> UpdatePosition(ulong position) {
+            await _serviceTrackingService.UpdatePosition(_service.Id, _eventType.Id, position);
+            return true;
         }
 
-        protected void UpdateEventTracking(string eventId, ulong position) {
-            _serviceTrackingService.EventProcessed(_service.Id, new Guid(eventId));
-            UpdatePosition(position);
+        protected async Task<bool> UpdateEventTracking(string eventId, ulong position) {
+            var updated = await _serviceTrackingService.EventProcessed(_service.Id, new Guid(eventId));
+            updated = await UpdatePosition(position);
+            return true;
         }
 
         protected abstract string GetEventName();

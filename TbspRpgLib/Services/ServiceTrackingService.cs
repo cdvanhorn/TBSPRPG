@@ -6,10 +6,10 @@ using TbspRpgLib.Repositories;
 
 namespace TbspRpgLib.Services {
     public interface IServiceTrackingService {
-        void UpdatePosition(Guid serviceId, Guid eventTypeId, ulong position);
+        Task<bool> UpdatePosition(Guid serviceId, Guid eventTypeId, ulong position);
         Task<ulong> GetPosition(Guid serviceId, Guid eventTypeId);
         Task<bool> HasBeenProcessed(Guid serviceId, Guid eventId);
-        void EventProcessed(Guid serviceId, Guid eventId);
+        Task<bool> EventProcessed(Guid serviceId, Guid eventId);
     }
 
     public class ServiceTrackingService : IServiceTrackingService {
@@ -26,18 +26,20 @@ namespace TbspRpgLib.Services {
             return 0;
         }
 
-        public async void UpdatePosition(Guid serviceId, Guid eventTypeId, ulong position) {
+        public async Task<bool> UpdatePosition(Guid serviceId, Guid eventTypeId, ulong position) {
             var etp = await _serviceTrackingRepository.GetEventTypePosition(serviceId, eventTypeId);
             if(etp != null && etp.Position < position) {
                 etp.Position = position;
-                _serviceTrackingRepository.SaveChanges();
+                var updated = await _serviceTrackingRepository.SaveChanges();
             } else if(etp == null){
-                _serviceTrackingRepository.InsertEventTypePosition(new EventTypePosition() {
+                var updated = await _serviceTrackingRepository.InsertEventTypePosition(new EventTypePosition() {
+                    Id = Guid.NewGuid(),
                     ServiceId = serviceId,
                     EventTypeId = eventTypeId,
                     Position = position
                 });
             }
+            return true;
         }
 
         public async Task<bool> HasBeenProcessed(Guid serviceId, Guid eventId) {
@@ -47,11 +49,13 @@ namespace TbspRpgLib.Services {
             return true;
         }
 
-        public void EventProcessed(Guid serviceId, Guid eventId) {
-            _serviceTrackingRepository.InsertProcessedEvent(new ProcessedEvent() {
+        public async Task<bool> EventProcessed(Guid serviceId, Guid eventId) {
+            var updated = await _serviceTrackingRepository.InsertProcessedEvent(new ProcessedEvent() {
+                Id = Guid.NewGuid(),
                 ServiceId = serviceId,
                 EventId = eventId
             });
+            return true;
         }
     }
 }
