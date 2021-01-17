@@ -9,10 +9,11 @@ using TbspRpgLib.Entities;
 namespace TbspRpgLib.Repositories {
     public interface IServiceTrackingRepository {
         Task<EventTypePosition> GetEventTypePosition(Guid serviceId, Guid eventId);
-        Task<int> SaveChanges();
         Task AddEventTypePosition(EventTypePosition eventTypePosition);
+        Task RemoveAllEventTypePositions();
         Task<ProcessedEvent> GetProcessedEvent(Guid serviceId, Guid eventId);
         Task AddProcessedEvent(ProcessedEvent processedEvent);
+        Task RemoveAllProcessedEvents();
     }
 
     public class ServiceTrackingRepository : IServiceTrackingRepository{
@@ -29,16 +30,16 @@ namespace TbspRpgLib.Repositories {
                     .FirstOrDefaultAsync();
         }
 
-        public async Task<int> SaveChanges() {
-            var updated = await _context.SaveChangesAsync();
-            return updated;
-        }
-
         public async Task AddEventTypePosition(EventTypePosition eventTypePosition) {
             var etp = await GetEventTypePosition(eventTypePosition.ServiceId, eventTypePosition.EventTypeId);
             if(etp == null) {
                 _context.EventTypePostions.Add(eventTypePosition);
             }
+        }
+
+        public async Task RemoveAllEventTypePositions() {
+            var etps = await _context.EventTypePostions.AsQueryable().ToListAsync();
+            _context.EventTypePostions.RemoveRange(etps);
         }
 
         public Task<ProcessedEvent> GetProcessedEvent(Guid serviceId, Guid eventId) {
@@ -53,6 +54,11 @@ namespace TbspRpgLib.Repositories {
             if(pe == null) {
                 _context.ProcessedEvents.Add(processedEvent);
             }
+        }
+
+        public async Task RemoveAllProcessedEvents() {
+            var pes = await _context.ProcessedEvents.AsQueryable().ToListAsync();
+            _context.ProcessedEvents.RemoveRange(pes);
         }
     }
 }

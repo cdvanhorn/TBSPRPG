@@ -98,11 +98,11 @@ namespace TbspRpgLib.Tests.Aggregate {
         }
 
         [Fact]
-        public void HandleEvent_Processed_DontExecuteHandler() {
+        public async void HandleEvent_Processed_DontExecuteHandler() {
             //arrange
             var evnt = events.FirstOrDefault();
             //we need to add this event to the database as processed
-            _stService.EventProcessed(
+            await _stService.EventProcessed(
                 new Guid("f649b3f1-b69d-43d0-adbd-1e188f2cdae9"),
                 evnt.EventId);
             bool didItRun = false;

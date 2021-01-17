@@ -25,9 +25,9 @@ namespace TbspRpgLib.Tests.Mocks {
             ).Callback<EventTypePosition>((etp) => eventTypePositions.Add(etp));
 
             //save changes
-            mstrepo.Setup(repo =>
-                repo.SaveChanges()
-            ).Callback(() => _ = true);
+            // mstrepo.Setup(repo =>
+            //     repo.SaveChanges()
+            // ).Callback(() => _ = true);
 
             //get processed event
             mstrepo.Setup(repo => repo.GetProcessedEvent(It.IsAny<Guid>(), It.IsAny<Guid>()))
