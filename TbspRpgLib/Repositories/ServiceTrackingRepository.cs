@@ -10,9 +10,9 @@ namespace TbspRpgLib.Repositories {
     public interface IServiceTrackingRepository {
         Task<EventTypePosition> GetEventTypePosition(Guid serviceId, Guid eventId);
         Task<int> SaveChanges();
-        Task<bool> InsertEventTypePosition(EventTypePosition eventTypePosition);
+        Task AddEventTypePosition(EventTypePosition eventTypePosition);
         Task<ProcessedEvent> GetProcessedEvent(Guid serviceId, Guid eventId);
-        Task<bool> InsertProcessedEvent(ProcessedEvent processedEvent);
+        Task AddProcessedEvent(ProcessedEvent processedEvent);
     }
 
     public class ServiceTrackingRepository : IServiceTrackingRepository{
@@ -34,14 +34,11 @@ namespace TbspRpgLib.Repositories {
             return updated;
         }
 
-        public async Task<bool> InsertEventTypePosition(EventTypePosition eventTypePosition) {
+        public async Task AddEventTypePosition(EventTypePosition eventTypePosition) {
             var etp = await GetEventTypePosition(eventTypePosition.ServiceId, eventTypePosition.EventTypeId);
             if(etp == null) {
                 _context.EventTypePostions.Add(eventTypePosition);
-                var updated = await SaveChanges();
-                return true;
             }
-            return false;
         }
 
         public Task<ProcessedEvent> GetProcessedEvent(Guid serviceId, Guid eventId) {
@@ -51,14 +48,11 @@ namespace TbspRpgLib.Repositories {
                     .FirstOrDefaultAsync();
         }
 
-        public async Task<bool> InsertProcessedEvent(ProcessedEvent processedEvent) {
+        public async Task AddProcessedEvent(ProcessedEvent processedEvent) {
             var pe = await GetProcessedEvent(processedEvent.ServiceId, processedEvent.EventId);
             if(pe == null) {
                 _context.ProcessedEvents.Add(processedEvent);
-                var updated = await SaveChanges();
-                return true;
             }
-            return false;
         }
     }
 }

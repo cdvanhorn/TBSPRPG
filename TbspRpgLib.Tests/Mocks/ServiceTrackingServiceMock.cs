@@ -21,7 +21,7 @@ namespace TbspRpgLib.Tests.Mocks {
                 
             //insert event type position
             mstrepo.Setup(repo =>
-                repo.InsertEventTypePosition(It.IsAny<EventTypePosition>())
+                repo.AddEventTypePosition(It.IsAny<EventTypePosition>())
             ).Callback<EventTypePosition>((etp) => eventTypePositions.Add(etp));
 
             //save changes
@@ -37,7 +37,7 @@ namespace TbspRpgLib.Tests.Mocks {
 
             //event processed
             mstrepo.Setup(repo =>
-                repo.InsertProcessedEvent(It.IsAny<ProcessedEvent>())
+                repo.AddProcessedEvent(It.IsAny<ProcessedEvent>())
             ).Callback<ProcessedEvent>((pe) => processedEvents.Add(pe));
 
             // msrepo.Setup(repo => repo.GetAllServices()).ReturnsAsync(services);
