@@ -14,9 +14,9 @@ namespace TbspRpgLib.Tests.Mocks {
 
             var mstrepo = new Mock<IServiceTrackingRepository>();
             //get an event type position
-            mstrepo.Setup(repo => repo.GetEventTypePosition(It.IsAny<Guid>(), It.IsAny<Guid>()))
-                 .ReturnsAsync((Guid ser, Guid et) => eventTypePositions.Where(
-                     etp => etp.ServiceId == ser && etp.EventTypeId == et).FirstOrDefault()
+            mstrepo.Setup(repo => repo.GetEventTypePosition(It.IsAny<Guid>()))
+                 .ReturnsAsync((Guid et) => eventTypePositions.Where(
+                     etp => etp.EventTypeId == et).FirstOrDefault()
                 );
                 
             //insert event type position
@@ -30,9 +30,9 @@ namespace TbspRpgLib.Tests.Mocks {
             // ).Callback(() => _ = true);
 
             //get processed event
-            mstrepo.Setup(repo => repo.GetProcessedEvent(It.IsAny<Guid>(), It.IsAny<Guid>()))
-                 .ReturnsAsync((Guid ser, Guid et) => processedEvents.Where(
-                     etp => etp.ServiceId == ser && etp.EventId == et).FirstOrDefault()
+            mstrepo.Setup(repo => repo.GetProcessedEvent(It.IsAny<Guid>()))
+                 .ReturnsAsync((Guid et) => processedEvents.Where(
+                     etp => etp.EventId == et).FirstOrDefault()
                 );
 
             //event processed

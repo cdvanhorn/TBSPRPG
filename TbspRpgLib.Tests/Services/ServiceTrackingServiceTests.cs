@@ -51,14 +51,12 @@ namespace TbspRpgLib.Tests.Services {
         public async void GetStartPosition_ValidInput() {
             //arrange
             await _serviceTrackingService.UpdatePosition(
-                _service.Id,
                 _eventType.Id,
                 8
             );
 
             //act
             var position = await _serviceTrackingService.GetPosition(
-                _service.Id,
                 _eventType.Id
             );
 
@@ -69,9 +67,7 @@ namespace TbspRpgLib.Tests.Services {
         [Fact]
         public async void GetStartPosition_DoesntExist() {
             //act
-            var sguid = Guid.NewGuid();
             var position = await _serviceTrackingService.GetPosition(
-                sguid,
                 _eventType.Id
             );
 
@@ -83,59 +79,56 @@ namespace TbspRpgLib.Tests.Services {
         [Fact]
         public async void UpdatePosition_NewPosition() {
             //arrange
-            var sguid = Guid.NewGuid();
             var etguid = Guid.NewGuid();
 
             //act
-            await _serviceTrackingService.UpdatePosition(sguid, etguid, 42);
+            await _serviceTrackingService.UpdatePosition(etguid, 42);
 
             //assert
             Assert.Equal<ulong>(42, 
-                await _serviceTrackingService.GetPosition(sguid, etguid));
+                await _serviceTrackingService.GetPosition(etguid));
         }
 
         [Fact]
         public async void UpdatePosition_CurrentPosition() {
             //arrange
             await _serviceTrackingService.UpdatePosition(
-                _service.Id,
                 _eventType.Id,
                 8
             );
 
             //act
-            await _serviceTrackingService.UpdatePosition(_service.Id, _eventType.Id, 42);
+            await _serviceTrackingService.UpdatePosition(_eventType.Id, 42);
 
             //assert
             Assert.Equal<ulong>(42, 
-                await _serviceTrackingService.GetPosition(_service.Id, _eventType.Id));
+                await _serviceTrackingService.GetPosition(_eventType.Id));
         }
 
         [Fact]
         public async void UpdatePosition_OutdatedPosition() {
             //arrange
             await _serviceTrackingService.UpdatePosition(
-                _service.Id,
                 _eventType.Id,
                 8
             );
 
             //act
-            await _serviceTrackingService.UpdatePosition(_service.Id, _eventType.Id, 4);
+            await _serviceTrackingService.UpdatePosition(_eventType.Id, 4);
 
             //assert
             Assert.Equal<ulong>(8, 
-                await _serviceTrackingService.GetPosition(_service.Id, _eventType.Id));
+                await _serviceTrackingService.GetPosition(_eventType.Id));
         }
 
         //test has been processed
         [Fact]
         public async void HasBeenProcessed_Processed_ValidInput() {
             //arrange
-            await _serviceTrackingService.EventProcessed(_service.Id, _eventId);
+            await _serviceTrackingService.EventProcessed(_eventId);
 
             //act
-            bool processed = await _serviceTrackingService.HasBeenProcessed(_service.Id, _eventId);
+            bool processed = await _serviceTrackingService.HasBeenProcessed(_eventId);
 
             //assert
             Assert.True(processed);
@@ -147,7 +140,7 @@ namespace TbspRpgLib.Tests.Services {
             Guid newEvent = Guid.NewGuid();
 
             //act
-            bool processed = await _serviceTrackingService.HasBeenProcessed(_service.Id, newEvent);
+            bool processed = await _serviceTrackingService.HasBeenProcessed(newEvent);
 
             //assert
             Assert.False(processed);
@@ -160,10 +153,10 @@ namespace TbspRpgLib.Tests.Services {
             Guid newEvent = Guid.NewGuid();
 
             //act
-            await _serviceTrackingService.EventProcessed(_service.Id, newEvent);
+            await _serviceTrackingService.EventProcessed(newEvent);
 
             //assert
-            Assert.True(await _serviceTrackingService.HasBeenProcessed(_service.Id, newEvent));
+            Assert.True(await _serviceTrackingService.HasBeenProcessed(newEvent));
         }
     }
 }

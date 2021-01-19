@@ -34,7 +34,7 @@ namespace TbspRpgLib.EventProcessors {
             //context used to update the status of the service reading events
             var strepo = new ServiceTrackingRepository(serviceTrackingContext);
             var serviceTrackingService = new ServiceTrackingService(strepo);
-            _startPosition = await serviceTrackingService.GetPosition(_service.Id, _eventType.Id);
+            _startPosition = await serviceTrackingService.GetPosition(_eventType.Id);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
