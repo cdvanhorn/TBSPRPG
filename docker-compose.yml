@@ -22,8 +22,8 @@ services:
     command: dotnet watch run
     depends_on: 
       - userapi
-        #- adventureapi
-        # - gameapi
+      - adventureapi
+      - gameapi
         #- mapapi
 
   userapi:
@@ -47,9 +47,11 @@ services:
     volumes:
       - './TBSPRPG_AdventureAPI/AdventureApi:/app'
     environment:
-      - CONNECTION_STRING=User ID=${POSTGRESUSER};Password=${POSTGRESPASSWORD};Server=${POSTGRESURL};Port=5432;Database=${POSTGRESUSER};Integrated Security=true;Pooling=true;
+      - 'CONNECTION_STRING=User ID=${POSTGRESUSER};Password=${POSTGRESPASSWORD};Server=${POSTGRESURL};Port=5432;Database=tbsprpg_adventure;Integrated Security=true;Pooling=true;'
       - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
+    depends_on:
+      - postgres
 
   gameapi:
     build: ./TBSPRPG_GameAPI
@@ -58,10 +60,11 @@ services:
     volumes:
       - './TBSPRPG_GameAPI/GameApi:/app'
     environment:
-      - 'Database__Password=${DBPASSWORD}'
+      - 'CONNECTION_STRING=User ID=${POSTGRESUSER};Password=${POSTGRESPASSWORD};Server=${POSTGRESURL};Port=5432;Database=tbsprpg_game;Integrated Security=true;Pooling=true;'
       - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
     depends_on:
+      - postgres
       - eventstore
 
   mapapi:
@@ -71,10 +74,11 @@ services:
     volumes:
       - './TBSPRPG_MapAPI/MapApi:/app'
     environment:
-      - 'Database__Password=${DBPASSWORD}'
+      - 'CONNECTION_STRING=User ID=${POSTGRESUSER};Password=${POSTGRESPASSWORD};Server=${POSTGRESURL};Port=5432;Database=tbsprpg_map;Integrated Security=true;Pooling=true;'
       - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
     depends_on:
+      - postgres
       - eventstore
       - adventureapi
   
@@ -98,6 +102,7 @@ services:
       - EVENTSTORE_EXT_HTTP_PORT=2113
       - EVENTSTORE_INSECURE=true
       - EVENTSTORE_ENABLE_ATOM_PUB_OVER_HTTP=true
+      - EVENTSTORE_MEM_DB=true
 
   frontend_node_modules:
     build: ./TBSPRPG_UI/tbsprpg
