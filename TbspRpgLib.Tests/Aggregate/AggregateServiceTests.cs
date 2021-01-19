@@ -16,7 +16,6 @@ namespace TbspRpgLib.Tests.Aggregate {
     public class AggregateServiceTests {
         private AggregateService aggregateService;
         private List<Event> events;
-        private ServiceTrackingService _stService;
 
         public AggregateServiceTests() {
             events = new List<Event>();
@@ -48,10 +47,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                     events.Where(evnt => evnt.GetStreamId() == eventid).ToList()
             );
 
-            _stService = ServiceTrackingServiceMock.MockServiceTrackingService();
             aggregateService = new AggregateService(
-                mockEventService.Object,
-                _stService);
+                mockEventService.Object);
         }
 
         [Fact]
@@ -90,32 +87,10 @@ namespace TbspRpgLib.Tests.Aggregate {
             aggregateService.HandleEvent(evnt,
                 (aggregate, eventid, position) => {
                     didItRun = true;
-                },
-                new Guid("f649b3f1-b69d-43d0-adbd-1e188f2cdae9")
+                }
             );
             //assert
             Assert.True(didItRun);
-        }
-
-        [Fact]
-        public async void HandleEvent_Processed_DontExecuteHandler() {
-            //arrange
-            var evnt = events.FirstOrDefault();
-            //we need to add this event to the database as processed
-            await _stService.EventProcessed(
-                new Guid("f649b3f1-b69d-43d0-adbd-1e188f2cdae9"),
-                evnt.EventId);
-            bool didItRun = false;
-            
-            //act
-            aggregateService.HandleEvent(evnt,
-                (aggregate, eventid, position) => {
-                    didItRun = true;
-                },
-                new Guid("f649b3f1-b69d-43d0-adbd-1e188f2cdae9")
-            );
-            //assert
-            Assert.False(didItRun);
         }
     }
 }

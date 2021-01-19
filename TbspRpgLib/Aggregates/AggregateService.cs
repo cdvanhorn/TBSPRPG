@@ -7,29 +7,27 @@ using TbspRpgLib.Services;
 namespace TbspRpgLib.Aggregates {
     public interface IAggregateService {
         Task<Aggregate> BuildAggregate(string aggregateId, string aggregateTypeName);
-        void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, Guid serviceId, ulong subscriptionStart = 0);
+        void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, ulong subscriptionStart = 0);
     }
 
     public class AggregateService : IAggregateService {
         private IEventService _eventService;
-        private IServiceTrackingService _serviceTrackingService;
 
-        public AggregateService(IEventService eventService, IServiceTrackingService serviceTrackingService) {
+        public AggregateService(IEventService eventService) {
             _eventService = eventService;
-            _serviceTrackingService = serviceTrackingService;
         }
 
-        public void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, Guid serviceId, ulong subscriptionStart = 0) {
+        public void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, ulong subscriptionStart = 0) {
             _eventService.SubscribeByType(
                 typeName,
                 (evnt) => {
-                    HandleEvent(evnt, eventHandler, serviceId);
+                    HandleEvent(evnt, eventHandler);
                 },
                 subscriptionStart
             );
         }
 
-        public async void HandleEvent(Event evnt, Action<Aggregate, string, ulong> eventHandler, Guid serviceId) {
+        public async void HandleEvent(Event evnt, Action<Aggregate, string, ulong> eventHandler) {
             //check if the aggregate id is ok, produce an aggregate
             var aggregateId = evnt.GetStreamId();
             if(aggregateId == null) //we can't parse this event
@@ -37,8 +35,7 @@ namespace TbspRpgLib.Aggregates {
 
             //build the aggregate
             var aggregate = await BuildAggregate(aggregateId, "GameAggregate");
-            if(!await _serviceTrackingService.HasBeenProcessed(serviceId, evnt.EventId))
-                eventHandler(aggregate, evnt.EventId.ToString(), evnt.Position);
+            eventHandler(aggregate, evnt.EventId.ToString(), evnt.Position);
         }
 
         public async Task<Aggregate> BuildAggregate(string aggregateId, string aggregateTypeName) {

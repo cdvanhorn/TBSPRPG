@@ -22,19 +22,19 @@ namespace TbspRpgLib.EventProcessors {
         protected IServiceService _serviceService;
         protected Service _service;
         protected EventType _eventType;
-        protected ServiceTrackingService _serviceTrackingService;
+        protected ulong _startPosition;
 
         public EventProcessor(IEventStoreSettings eventStoreSettings) {
             //used to retrieve events
             _eventService = new EventService(eventStoreSettings);
+            _aggregateService = new AggregateService(_eventService);
         }
 
-        protected void InitializeServices(ServiceTrackingContext serviceTrackingContext) {
+        protected async Task InitializeStartPosition(ServiceTrackingContext serviceTrackingContext) {
             //context used to update the status of the service reading events
             var strepo = new ServiceTrackingRepository(serviceTrackingContext);
-            _serviceTrackingService = new ServiceTrackingService(strepo);
-            //aggregate service used to subscribe to events
-            _aggregateService = new AggregateService(_eventService, _serviceTrackingService);
+            var serviceTrackingService = new ServiceTrackingService(strepo);
+            _startPosition = await serviceTrackingService.GetPosition(_service.Id, _eventType.Id);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
@@ -45,29 +45,17 @@ namespace TbspRpgLib.EventProcessors {
             return Task.CompletedTask;
         }
 
-        protected async void PreTask() {
-            ulong position = await _serviceTrackingService.GetPosition(
-                _service.Id, _eventType.Id);
-
+        protected void PreTask() {
             _aggregateService.SubscribeByType(
                 GetEventName(),
                 (aggregate, eventId, position) => {
                     HandleEvent(aggregate, eventId, position);
                 },
-                _service.Id,
-                position
+                _startPosition
             );
         }
 
         protected abstract void HandleEvent(Aggregate aggregate, string eventId, ulong position);
-
-        protected async Task UpdatePosition(ulong position) {
-            await _serviceTrackingService.UpdatePosition(_service.Id, _eventType.Id, position);
-        }
-
-        protected async Task AddEventTracked(string eventId) {
-            await _serviceTrackingService.EventProcessed(_service.Id, new Guid(eventId));
-        }
 
         protected abstract string GetEventName();
 
