@@ -48,6 +48,9 @@ namespace TbspRpgLib.Events
                 case NEW_GAME_EVENT_TYPE:
                     evnt = new NewGameEvent();
                     break;
+                case ENTER_LOCATION_EVENT_TYPE:
+                    evnt = new EnterLocationEvent();
+                    break;
                 default:
                     return null;
             }

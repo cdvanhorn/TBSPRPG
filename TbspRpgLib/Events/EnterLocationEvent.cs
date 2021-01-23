@@ -18,7 +18,6 @@ namespace TbspRpgLib.Events {
         public override void UpdateAggregate(Aggregate agg) {
             GameAggregate aggregate = (GameAggregate)agg;
             EnterLocation data = (EnterLocation)Data;
-            aggregate.Id = Data.Id;
             aggregate.Destination = data.Destination;
         }
 
