@@ -21,7 +21,9 @@ namespace TbspRpgLib.Events
 
         public Uuid EventStoreUuid { get; set; }
 
-        public ulong Position { get; set; }
+        public ulong GlobalPosition { get; set; }
+
+        public ulong StreamPosition { get; set; }
 
         public string Type { get; set; }
 
@@ -54,7 +56,8 @@ namespace TbspRpgLib.Events
             evnt.SetData(jsonData);
             evnt.EventStoreUuid = resolvedEvent.Event.EventId;
             evnt.EventId = evnt.EventStoreUuid.ToGuid();
-            evnt.Position = resolvedEvent.Event.Position.PreparePosition;
+            evnt.GlobalPosition = resolvedEvent.Event.Position.PreparePosition;
+            evnt.StreamPosition = resolvedEvent.Event.EventNumber.ToUInt64();
             return evnt;
         }
 

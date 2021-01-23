@@ -85,7 +85,7 @@ namespace TbspRpgLib.Tests.Aggregate {
             bool didItRun = false;
             //act
             aggregateService.HandleEvent(evnt,
-                (aggregate, eventid, position) => {
+                (aggregate, eventid, sposition, gposition) => {
                     didItRun = true;
                 }
             );

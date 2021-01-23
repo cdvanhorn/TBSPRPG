@@ -7,7 +7,7 @@ using TbspRpgLib.Services;
 namespace TbspRpgLib.Aggregates {
     public interface IAggregateService {
         Task<Aggregate> BuildAggregate(string aggregateId, string aggregateTypeName);
-        void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, ulong subscriptionStart = 0);
+        void SubscribeByType(string typeName, Action<Aggregate, string, ulong, ulong> eventHandler, ulong subscriptionStart = 0);
     }
 
     public class AggregateService : IAggregateService {
@@ -17,7 +17,7 @@ namespace TbspRpgLib.Aggregates {
             _eventService = eventService;
         }
 
-        public void SubscribeByType(string typeName, Action<Aggregate, string, ulong> eventHandler, ulong subscriptionStart = 0) {
+        public void SubscribeByType(string typeName, Action<Aggregate, string, ulong, ulong> eventHandler, ulong subscriptionStart = 0) {
             _eventService.SubscribeByType(
                 typeName,
                 (evnt) => {
@@ -27,7 +27,7 @@ namespace TbspRpgLib.Aggregates {
             );
         }
 
-        public async void HandleEvent(Event evnt, Action<Aggregate, string, ulong> eventHandler) {
+        public async void HandleEvent(Event evnt, Action<Aggregate, string, ulong, ulong> eventHandler) {
             //check if the aggregate id is ok, produce an aggregate
             var aggregateId = evnt.GetStreamId();
             if(aggregateId == null) //we can't parse this event
@@ -35,7 +35,7 @@ namespace TbspRpgLib.Aggregates {
 
             //build the aggregate
             var aggregate = await BuildAggregate(aggregateId, "GameAggregate");
-            eventHandler(aggregate, evnt.EventId.ToString(), evnt.Position);
+            eventHandler(aggregate, evnt.EventId.ToString(), evnt.StreamPosition, evnt.GlobalPosition);
         }
 
         public async Task<Aggregate> BuildAggregate(string aggregateId, string aggregateTypeName) {

@@ -15,7 +15,7 @@ namespace TbspRpgLib.Events
 {
     public interface IEventService
     {
-        void SendEvent(Event evnt, bool newStream);
+        Task SendEvent(Event evnt, bool newStream, ulong expectedStreamPosition);
         void SubscribeByType(string typeName, Action<Event> eventHandler, ulong subscriptionStart);
         Task<List<Event>> GetEventsInStreamAsync(string streamId);
     }
@@ -36,7 +36,7 @@ namespace TbspRpgLib.Events
             _eventStoreClient = new EventStoreClient(settings);
         }
 
-        public void SendEvent(Event evnt, bool newStream) {
+        public async Task SendEvent(Event evnt, bool newStream, ulong expectedStreamPosition = 0) {
             StreamState state;
             if(newStream) {
                 state = StreamState.NoStream;
@@ -44,13 +44,23 @@ namespace TbspRpgLib.Events
                 state = StreamState.Any;
             }
             
-            _eventStoreClient.AppendToStreamAsync(
-                evnt.GetStreamId(),
-                state,
-                new List<EventData> {
-                    evnt.ToEventStoreEvent()
-                }
-            );
+            if(expectedStreamPosition == 0) {
+                await _eventStoreClient.AppendToStreamAsync(
+                    evnt.GetStreamId(),
+                    state,
+                    new List<EventData> {
+                        evnt.ToEventStoreEvent()
+                    }
+                );
+            } else {
+                await _eventStoreClient.AppendToStreamAsync(
+                    evnt.GetStreamId(),
+                    expectedStreamPosition,
+                    new List<EventData> {
+                        evnt.ToEventStoreEvent()
+                    }
+                );
+            }
         }
 
         public async void SubscribeByType(string typeName, Action<Event> eventHandler, ulong subscriptionStart) {
