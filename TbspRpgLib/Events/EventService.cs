@@ -25,6 +25,9 @@ namespace TbspRpgLib.Events
         private IEventStoreSettings _eventStoreSettings;
         private EventStoreClient _eventStoreClient;
 
+        private int _retries = 5;
+        private int _tries = 0;
+
         public EventService(IEventStoreSettings eventStoreSettings) {
             _eventStoreSettings = eventStoreSettings;
             string esUrl = $"{_eventStoreSettings.Url}:{_eventStoreSettings.Port}";
@@ -65,14 +68,19 @@ namespace TbspRpgLib.Events
         }
 
         public async void SubscribeByType(string typeName, Func<Event, Task> eventHandler, ulong subscriptionStart) {
+            var checkpoint = new Position(subscriptionStart, subscriptionStart);
             await _eventStoreClient.SubscribeToAllAsync(
-                new Position(subscriptionStart, subscriptionStart),
+                checkpoint,
                 eventAppeared: async (subscription, evntdata, token) => {
                     await eventHandler(Event.FromEventStoreEvent(evntdata));
-                    //throw new Exception("i don't know");
+                    checkpoint = evntdata.OriginalPosition.Value;
                 },
                 subscriptionDropped: ((subscription, reason, exception) => {
-		            Console.WriteLine($"Subscription was dropped due to {reason}. {exception}");
+		            Console.WriteLine($"subscription was dropped due to {reason}.");
+                    if(reason != SubscriptionDroppedReason.Disposed && _tries < _retries) {
+                        _tries++;
+                        SubscribeByType(typeName, eventHandler, checkpoint.PreparePosition);
+                    }
                 }),
                 filterOptions: new SubscriptionFilterOptions(
 	                EventTypeFilter.Prefix(typeName)
