@@ -15,8 +15,9 @@ namespace TbspRpgLib.Events
 {
     public interface IEventService
     {
-        Task SendEvent(Event evnt, bool newStream, ulong expectedStreamPosition);
-        void SubscribeByType(string typeName, Action<Event> eventHandler, ulong subscriptionStart);
+        Task SendEvent(Event evnt, bool newStream);
+        Task SendEvent(Event evnt, ulong expectedStreamPosition);
+        void SubscribeByType(string typeName, Func<Event, Task> eventHandler, ulong subscriptionStart);
         Task<List<Event>> GetEventsInStreamAsync(string streamId);
     }
 
@@ -36,7 +37,7 @@ namespace TbspRpgLib.Events
             _eventStoreClient = new EventStoreClient(settings);
         }
 
-        public async Task SendEvent(Event evnt, bool newStream, ulong expectedStreamPosition = 0) {
+        public async Task SendEvent(Event evnt, bool newStream) {
             StreamState state;
             if(newStream) {
                 state = StreamState.NoStream;
@@ -44,32 +45,35 @@ namespace TbspRpgLib.Events
                 state = StreamState.Any;
             }
             
-            if(expectedStreamPosition == 0) {
-                await _eventStoreClient.AppendToStreamAsync(
-                    evnt.GetStreamId(),
-                    state,
-                    new List<EventData> {
-                        evnt.ToEventStoreEvent()
-                    }
-                );
-            } else {
-                await _eventStoreClient.AppendToStreamAsync(
-                    evnt.GetStreamId(),
-                    expectedStreamPosition,
-                    new List<EventData> {
-                        evnt.ToEventStoreEvent()
-                    }
-                );
-            }
+            await _eventStoreClient.AppendToStreamAsync(
+                evnt.GetStreamId(),
+                state,
+                new List<EventData> {
+                    evnt.ToEventStoreEvent()
+                }
+            );
         }
 
-        public async void SubscribeByType(string typeName, Action<Event> eventHandler, ulong subscriptionStart) {
+        public async Task SendEvent(Event evnt, ulong expectedStreamPosition) {   
+            await _eventStoreClient.AppendToStreamAsync(
+                evnt.GetStreamId(),
+                expectedStreamPosition,
+                new List<EventData> {
+                    evnt.ToEventStoreEvent()
+                }
+            );
+        }
+
+        public async void SubscribeByType(string typeName, Func<Event, Task> eventHandler, ulong subscriptionStart) {
             await _eventStoreClient.SubscribeToAllAsync(
                 new Position(subscriptionStart, subscriptionStart),
-                (subscription, evntdata, token) => {
-                    eventHandler(Event.FromEventStoreEvent(evntdata));
-                    return Task.CompletedTask;
+                eventAppeared: async (subscription, evntdata, token) => {
+                    await eventHandler(Event.FromEventStoreEvent(evntdata));
+                    //throw new Exception("i don't know");
                 },
+                subscriptionDropped: ((subscription, reason, exception) => {
+		            Console.WriteLine($"Subscription was dropped due to {reason}. {exception}");
+                }),
                 filterOptions: new SubscriptionFilterOptions(
 	                EventTypeFilter.Prefix(typeName)
                 )

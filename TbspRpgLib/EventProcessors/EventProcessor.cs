@@ -48,14 +48,12 @@ namespace TbspRpgLib.EventProcessors {
         protected void PreTask() {
             _aggregateService.SubscribeByType(
                 GetEventName(),
-                (aggregate, eventId, sposition, gposition) => {
-                    HandleEvent(aggregate, eventId, sposition, gposition);
-                },
+                HandleEvent,
                 _startPosition
             );
         }
 
-        protected abstract void HandleEvent(Aggregate aggregate, string eventId, ulong streamPosition, ulong globalPosition);
+        protected abstract Task HandleEvent(Aggregate aggregate, string eventId);
 
         protected abstract string GetEventName();
 

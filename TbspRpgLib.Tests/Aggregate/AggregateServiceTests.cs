@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 using Moq;
 
@@ -79,14 +80,15 @@ namespace TbspRpgLib.Tests.Aggregate {
         }
 
         [Fact]
-        public void HandleEvent_UnProcessed_ExecuteHandler() {
+        public async void HandleEvent_UnProcessed_ExecuteHandler() {
             //arrange
             var evnt = events.FirstOrDefault();
             bool didItRun = false;
             //act
-            aggregateService.HandleEvent(evnt,
-                (aggregate, eventid, sposition, gposition) => {
+            await aggregateService.HandleEvent(evnt,
+                (aggregate, eventid) => {
                     didItRun = true;
+                    return Task.CompletedTask;
                 }
             );
             //assert
