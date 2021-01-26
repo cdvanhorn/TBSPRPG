@@ -59,6 +59,11 @@ namespace TbspRpgLib.EventProcessors {
         }
 
         protected void PreTask() {
+            while(_startPositions.Count < _eventTypes.Count) {
+                Console.WriteLine("waiting for start positions to populate");
+                Thread.Sleep(500);
+            }
+
             foreach(var eventType in _eventTypes) {
                 _aggregateService.SubscribeByType(
                     eventType.TypeName,
