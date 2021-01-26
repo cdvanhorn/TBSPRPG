@@ -1,7 +1,7 @@
 using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.Extensions.Hosting;
 
 using TbspRpgLib.Repositories;
@@ -21,41 +21,59 @@ namespace TbspRpgLib.EventProcessors {
         private IAggregateService _aggregateService;
         protected IServiceService _serviceService;
         protected Service _service;
-        protected EventType _eventType;
-        protected ulong _startPosition;
+        //protected EventType _eventType;
+        // protected ulong _startPosition;
+        protected List<EventType> _eventTypes;
+        protected Dictionary<Guid, ulong> _startPositions;
 
         public EventProcessor(IEventStoreSettings eventStoreSettings) {
             //used to retrieve events
             _eventService = new EventService(eventStoreSettings);
             _aggregateService = new AggregateService(_eventService);
+            _eventTypes = new List<EventType>();
+            _startPositions = new Dictionary<Guid, ulong>();
         }
 
         protected async Task InitializeStartPosition(ServiceTrackingContext serviceTrackingContext) {
             //context used to update the status of the service reading events
             var strepo = new ServiceTrackingRepository(serviceTrackingContext);
             var serviceTrackingService = new ServiceTrackingService(strepo);
-            _startPosition = await serviceTrackingService.GetPosition(_eventType.Id);
+            //_startPosition = await serviceTrackingService.GetPosition(_eventType.Id);
+            foreach(var eventType in _eventTypes) {
+                var position = await serviceTrackingService.GetPosition(eventType.Id);
+                _startPositions.Add(eventType.Id, position);
+            }
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             Console.WriteLine("Event Processor is starting.");
+            Console.WriteLine($"Watching for {_eventTypes.Count} event types: ");
+            foreach(var eventType in _eventTypes) {
+                Console.WriteLine($" - {eventType.TypeName}");
+            }
+
             PreTask();
             _backgroundTask = BackgroundTask();
             return Task.CompletedTask;
         }
 
         protected void PreTask() {
-            _aggregateService.SubscribeByType(
-                GetEventName(),
-                HandleEvent,
-                _startPosition
-            );
+            foreach(var eventType in _eventTypes) {
+                _aggregateService.SubscribeByType(
+                    eventType.TypeName,
+                    HandleEvent,
+                    _startPositions[eventType.Id]
+                );
+            }
+            // _aggregateService.SubscribeByType(
+            //     GetEventName(),
+            //     HandleEvent,
+            //     _startPosition
+            // );
         }
 
-        protected abstract Task HandleEvent(Aggregate aggregate, string eventId);
-
-        protected abstract string GetEventName();
+        protected abstract Task HandleEvent(Aggregate aggregate, Event evnt);
 
         private async Task BackgroundTask() {
             while (!_stopping)
