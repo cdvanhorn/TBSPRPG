@@ -57,5 +57,17 @@ cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/NewGameEventProcessor.cs ./MapApi/Even
 #add the aggregate adapter to startup for dependency injection
 #add the worker to startup so a worker starts
 
+#add a context and update the database
+#copy in boilerplate context
+cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/Context.cs ./MapApi/Repositories
+cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/migration_env.sh ./
+#create a database
+docker-compose up postgres
+psql -U postgres -h localhost
+create database tbsprpg_gamesystem
+#add the context to the start up
+dotnet ef migrations add InitialCreate
+dotnet ef database update
+
 #purge stuff occasionally
 docker system prune -a
