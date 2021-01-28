@@ -22,10 +22,11 @@ mkdir Services
 mkdir EventProcessors
 mkdir Entities
 mkdir Adapters
+mkdir ViewModels
 
 #link the packages directory so can get core library without always publishing and downloading
 #these are hard links and they'll have to be updated
-ln /home/david/Projects/TBSPRPG/TBSPRPG/TbspRpgLib/bin/Release/*.nupkg ./
+#use link_library.sh script in TBSPRPG
 
 #add the nuget.conf file and add the TbspRpgLib
 cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/nuget.config.[remote|local] ./MapApi/nuget.config
@@ -33,6 +34,11 @@ echo MapApi/nuget.config >> .gitignore
 cd MapApi
 dotnet add package TbspRpgLib
 cd ..
+
+#install postgre and entity framework
+dotnet add package Microsoft.EntityFrameworkCore.Design
+dotnet add package Microsoft.EntityFrameworkCore.Tools
+dotnet add package Npgsql.EntityFrameworkCore.PostgreSQL
 
 #setup dependency injection and settings template
 cp ~/Projects/TBSPRPG/TBSPRPG/boilerplate/appsettings.json ./MapApi
