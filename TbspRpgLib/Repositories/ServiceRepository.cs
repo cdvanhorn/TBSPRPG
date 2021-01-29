@@ -36,6 +36,11 @@ namespace TbspRpgLib.Repositories {
                 Name = "adventure",
                 Url = "http://adventureapi:8002/api"
             });
+            _services.Add(new Service () {
+                Id = new Guid("1622685e-edaf-476c-8013-cde4453149a8"),
+                Name = "gamesystem",
+                Url = "http://gamesystemapi:8005/api"
+            });
 
             _eventTypes = new List<EventType>();
             _eventTypes.Add(new EventType() {

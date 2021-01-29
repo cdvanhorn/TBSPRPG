@@ -78,6 +78,8 @@ namespace TbspRpgLib.Events
                 subscriptionDropped: ((subscription, reason, exception) => {
 		            Console.WriteLine($"subscription was dropped due to {reason}.");
                     if(reason != SubscriptionDroppedReason.Disposed && _tries < _retries) {
+                        //wait a half second before resubscribing
+                        Thread.Sleep(500);
                         _tries++;
                         SubscribeByType(typeName, eventHandler, checkpoint.PreparePosition);
                     }
