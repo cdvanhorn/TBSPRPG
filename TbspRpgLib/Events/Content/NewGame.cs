@@ -1,5 +1,3 @@
-using TbspRpgLib.Events;
-
 namespace TbspRpgLib.Events.Content {
     public class NewGame : EventContent {
         public string UserId { get; set; }

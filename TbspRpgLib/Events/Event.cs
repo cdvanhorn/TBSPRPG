@@ -11,6 +11,7 @@ namespace TbspRpgLib.Events
     public abstract class Event {
         public const string NEW_GAME_EVENT_TYPE = "new_game";
         public const string ENTER_LOCATION_EVENT_TYPE = "enter_location";
+        public const string ENTER_LOCATION_CHECK_EVENT_TYPE = "enter_location_check";
 
         public Event() {
             EventId = Guid.NewGuid();
@@ -37,23 +38,32 @@ namespace TbspRpgLib.Events
 
         public abstract void UpdateAggregate(Aggregate agg);
 
-        public static Event FromEventStoreEvent(ResolvedEvent resolvedEvent) {
-            Event evnt;
-            if(resolvedEvent.Event.EventType.StartsWith('$')) {
+        private static Event CreateEvent(string eventType) {
+            if(eventType.StartsWith('$'))
                 return null;
-            }
             
+            Event evnt;
             //I'm not really happy with this part
-            switch(resolvedEvent.Event.EventType) {
+            switch(eventType) {
                 case NEW_GAME_EVENT_TYPE:
                     evnt = new NewGameEvent();
                     break;
                 case ENTER_LOCATION_EVENT_TYPE:
                     evnt = new EnterLocationEvent();
                     break;
+                case ENTER_LOCATION_CHECK_EVENT_TYPE:
+                    evnt = new EnterLocationCheckEvent();
+                    break;
                 default:
                     return null;
             }
+            return evnt;
+        }
+
+        public static Event FromEventStoreEvent(ResolvedEvent resolvedEvent) {
+            Event evnt = CreateEvent(resolvedEvent.Event.EventType);
+            if(evnt == null)
+                return evnt;
             
             string jsonData = Encoding.UTF8.GetString(resolvedEvent.Event.Data.ToArray());
             evnt.SetData(jsonData);

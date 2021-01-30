@@ -38,6 +38,14 @@ namespace TbspRpgLib.Tests.Aggregate {
                     }
                 )
             );
+            events.Add(
+                new EnterLocationCheckEvent(
+                    new EnterLocationCheck {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Result = true
+                    }
+                )
+            );
             //we need to mock _eventService.GetEventsInStreamAsync for BuildAggregate
             //it needs to return a list of event like objects
             var mockEventService = new Mock<IEventService>();
@@ -62,6 +70,7 @@ namespace TbspRpgLib.Tests.Aggregate {
             Assert.Equal("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", game.Id);
             Assert.Equal("Demo", game.AdventureName);
             Assert.Equal("foo", game.Destination);
+            Assert.True(game.Checks.Location);
         }
 
         [Fact]
