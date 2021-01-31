@@ -1,5 +1,5 @@
-namespace TbspRpgLib.Events.Content {
-    public class NewGame : EventContent {
+namespace TbspRpgLib.Events.Game.Content {
+    public class GameNew : EventContent {
         public string UserId { get; set; }
 
         public string AdventureName { get; set; }

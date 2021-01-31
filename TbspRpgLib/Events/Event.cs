@@ -6,11 +6,12 @@ using EventStore.Client;
 
 using TbspRpgLib.Aggregates;
 using TbspRpgLib.Events.Location;
+using TbspRpgLib.Events.Game;
 
 namespace TbspRpgLib.Events
 {
     public abstract class Event {
-        public const string NEW_GAME_EVENT_TYPE = "new_game";
+        public const string GAME_NEW_EVENT_TYPE = "game_new";
         public const string LOCATION_ENTER_EVENT_TYPE = "location_enter";
         public const string LOCATION_ENTER_CHECK_EVENT_TYPE = "location_enter_check";
 
@@ -46,8 +47,8 @@ namespace TbspRpgLib.Events
             Event evnt;
             //I'm not really happy with this part
             switch(eventType) {
-                case NEW_GAME_EVENT_TYPE:
-                    evnt = new NewGameEvent();
+                case GAME_NEW_EVENT_TYPE:
+                    evnt = new GameNewEvent();
                     break;
                 case LOCATION_ENTER_EVENT_TYPE:
                     evnt = new LocationEnterEvent();

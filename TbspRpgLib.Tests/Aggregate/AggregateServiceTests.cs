@@ -9,9 +9,10 @@ using Xunit;
 
 using TbspRpgLib.Aggregates;
 using TbspRpgLib.Events;
-using TbspRpgLib.Events.Content;
 using TbspRpgLib.Events.Location.Content;
 using TbspRpgLib.Events.Location;
+using TbspRpgLib.Events.Game.Content;
+using TbspRpgLib.Events.Game;
 using TbspRpgLib.Tests.Mocks;
 using TbspRpgLib.Services;
 
@@ -23,8 +24,8 @@ namespace TbspRpgLib.Tests.Aggregate {
         public AggregateServiceTests() {
             events = new List<Event>();
             events.Add(
-                new NewGameEvent(
-                    new NewGame {
+                new GameNewEvent(
+                    new GameNew {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         UserId = "1",
                         AdventureName = "Demo",

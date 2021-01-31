@@ -1,5 +1,5 @@
 namespace TbspRpgLib.Events.Content {
-    public class LocationEntered {
+    public class LocationEnterPass {
 
     }
 }
