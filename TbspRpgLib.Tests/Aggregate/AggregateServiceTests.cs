@@ -10,6 +10,8 @@ using Xunit;
 using TbspRpgLib.Aggregates;
 using TbspRpgLib.Events;
 using TbspRpgLib.Events.Content;
+using TbspRpgLib.Events.Location.Content;
+using TbspRpgLib.Events.Location;
 using TbspRpgLib.Tests.Mocks;
 using TbspRpgLib.Services;
 
@@ -31,16 +33,16 @@ namespace TbspRpgLib.Tests.Aggregate {
                 )
             );
             events.Add(
-                new EnterLocationEvent(
-                    new EnterLocation {
+                new LocationEnterEvent(
+                    new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Destination = "foo"
                     }
                 )
             );
             events.Add(
-                new EnterLocationCheckEvent(
-                    new EnterLocationCheck {
+                new LocationEnterCheckEvent(
+                    new LocationEnterCheck {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Result = true
                     }

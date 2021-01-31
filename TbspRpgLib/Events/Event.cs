@@ -5,13 +5,14 @@ using System.Text.Json;
 using EventStore.Client;
 
 using TbspRpgLib.Aggregates;
+using TbspRpgLib.Events.Location;
 
 namespace TbspRpgLib.Events
 {
     public abstract class Event {
         public const string NEW_GAME_EVENT_TYPE = "new_game";
-        public const string ENTER_LOCATION_EVENT_TYPE = "enter_location";
-        public const string ENTER_LOCATION_CHECK_EVENT_TYPE = "enter_location_check";
+        public const string LOCATION_ENTER_EVENT_TYPE = "location_enter";
+        public const string LOCATION_ENTER_CHECK_EVENT_TYPE = "location_enter_check";
 
         public Event() {
             EventId = Guid.NewGuid();
@@ -48,11 +49,11 @@ namespace TbspRpgLib.Events
                 case NEW_GAME_EVENT_TYPE:
                     evnt = new NewGameEvent();
                     break;
-                case ENTER_LOCATION_EVENT_TYPE:
-                    evnt = new EnterLocationEvent();
+                case LOCATION_ENTER_EVENT_TYPE:
+                    evnt = new LocationEnterEvent();
                     break;
-                case ENTER_LOCATION_CHECK_EVENT_TYPE:
-                    evnt = new EnterLocationCheckEvent();
+                case LOCATION_ENTER_CHECK_EVENT_TYPE:
+                    evnt = new LocationEnterCheckEvent();
                     break;
                 default:
                     return null;

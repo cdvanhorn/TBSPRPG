@@ -4,13 +4,14 @@ using System.Text.Json;
 using Xunit;
 
 using TbspRpgLib.Events;
-using TbspRpgLib.Events.Content;
+using TbspRpgLib.Events.Location.Content;
+using TbspRpgLib.Events.Location;
 
 namespace TbspRpgLib.Tests.Events {
     public class EnterLocationCheckEventTests {
-        private EnterLocationCheckEvent CreateEnterLocationCheckEvent() {
-            return new EnterLocationCheckEvent(
-                new EnterLocationCheck {
+        private LocationEnterCheckEvent CreateEnterLocationCheckEvent() {
+            return new LocationEnterCheckEvent(
+                new LocationEnterCheck {
                     Id = "2",
                     Result = false
                 }
@@ -23,7 +24,7 @@ namespace TbspRpgLib.Tests.Events {
             var evnt = CreateEnterLocationCheckEvent();
             //assert
             Assert.IsType<Guid>(evnt.EventId);
-            Assert.Equal(Event.ENTER_LOCATION_CHECK_EVENT_TYPE, evnt.Type);
+            Assert.Equal(Event.LOCATION_ENTER_CHECK_EVENT_TYPE, evnt.Type);
         }
 
         [Fact]
@@ -32,10 +33,10 @@ namespace TbspRpgLib.Tests.Events {
             var evnt = CreateEnterLocationCheckEvent();
             //act
             var jsonString = evnt.GetDataJson();
-            EnterLocationCheck content = JsonSerializer.Deserialize<EnterLocationCheck>(jsonString);
+            LocationEnterCheck content = JsonSerializer.Deserialize<LocationEnterCheck>(jsonString);
 
             //assert
-            Assert.IsType<EnterLocationCheck>(content);
+            Assert.IsType<LocationEnterCheck>(content);
             Assert.Equal("2", content.Id);
             Assert.False(content.Result);
         }
