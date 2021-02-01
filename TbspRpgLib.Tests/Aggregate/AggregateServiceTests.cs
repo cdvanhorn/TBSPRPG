@@ -170,5 +170,135 @@ namespace TbspRpgLib.Tests.Aggregate {
             //assert
             Assert.True(didItRun);
         }
+
+         [Fact]
+        public async void BuildAggregate_LocationEnterPassEvent_InvalidId() {
+            //arrange
+            //arrange
+            List<Event> events = new List<Event>();
+            events.Add(
+                new GameNewEvent(
+                    new GameNew {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        UserId = "1",
+                        AdventureName = "Demo",
+                        AdventureId = "1"
+                    }
+                )
+            );
+            events.Add(
+                new LocationEnterEvent(
+                    new LocationEnter {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Destination = "foo"
+                    }
+                )
+            );
+            events.Add(
+                new LocationEnterCheckEvent(
+                    new LocationEnterCheck {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Result = true
+                    }
+                )
+            );
+            events.Add(
+                new LocationEnterPassEvent(
+                    new LocationEnterPass {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Destination = "",
+                        CurrentLocation = "foo"
+                    }
+                )
+            );
+
+            //act
+            var aggregate = await GetAggregateService(events).BuildAggregate("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", "GameAggregate");
+            var game = (GameAggregate)aggregate;
+
+            //assert
+            Assert.Equal("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", game.Id);
+            Assert.Equal("Demo", game.AdventureName);
+            Assert.Equal("foo", game.CurrentLocation);
+            Assert.Equal("", game.Destination);
+            Assert.False(game.Checks.Location);
+        }
+
+        [Fact]
+        public async void BuildAggregate_LocationEnterFailEvent_Valid() {
+            //arrange
+            //arrange
+            List<Event> events = new List<Event>();
+            events.Add(
+                new GameNewEvent(
+                    new GameNew {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        UserId = "1",
+                        AdventureName = "Demo",
+                        AdventureId = "1"
+                    }
+                )
+            );
+            events.Add(
+                new LocationEnterEvent(
+                    new LocationEnter {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Destination = "bar"
+                    }
+                )
+            );
+            events.Add(
+                new LocationEnterCheckEvent(
+                    new LocationEnterCheck {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Result = true
+                    }
+                )
+            );
+            events.Add(
+                new LocationEnterPassEvent(
+                    new LocationEnterPass {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Destination = "",
+                        CurrentLocation = "bar"
+                    }
+                )
+            );
+            events.Add(
+                new LocationEnterEvent(
+                    new LocationEnter {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Destination = "foo"
+                    }
+                )
+            );
+            events.Add(
+                new LocationEnterCheckEvent(
+                    new LocationEnterCheck {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Result = false
+                    }
+                )
+            );
+            events.Add(
+                new LocationEnterFailEvent(
+                    new LocationEnterFail {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Destination = ""
+                    }
+                )
+            );
+
+            //act
+            var aggregate = await GetAggregateService(events).BuildAggregate("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", "GameAggregate");
+            var game = (GameAggregate)aggregate;
+
+            //assert
+            Assert.Equal("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", game.Id);
+            Assert.Equal("Demo", game.AdventureName);
+            Assert.Equal("bar", game.CurrentLocation);
+            Assert.Equal("", game.Destination);
+            Assert.False(game.Checks.Location);
+        }
     }
 }
