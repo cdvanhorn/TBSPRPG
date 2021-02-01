@@ -14,6 +14,8 @@ namespace TbspRpgLib.Events
         public const string GAME_NEW_EVENT_TYPE = "game_new";
         public const string LOCATION_ENTER_EVENT_TYPE = "location_enter";
         public const string LOCATION_ENTER_CHECK_EVENT_TYPE = "location_enter_check";
+        public const string LOCATION_ENTER_PASS_EVENT_TYPE = "location_enter_pass";
+        public const string LOCATION_ENTER_FAIL_EVENT_TYPE = "location_enter_fail";
 
         public Event() {
             EventId = Guid.NewGuid();
@@ -55,6 +57,12 @@ namespace TbspRpgLib.Events
                     break;
                 case LOCATION_ENTER_CHECK_EVENT_TYPE:
                     evnt = new LocationEnterCheckEvent();
+                    break;
+                case LOCATION_ENTER_PASS_EVENT_TYPE:
+                    evnt = new LocationEnterPassEvent();
+                    break;
+                case LOCATION_ENTER_FAIL_EVENT_TYPE:
+                    evnt = new LocationEnterFailEvent();
                     break;
                 default:
                     return null;

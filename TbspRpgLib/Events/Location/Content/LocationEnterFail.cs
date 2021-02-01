@@ -1,3 +1,0 @@
-namespace TbspRpgLib.Events.Content {
-    
-}
