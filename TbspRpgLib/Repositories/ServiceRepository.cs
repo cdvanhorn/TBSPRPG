@@ -45,11 +45,23 @@ namespace TbspRpgLib.Repositories {
             _eventTypes = new List<EventType>();
             _eventTypes.Add(new EventType() {
                 Id = new Guid("06072ad8-bf89-417a-8f9c-f8518ce16e70"),
-                TypeName = "new_game"
+                TypeName = "game_new"
             });
             _eventTypes.Add(new EventType() {
                 Id = new Guid("ec17d133-fddf-4d53-bd5d-9f0f568167c7"),
-                TypeName = "enter_location"
+                TypeName = "location_enter"
+            });
+            _eventTypes.Add(new EventType() {
+                Id = new Guid("ac1b7ab7-b181-484b-8361-0a4f7b4581f6"),
+                TypeName = "location_enter_check"
+            });
+            _eventTypes.Add(new EventType() {
+                Id = new Guid("6fd70d83-1468-4499-88a1-e19a63753172"),
+                TypeName = "location_enter_pass"
+            });
+            _eventTypes.Add(new EventType() {
+                Id = new Guid("b46fc97c-6f35-4006-8af7-e048e9b9048b"),
+                TypeName = "location_enter_fail"
             });
         }
 
