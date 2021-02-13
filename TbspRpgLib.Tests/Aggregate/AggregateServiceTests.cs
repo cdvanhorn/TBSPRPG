@@ -13,6 +13,7 @@ using TbspRpgLib.Events.Location.Content;
 using TbspRpgLib.Events.Location;
 using TbspRpgLib.Events.Game.Content;
 using TbspRpgLib.Events.Game;
+using TbspRpgLib.Events.Content;
 using TbspRpgLib.Tests.Mocks;
 using TbspRpgLib.Services;
 
@@ -299,6 +300,45 @@ namespace TbspRpgLib.Tests.Aggregate {
             Assert.Equal("bar", game.CurrentLocation);
             Assert.Equal("", game.Destination);
             Assert.False(game.Checks.Location);
+        }
+
+        [Fact]
+        public async void HandleContentEvent_UnProcessed_ExecuteHandler() {
+            //arrange
+            List<Event> events = new List<Event>();
+            events.Add(
+                new ContentEvent(
+                    new ContentContent {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Text = "Event1"
+                    }
+                )
+            );
+            events.Add(
+                new ContentEvent(
+                    new ContentContent {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        Text = "Event2"
+                    }
+                )
+            );
+
+            var evnt = events.FirstOrDefault();
+            bool didItRun = false;
+            TbspRpgLib.Aggregates.Aggregate agg = null;
+            //act
+            await GetAggregateService(events).HandleEvent(evnt,
+                (aggregate, eventid) => {
+                    agg = aggregate;
+                    didItRun = true;
+                    return Task.CompletedTask;
+                }
+            );
+
+            //assert
+            Assert.True(didItRun);
+            Assert.IsType<ContentAggregate>(agg);
+            Assert.Equal("Event1\nEvent2", ((ContentAggregate)agg).Text);
         }
     }
 }
