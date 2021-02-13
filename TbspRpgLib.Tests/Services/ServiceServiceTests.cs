@@ -72,7 +72,7 @@ namespace TbspRpgLib.Tests.Services {
         public void GetEventTypeByName_Valid_ReturnResponse() {
             //arrange
             //act
-            var et = _serviceService.GetEventTypeByName("new_game");
+            var et = _serviceService.GetEventTypeByName("game_new");
 
             //assert
             Assert.NotNull(et);

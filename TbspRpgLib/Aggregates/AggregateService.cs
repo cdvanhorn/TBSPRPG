@@ -33,8 +33,12 @@ namespace TbspRpgLib.Aggregates {
             if(aggregateId == null) //we can't parse this event
                 return;
 
+            string aggregateTypeName = "GameAggregate";
+            if(aggregateId.StartsWith(Aggregate.CONTENT_AGGREGATE_PREFIX))
+                aggregateTypeName = "ContentAggregate";
+
             //build the aggregate
-            var aggregate = await BuildAggregate(aggregateId, "GameAggregate");
+            var aggregate = await BuildAggregate(aggregateId, aggregateTypeName);
             aggregate.GlobalPosition = evnt.GlobalPosition;
             await eventHandler(aggregate, evnt);
         }

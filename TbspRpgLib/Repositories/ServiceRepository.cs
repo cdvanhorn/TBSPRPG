@@ -63,6 +63,10 @@ namespace TbspRpgLib.Repositories {
                 Id = new Guid("b46fc97c-6f35-4006-8af7-e048e9b9048b"),
                 TypeName = "location_enter_fail"
             });
+            _eventTypes.Add(new EventType() {
+                Id = new Guid("6281b0ba-e9d1-4ae2-8936-e940a8c22a52"),
+                TypeName = "content"
+            });
         }
 
         public List<Service> GetAllServices() {

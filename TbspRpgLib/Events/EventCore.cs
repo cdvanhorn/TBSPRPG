@@ -9,7 +9,14 @@ namespace TbspRpgLib.Events {
         }
 
         public override string GetStreamId() {
-            return Data.Id;
+            if(string.IsNullOrEmpty(GetStreamIdPrefix()))
+                return Data.Id;
+            return $"{GetStreamIdPrefix()}_{Data.Id}";
+        }
+
+        public override string GetStreamIdPrefix()
+        {
+            return "";
         }
 
         public override string ToString() {

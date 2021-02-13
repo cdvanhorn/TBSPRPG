@@ -7,6 +7,7 @@ using EventStore.Client;
 using TbspRpgLib.Aggregates;
 using TbspRpgLib.Events.Location;
 using TbspRpgLib.Events.Game;
+using TbspRpgLib.Events.Content;
 
 namespace TbspRpgLib.Events
 {
@@ -16,6 +17,7 @@ namespace TbspRpgLib.Events
         public const string LOCATION_ENTER_CHECK_EVENT_TYPE = "location_enter_check";
         public const string LOCATION_ENTER_PASS_EVENT_TYPE = "location_enter_pass";
         public const string LOCATION_ENTER_FAIL_EVENT_TYPE = "location_enter_fail";
+        public const string CONTENT_EVENT_TYPE = "content";
 
         public Event() {
             EventId = Guid.NewGuid();
@@ -40,6 +42,8 @@ namespace TbspRpgLib.Events
 
         public abstract string GetStreamId();
 
+        public abstract string GetStreamIdPrefix();
+
         public abstract void UpdateAggregate(Aggregate agg);
 
         private static Event CreateEvent(string eventType) {
@@ -63,6 +67,9 @@ namespace TbspRpgLib.Events
                     break;
                 case LOCATION_ENTER_FAIL_EVENT_TYPE:
                     evnt = new LocationEnterFailEvent();
+                    break;
+                case CONTENT_EVENT_TYPE:
+                    evnt = new ContentEvent();
                     break;
                 default:
                     return null;

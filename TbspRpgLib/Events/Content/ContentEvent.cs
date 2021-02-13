@@ -4,21 +4,19 @@ using System.Text.Json;
 namespace TbspRpgLib.Events.Content {
     public class ContentEvent : EventCore{
         public ContentEvent(ContentContent data) : base() {
-            //Type = GAME_NEW_EVENT_TYPE;
+            Type = CONTENT_EVENT_TYPE;
             Data = data;
         }
 
         public ContentEvent() : base() {
-            //Type = GAME_NEW_EVENT_TYPE;
+            Type = CONTENT_EVENT_TYPE;
         }
 
         public override void UpdateAggregate(Aggregate agg) {
-            // GameAggregate aggregate = (GameAggregate)agg;
-            // GameNew gdata = (GameNew)Data;
-            // aggregate.Id = Data.Id;
-            // aggregate.UserId = gdata.UserId;
-            // aggregate.AdventureId = gdata.AdventureId;
-            // aggregate.AdventureName = gdata.AdventureName;
+            ContentAggregate aggregate = (ContentAggregate)agg;
+            ContentContent ctnt = (ContentContent)Data;
+            aggregate.Id = ctnt.Id;
+            aggregate.Text = $"{aggregate.Text}\n{ctnt.Text}";
         }
 
         protected override void SetData(string jsonString) {
@@ -32,8 +30,8 @@ namespace TbspRpgLib.Events.Content {
             return JsonSerializer.Serialize((ContentContent)Data);
         }
 
-        public override string GetStreamId() {
-            return $"content_{Data.Id}";
+        public override string GetStreamIdPrefix() {
+            return Aggregate.CONTENT_AGGREGATE_PREFIX;
         }
     }
 }
