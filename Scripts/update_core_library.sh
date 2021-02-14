@@ -25,3 +25,4 @@ cd ../Scripts
 ./link_library.sh ../../TBSPRPG_AdventureAPI
 ./link_library.sh ../../TBSPRPG_UserAPI
 ./link_library.sh ../../TBSPRPG_GameSystemAPI
+./link_library.sh ../../TBSPRPG_ContentAPI

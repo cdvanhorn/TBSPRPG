@@ -26,6 +26,7 @@ services:
       - gameapi
       - mapapi
       - gamesystemapi
+      - contentapi
 
   userapi:
     build: ./TBSPRPG_UserAPI
@@ -91,6 +92,21 @@ services:
       - './TBSPRPG_GameSystemAPI/GameSystemApi:/app'
     environment:
       - 'CONNECTION_STRING=User ID=${POSTGRESUSER};Password=${POSTGRESPASSWORD};Server=${POSTGRESURL};Port=5432;Database=tbsprpg_gamesystem;Integrated Security=true;Pooling=true;'
+      - 'JwtSettings__Secret=${JWTSECRET}'
+    command: dotnet watch run
+    depends_on:
+      - postgres
+      - eventstore
+      - adventureapi
+
+  contentapi:
+    build: ./TBSPRPG_ContentAPI
+    ports:
+      - '8006:8006'
+    volumes:
+      - './TBSPRPG_ContentAPI/ContentApi:/app'
+    environment:
+      - 'CONNECTION_STRING=User ID=${POSTGRESUSER};Password=${POSTGRESPASSWORD};Server=${POSTGRESURL};Port=5432;Database=tbsprpg_content;Integrated Security=true;Pooling=true;'
       - 'JwtSettings__Secret=${JWTSECRET}'
     command: dotnet watch run
     depends_on:
