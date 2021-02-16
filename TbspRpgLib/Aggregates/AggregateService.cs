@@ -52,7 +52,7 @@ namespace TbspRpgLib.Aggregates {
             Aggregate aggregate = (Aggregate)Activator.CreateInstance(aggregateType);
 
             //get all of the events in the aggregrate id stream
-            var events = await _eventService.GetEventsInStreamAsync(aggregateId);
+            var events = await _eventService.GetAllEventsInStreamAsync(aggregateId);
             foreach(var evnt in events) {
                 evnt.UpdateAggregate(aggregate);
                 if(evnt.StreamPosition > aggregate.StreamPosition)

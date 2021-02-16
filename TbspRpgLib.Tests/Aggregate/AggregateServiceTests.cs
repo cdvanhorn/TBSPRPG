@@ -25,7 +25,7 @@ namespace TbspRpgLib.Tests.Aggregate {
             //it needs to return a list of event like objects
             var mockEventService = new Mock<IEventService>();
             mockEventService.Setup(service => 
-                service.GetEventsInStreamAsync(It.IsAny<string>())
+                service.GetAllEventsInStreamAsync(It.IsAny<string>())
             ).ReturnsAsync(
                 (string eventid) =>
                     events.Where(evnt => evnt.GetStreamId() == eventid).ToList()

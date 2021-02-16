@@ -18,7 +18,14 @@ namespace TbspRpgLib.Events
         Task SendEvent(Event evnt, bool newStream);
         Task SendEvent(Event evnt, ulong expectedStreamPosition);
         void SubscribeByType(string typeName, Func<Event, Task> eventHandler, ulong subscriptionStart);
-        Task<List<Event>> GetEventsInStreamAsync(string streamId);
+        Task<List<Event>> GetAllEventsInStreamAsync(string streamId);
+        Task<List<Event>> GetAllEventsInStreamReverseAsync(string streamId);
+        Task<Event> GetLatestEventInStreamAsync(string streamId);
+        Task<Event> GetEventInStreamAsync(string streamId, ulong index);
+        Task<List<Event>> GetEventsInStreamAsync(string streamId, ulong start);
+        Task<List<Event>> GetEventsInStreamAsync(string streamId, ulong start, long count);
+        Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, ulong start);
+        Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, ulong start, long count);
     }
 
     public class EventService : IEventService {
@@ -90,12 +97,130 @@ namespace TbspRpgLib.Events
             );
         }
 
-        public async Task<List<Event>> GetEventsInStreamAsync(string streamId) {
-            var results = _eventStoreClient.ReadStreamAsync(
-                Direction.Forwards,
+        //get all of the events in the stream in order
+        public async Task<List<Event>> GetAllEventsInStreamAsync(string streamId) {
+            return await GetEventsInStreamAsync(
                 streamId,
-                StreamPosition.Start);
-            
+                Direction.Forwards,
+                0
+            );
+        }
+
+        //get all of the events in the stream in reverse
+        public async Task<List<Event>> GetAllEventsInStreamReverseAsync(string streamId) {
+            return await GetEventsInStreamAsync(
+                streamId,
+                Direction.Backwards,
+                -1
+            );
+        }
+
+        //Get the latest event in the stream
+        public async Task<Event> GetLatestEventInStreamAsync(string streamId) {
+            var events = await GetEventsInStreamAsync(
+                streamId,
+                Direction.Backwards,
+                -1,
+                1
+            );
+            if(events.Count > 0)
+                return events[0];
+            return null;
+        }
+
+        public async Task<Event> GetEventInStreamAsync(string streamId, ulong index) {
+            var events = await GetEventsInStreamAsync(
+                streamId,
+                Direction.Forwards,
+                (long)index,
+                1
+            );
+            if(events.Count > 0)
+                return events[0];
+            return null;
+        }
+
+        //get the events in order from the specified position to the end
+        public async Task<List<Event>> GetEventsInStreamAsync(string streamId, ulong start) {
+            return await GetEventsInStreamAsync(
+                streamId,
+                Direction.Forwards,
+                (long)start
+            );
+        }
+
+        //get the specified number of events in order from the specified position
+        public async Task<List<Event>> GetEventsInStreamAsync(string streamId, ulong start, long count) {
+            return await GetEventsInStreamAsync(
+                streamId,
+                Direction.Forwards,
+                (long)start,
+                count
+            );
+        }
+
+        //get the events in reverse from the specified position to the beginning
+        public async Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, ulong start) {
+            return await GetEventsInStreamAsync(
+                streamId,
+                Direction.Backwards,
+                (long)start
+            );
+        }
+
+        //get the specified number of events in reverse from the specified position
+        public async Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, ulong start, long count) {
+            return await GetEventsInStreamAsync(
+                streamId,
+                Direction.Backwards,
+                (long)start,
+                count
+            );
+        }
+
+        //complex method used by easier methods
+        //if start is 0 will start at the beginning of the stream
+        //if start > 0 will use that as the start position
+        //if start < 0 will start at the end of the stream
+        //if count is > 0 will retrieve at most that number of events
+        //if count is 0 will read all events
+        private async Task<List<Event>> GetEventsInStreamAsync(string streamId, Direction direction, long start, long count = 0) {
+            EventStoreClient.ReadStreamResult results = null;
+            if(start == 0 && count > 0) {
+                results = _eventStoreClient.ReadStreamAsync(
+                    direction,
+                    streamId,
+                    StreamPosition.Start,
+                    count
+                );
+            } else if(start == 0 && count == 0) {
+                results = _eventStoreClient.ReadStreamAsync(
+                    direction,
+                    streamId,
+                    StreamPosition.Start
+                );
+            } else if(start < 0 && count > 0) {
+                results = _eventStoreClient.ReadStreamAsync(
+                    direction,
+                    streamId,
+                    StreamPosition.End,
+                    count
+                );
+            } else if(start < 0 && count == 0) {
+                results = _eventStoreClient.ReadStreamAsync(
+                    direction,
+                    streamId,
+                    StreamPosition.End
+                );
+            } else {
+                results = _eventStoreClient.ReadStreamAsync(
+                    direction,
+                    streamId,
+                    (ulong)start,
+                    count
+                );
+            }
+
             List<Event> events = new List<Event>();
             if(await results.ReadState == ReadState.StreamNotFound) {
                 //throw new ArgumentException($"invalid stream id {streamId}");
