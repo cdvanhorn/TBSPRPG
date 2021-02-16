@@ -336,9 +336,11 @@ namespace TbspRpgLib.Tests.Aggregate {
             );
 
             //assert
+            var cagg = (ContentAggregate)agg;
             Assert.True(didItRun);
             Assert.IsType<ContentAggregate>(agg);
-            Assert.Equal("Event1\nEvent2", ((ContentAggregate)agg).Text);
+            Assert.IsType<List<string>>(cagg.Text);
+            Assert.Equal("Event1", cagg.Text[0]);
         }
     }
 }

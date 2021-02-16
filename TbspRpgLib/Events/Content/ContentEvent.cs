@@ -16,10 +16,7 @@ namespace TbspRpgLib.Events.Content {
             ContentAggregate aggregate = (ContentAggregate)agg;
             ContentContent ctnt = (ContentContent)Data;
             aggregate.Id = ctnt.Id;
-            if(aggregate.Text != null)
-                aggregate.Text = $"{aggregate.Text}\n{ctnt.Text}";
-            else
-                aggregate.Text = ctnt.Text;
+            aggregate.Text.Add(ctnt.Text);
         }
 
         protected override void SetData(string jsonString) {
