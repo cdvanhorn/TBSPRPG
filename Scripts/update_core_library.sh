@@ -11,7 +11,8 @@ docker image rm tbsprpg_publicapi:latest \
 	tbsprpg_mapapi:latest \
 	tbsprpg_adventureapi:latest \
 	tbsprpg_userapi:latest \
-	tbsprpg_gamesystemapi:latest
+	tbsprpg_gamesystemapi:latest \
+	tbsprpg_contentapi:latest
 
 #build a new version of the library
 cd ../TbspRpgLib
