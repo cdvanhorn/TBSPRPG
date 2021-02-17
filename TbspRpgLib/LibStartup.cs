@@ -10,6 +10,7 @@ using TbspRpgLib.Events;
 using TbspRpgLib.Repositories;
 using TbspRpgLib.Services;
 using TbspRpgLib.InterServiceCommunication;
+using TbspRpgLib.Aggregates;
 
 using System;
 
@@ -35,6 +36,7 @@ namespace TbspRpgLib {
             services.AddScoped<IServiceService, ServiceService>();
             services.AddScoped<IServiceCommunication, ServiceCommunication>();
             services.AddScoped<IAdventureServiceCom, AdventureServiceCom>();
+            services.AddScoped<IAggregateService, AggregateService>();
         }
 
         public static void ConfigureTbspRpg(IApplicationBuilder app) {
