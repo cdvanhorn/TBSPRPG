@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 
 using TbspRpgLib.Events;
-using TbspRpgLib.Services;
+using TbspRpgLib.Repositories;
 
 namespace TbspRpgLib.Aggregates {
     public interface IAggregateService {
@@ -54,7 +54,7 @@ namespace TbspRpgLib.Aggregates {
                 return;
 
             string aggregateTypeName = "GameAggregate";
-            if(aggregateId.StartsWith(Aggregate.CONTENT_AGGREGATE_PREFIX))
+            if(aggregateId.StartsWith(AggregateTypeRepository.CONTENT_AGGREGATE_PREFIX))
                 aggregateTypeName = "ContentAggregate";
 
             //build the aggregate

@@ -1,4 +1,5 @@
 using TbspRpgLib.Aggregates;
+using TbspRpgLib.Repositories;
 using System.Text.Json;
 
 namespace TbspRpgLib.Events.Content {
@@ -31,7 +32,7 @@ namespace TbspRpgLib.Events.Content {
         }
 
         public override string GetStreamIdPrefix() {
-            return Aggregate.CONTENT_AGGREGATE_PREFIX;
+            return AggregateTypeRepository.CONTENT_AGGREGATE_PREFIX;
         }
     }
 }
