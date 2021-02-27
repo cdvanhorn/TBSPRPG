@@ -1,4 +1,4 @@
-using System.Text.Json;
+using TbspRpgLib.Repositories;
 
 namespace TbspRpgLib.Events {
     public abstract class EventCore : Event {
@@ -11,7 +11,7 @@ namespace TbspRpgLib.Events {
         public override string GetStreamId() {
             if(string.IsNullOrEmpty(GetStreamIdPrefix()))
                 return Data.Id;
-            return $"{GetStreamIdPrefix()}_{Data.Id}";
+            return $"{GetStreamIdPrefix()}{AggregateTypeRepository.AGGREGATE_ID_DIVIDER}{Data.Id}";
         }
 
         public override string GetStreamIdPrefix()

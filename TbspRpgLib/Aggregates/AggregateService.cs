@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 using TbspRpgLib.Events;
 using TbspRpgLib.Repositories;
+using TbspRpgLib.Services;
 
 namespace TbspRpgLib.Aggregates {
     public interface IAggregateService {
@@ -32,9 +33,11 @@ namespace TbspRpgLib.Aggregates {
 
     public class AggregateService : IAggregateService {
         private IEventService _eventService;
+        private IAggregateTypeService _aggregateTypeService;
 
-        public AggregateService(IEventService eventService) {
+        public AggregateService(IEventService eventService, IAggregateTypeService aggregateTypeService) {
             _eventService = eventService;
+            _aggregateTypeService = aggregateTypeService;
         }
 
         public void SubscribeByType(string typeName, Func<Aggregate, Event, Task> eventHandler, ulong subscriptionStart = 0) {
@@ -53,9 +56,7 @@ namespace TbspRpgLib.Aggregates {
             if(aggregateId == null) //we can't parse this event
                 return;
 
-            string aggregateTypeName = "GameAggregate";
-            if(aggregateId.StartsWith(AggregateTypeRepository.CONTENT_AGGREGATE_PREFIX))
-                aggregateTypeName = "ContentAggregate";
+            string aggregateTypeName = _aggregateTypeService.GetAggregateTypeName(aggregateId);
 
             //build the aggregate
             var aggregate = await BuildAggregate(aggregateId, aggregateTypeName);

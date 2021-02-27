@@ -32,7 +32,7 @@ namespace TbspRpgLib.Tests.Aggregate {
             );
 
             return new AggregateService(
-                mockEventService.Object);
+                mockEventService.Object, null);
         }
 
 

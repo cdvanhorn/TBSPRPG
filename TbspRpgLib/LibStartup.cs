@@ -37,6 +37,8 @@ namespace TbspRpgLib {
             services.AddScoped<IServiceCommunication, ServiceCommunication>();
             services.AddScoped<IAdventureServiceCom, AdventureServiceCom>();
             services.AddScoped<IAggregateService, AggregateService>();
+            services.AddScoped<IAggregateTypeRepository, AggregateTypeRepository>();
+            services.AddScoped<IAggregateTypeService, AggregateTypeService>();
         }
 
         public static void ConfigureTbspRpg(IApplicationBuilder app) {

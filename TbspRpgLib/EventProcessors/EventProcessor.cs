@@ -29,7 +29,8 @@ namespace TbspRpgLib.EventProcessors {
         public EventProcessor(IEventStoreSettings eventStoreSettings) {
             //used to retrieve events
             _eventService = new EventService(eventStoreSettings);
-            _aggregateService = new AggregateService(_eventService);
+            AggregateTypeRepository atr = new AggregateTypeRepository();
+            _aggregateService = new AggregateService(_eventService, new AggregateTypeService(atr));
             _eventTypes = new List<EventType>();
             _startPositions = new Dictionary<Guid, ulong>();
         }
