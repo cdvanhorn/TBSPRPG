@@ -8,15 +8,20 @@ namespace TbspRpgLib.Events {
             return Data;
         }
 
-        public override string GetStreamId() {
-            if(string.IsNullOrEmpty(GetStreamIdPrefix()))
-                return Data.Id;
-            return $"{GetStreamIdPrefix()}{AggregateTypeRepository.AGGREGATE_ID_DIVIDER}{Data.Id}";
-        }
+        // public override string GetStreamId() {
+        //     if(string.IsNullOrEmpty(GetStreamIdPrefix()))
+        //         return Data.Id;
+        //     return $"{GetStreamIdPrefix()}{AggregateTypeRepository.AGGREGATE_ID_DIVIDER}{Data.Id}";
+        // }
 
-        public override string GetStreamIdPrefix()
+        // public override string GetStreamIdPrefix()
+        // {
+        //     return "";
+        // }
+
+        public override string GetDataId()
         {
-            return "";
+            return Data.Id;
         }
 
         public override string ToString() {

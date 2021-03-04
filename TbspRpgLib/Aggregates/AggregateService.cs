@@ -29,6 +29,8 @@ namespace TbspRpgLib.Aggregates {
             long count);
         Task<Aggregate> BuildPartialAggregateLatest(string aggregateId, string aggregateTypeName);
         void SubscribeByType(string typeName, Func<Aggregate, Event, Task> eventHandler, ulong subscriptionStart = 0);
+        Task AppendToAggregate(string aggregateTypeName, Event evnt, ulong expectedPosition);
+        Task AppendToAggregate(string aggregateTypeName, Event evnt, bool newStream);
     }
 
     public class AggregateService : IAggregateService {
@@ -52,7 +54,7 @@ namespace TbspRpgLib.Aggregates {
 
         public async Task HandleEvent(Event evnt, Func<Aggregate, Event, Task> eventHandler) {
             //check if the aggregate id is ok, produce an aggregate
-            var aggregateId = evnt.GetStreamId();
+            var aggregateId = evnt.StreamId;
             if(aggregateId == null) //we can't parse this event
                 return;
 
@@ -153,6 +155,27 @@ namespace TbspRpgLib.Aggregates {
             evnt.UpdateAggregate(aggregate);
             aggregate.StreamPosition = evnt.StreamPosition;
             return aggregate;
+        }
+
+        public async Task AppendToAggregate(string aggregateTypeName, Event evnt, bool newStream) {
+            PrepareEventForAppend(aggregateTypeName, evnt);
+            await _eventService.SendEvent(evnt, newStream);
+        }
+
+        public async Task AppendToAggregate(string aggregateTypeName, Event evnt, ulong expectedPosition) {
+            PrepareEventForAppend(aggregateTypeName, evnt);
+            await _eventService.SendEvent(evnt, expectedPosition);
+        }
+
+        private void PrepareEventForAppend(string aggregateTypeName, Event evnt) {
+            if(evnt.StreamId == null) {
+                //we need to populate the stream id
+                evnt.StreamId = 
+                    _aggregateTypeService.GenerateAggregateIdForAggregateType(
+                        evnt.GetDataId(),
+                        aggregateTypeName
+                    );
+            }
         }
     }
 }

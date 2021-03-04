@@ -34,15 +34,19 @@ namespace TbspRpgLib.Events
 
         public string Type { get; set; }
 
+        public string StreamId { get; set; }
+
+        public abstract string GetDataId();
+
         protected abstract EventContent GetData();
 
         protected abstract void SetData(string jsonString);
 
         public abstract string GetDataJson();
 
-        public abstract string GetStreamId();
+        // public abstract string GetStreamId();
 
-        public abstract string GetStreamIdPrefix();
+        // public abstract string GetStreamIdPrefix();
 
         public abstract void UpdateAggregate(Aggregate agg);
 
@@ -84,6 +88,7 @@ namespace TbspRpgLib.Events
             
             string jsonData = Encoding.UTF8.GetString(resolvedEvent.Event.Data.ToArray());
             evnt.SetData(jsonData);
+            evnt.StreamId = resolvedEvent.Event.EventStreamId;
             evnt.EventStoreUuid = resolvedEvent.Event.EventId;
             evnt.EventId = evnt.EventStoreUuid.ToGuid();
             evnt.GlobalPosition = resolvedEvent.Event.Position.PreparePosition;

@@ -28,7 +28,7 @@ namespace TbspRpgLib.Events
         Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, ulong start, long count);
     }
 
-    public class EventService : IEventService {
+    internal class EventService : IEventService {
         private IEventStoreSettings _eventStoreSettings;
         private EventStoreClient _eventStoreClient;
 
@@ -56,7 +56,7 @@ namespace TbspRpgLib.Events
             }
             
             await _eventStoreClient.AppendToStreamAsync(
-                evnt.GetStreamId(),
+                evnt.StreamId,
                 state,
                 new List<EventData> {
                     evnt.ToEventStoreEvent()
@@ -66,7 +66,7 @@ namespace TbspRpgLib.Events
 
         public async Task SendEvent(Event evnt, ulong expectedStreamPosition) {   
             await _eventStoreClient.AppendToStreamAsync(
-                evnt.GetStreamId(),
+                evnt.StreamId,
                 expectedStreamPosition,
                 new List<EventData> {
                     evnt.ToEventStoreEvent()

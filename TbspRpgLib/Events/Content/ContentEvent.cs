@@ -31,8 +31,8 @@ namespace TbspRpgLib.Events.Content {
             return JsonSerializer.Serialize((ContentContent)Data);
         }
 
-        public override string GetStreamIdPrefix() {
-            return AggregateTypeRepository.CONTENT_AGGREGATE_PREFIX;
-        }
+        // public override string GetStreamIdPrefix() {
+        //     return AggregateTypeRepository.CONTENT_AGGREGATE_PREFIX;
+        // }
     }
 }
