@@ -16,6 +16,7 @@ using TbspRpgLib.Events.Game;
 using TbspRpgLib.Events.Content;
 using TbspRpgLib.Tests.Mocks;
 using TbspRpgLib.Services;
+using TbspRpgLib.Repositories;
 
 namespace TbspRpgLib.Tests.Aggregate {
     public class AggregateServiceTests {
@@ -28,11 +29,13 @@ namespace TbspRpgLib.Tests.Aggregate {
                 service.GetAllEventsInStreamAsync(It.IsAny<string>())
             ).ReturnsAsync(
                 (string eventid) =>
-                    events.Where(evnt => evnt.GetStreamId() == eventid).ToList()
+                    events.Where(evnt => evnt.StreamId == eventid).ToList()
             );
 
+            var atr = new AggregateTypeRepository();
+
             return new AggregateService(
-                mockEventService.Object, null);
+                mockEventService.Object, new AggregateTypeService(atr));
         }
 
 
@@ -48,7 +51,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         AdventureName = "Demo",
                         AdventureId = "1"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterEvent(
@@ -56,7 +61,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Destination = "foo"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterCheckEvent(
@@ -64,7 +71,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Result = true
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
 
             //act
@@ -91,7 +100,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         AdventureName = "Demo",
                         AdventureId = "1"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterEvent(
@@ -99,7 +110,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Destination = "foo"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
 
             //act
@@ -120,7 +133,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         AdventureName = "Demo",
                         AdventureId = "1"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterEvent(
@@ -128,7 +143,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Destination = "foo"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
 
             //act, assert
@@ -148,7 +165,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         AdventureName = "Demo",
                         AdventureId = "1"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterEvent(
@@ -156,7 +175,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Destination = "foo"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
 
             var evnt = events.FirstOrDefault();
@@ -185,7 +206,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         AdventureName = "Demo",
                         AdventureId = "1"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterEvent(
@@ -193,7 +216,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Destination = "foo"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterCheckEvent(
@@ -201,7 +226,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Result = true
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterPassEvent(
@@ -210,7 +237,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Destination = "",
                         CurrentLocation = "foo"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
 
             //act
@@ -238,7 +267,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         AdventureName = "Demo",
                         AdventureId = "1"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterEvent(
@@ -246,7 +277,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Destination = "bar"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterCheckEvent(
@@ -254,7 +287,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Result = true
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterPassEvent(
@@ -263,7 +298,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Destination = "",
                         CurrentLocation = "bar"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterEvent(
@@ -271,7 +308,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Destination = "foo"
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterCheckEvent(
@@ -279,7 +318,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Result = false
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new LocationEnterFailEvent(
@@ -287,7 +328,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Destination = ""
                     }
-                )
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
 
             //act
@@ -312,7 +355,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Text = "Event1"
                     }
-                )
+                ) {
+                    StreamId = "content_6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
             events.Add(
                 new ContentEvent(
@@ -320,7 +365,9 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         Text = "Event2"
                     }
-                )
+                ) {
+                    StreamId = "content_6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
             );
 
             var evnt = events.FirstOrDefault();

@@ -41,14 +41,14 @@ namespace TbspRpgLib.Tests.Events {
             Assert.Equal("foo", content.Destination);
         }
 
-        [Fact]
-        public void EnterLocationEvent_GetStreamId_Valid() {
-            //arrange
-            var evnt = CreateEnterLocationEvent();
-            //act
-            var streamid = evnt.GetStreamId();
-            //assert
-            Assert.Equal("2", streamid);
-        }
+        // [Fact]
+        // public void EnterLocationEvent_GetStreamId_Valid() {
+        //     //arrange
+        //     var evnt = CreateEnterLocationEvent();
+        //     //act
+        //     var streamid = evnt.GetStreamId();
+        //     //assert
+        //     Assert.Equal("2", streamid);
+        // }
     }   
 }

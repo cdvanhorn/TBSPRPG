@@ -45,14 +45,14 @@ namespace TbspRpgLib.Tests.Events {
             Assert.Equal("Demo", content.AdventureName);
         }
 
-        [Fact]
-        public void NewGameEvent_GetStreamId_Valid() {
-            //arrange
-            var ngame = CreateNewGameEvent();
-            //act
-            var streamid = ngame.GetStreamId();
-            //assert
-            Assert.Equal("1", streamid);
-        }
+        // [Fact]
+        // public void NewGameEvent_GetStreamId_Valid() {
+        //     //arrange
+        //     var ngame = CreateNewGameEvent();
+        //     //act
+        //     var streamid = ngame.GetStreamId();
+        //     //assert
+        //     Assert.Equal("1", streamid);
+        // }
     }   
 }
