@@ -87,7 +87,9 @@ namespace TbspRpgLib.Aggregates {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
             //get all of the events in the aggregrate id stream
-            var events = await _eventService.GetAllEventsInStreamAsync(aggregateId);
+            var events = await _eventService.GetAllEventsInStreamAsync(
+                PrepareAggregateId(aggregateId, aggregateTypeName)
+            );
             CompileAggregate(aggregate, events);
             return aggregate;
         }
@@ -100,7 +102,10 @@ namespace TbspRpgLib.Aggregates {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
             //get all of the events in the aggregrate id stream
-            var events = await _eventService.GetEventsInStreamAsync(aggregateId, start);
+            var events = await _eventService.GetEventsInStreamAsync(
+                PrepareAggregateId(aggregateId, aggregateTypeName),
+                start
+            );
             CompileAggregate(aggregate, events);
             return aggregate;
         }
@@ -114,7 +119,11 @@ namespace TbspRpgLib.Aggregates {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
             //get all of the events in the aggregrate id stream
-            var events = await _eventService.GetEventsInStreamAsync(aggregateId, start, count);
+            var events = await _eventService.GetEventsInStreamAsync(
+                PrepareAggregateId(aggregateId, aggregateTypeName),
+                start,
+                count
+            );
             CompileAggregate(aggregate, events);
             return aggregate;
         }
@@ -127,7 +136,10 @@ namespace TbspRpgLib.Aggregates {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
             //get all of the events in the aggregrate id stream
-            var events = await _eventService.GetEventsInStreamReverseAsync(aggregateId, start);
+            var events = await _eventService.GetEventsInStreamReverseAsync(
+                PrepareAggregateId(aggregateId, aggregateTypeName),
+                start
+            );
             CompileAggregate(aggregate, events);
             return aggregate;
         }
@@ -141,7 +153,11 @@ namespace TbspRpgLib.Aggregates {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
             //get all of the events in the aggregrate id stream
-            var events = await _eventService.GetEventsInStreamReverseAsync(aggregateId, start, count);
+            var events = await _eventService.GetEventsInStreamReverseAsync(
+                PrepareAggregateId(aggregateId, aggregateTypeName),
+                start,
+                count
+            );
             CompileAggregate(aggregate, events);
             return aggregate;
         }
@@ -151,10 +167,22 @@ namespace TbspRpgLib.Aggregates {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
             //get all of the events in the aggregrate id stream
-            var evnt = await _eventService.GetLatestEventInStreamAsync(aggregateId);
+            var evnt = await _eventService.GetLatestEventInStreamAsync(
+                PrepareAggregateId(aggregateId, aggregateTypeName)
+            );
             evnt.UpdateAggregate(aggregate);
             aggregate.StreamPosition = evnt.StreamPosition;
             return aggregate;
+        }
+
+        private string PrepareAggregateId(string aggregateId, string aggregateTypeName) {
+            if(_aggregateTypeService.IsIdAlreadyPrefixed(aggregateId, aggregateTypeName))
+                return aggregateId;
+            else
+                return _aggregateTypeService.GenerateAggregateIdForAggregateType(
+                        aggregateId,
+                        aggregateTypeName
+                    );
         }
 
         public async Task AppendToAggregate(string aggregateTypeName, Event evnt, bool newStream) {

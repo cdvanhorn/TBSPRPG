@@ -9,6 +9,7 @@ namespace TbspRpgLib.Services {
         string GetAggregateTypeName(string aggregateId);
         string GetPrefixForAggregateType(string aggregateTypeName);
         string GenerateAggregateIdForAggregateType(string idWithoutPrefix, string aggregateTypeName);
+        bool IsIdAlreadyPrefixed(string aggregateId, string aggregateTypeName);
         List<AggregateType> GetAggregateTypes();
     }
 
@@ -40,7 +41,37 @@ namespace TbspRpgLib.Services {
 
         public string GenerateAggregateIdForAggregateType(string idWithoutPrefix, string aggregateTypeName) {
             var prefix = GetPrefixForAggregateType(aggregateTypeName);
-            return $"{prefix}{AggregateTypeRepository.AGGREGATE_ID_DIVIDER}{idWithoutPrefix}";
+            if(prefix != null)
+                return $"{prefix}{AggregateTypeRepository.AGGREGATE_ID_DIVIDER}{idWithoutPrefix}";
+            else
+                return idWithoutPrefix;
+        }
+
+        public bool IsIdAlreadyPrefixed(string aggregateId, string aggregateTypeName) {
+            var prefix = GetPrefixForAggregateType(aggregateTypeName);
+            string[] id_parts = aggregateId.Split(AggregateTypeRepository.AGGREGATE_ID_DIVIDER);
+            bool idHasPrefix = id_parts.Length > 1 ? true : false;
+            if(prefix == null && !idHasPrefix)
+                return true;
+            else if(prefix != null && !idHasPrefix)
+                return false;  //there is a prefix but it hasn't been applied to the id
+            else if(prefix != null && idHasPrefix) {
+                //if the prefixes don't match there's a big problem
+                if(prefix == id_parts[0])
+                    return true;  //the id has a prefix and it matches what it should be
+                else
+                    throw new Exception(
+                        $"{aggregateId} of type {aggregateTypeName} has the wrong prefix, prefix is {id_parts[0]} should be {prefix}"
+                    );
+            }
+            else if(prefix == null && idHasPrefix)
+                throw new Exception(
+                    $"{aggregateId} of type {aggregateTypeName} has prefix when it should not"
+                );
+            else  //probably should never get here
+                throw new Exception(
+                    $"{aggregateId} of type {aggregateTypeName} can't determine if has prefix or not"
+                );
         }
 
         public List<AggregateType> GetAggregateTypes() {
