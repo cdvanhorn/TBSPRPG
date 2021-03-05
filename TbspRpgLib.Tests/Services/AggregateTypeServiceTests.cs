@@ -41,5 +41,33 @@ namespace TbspRpgLib.Tests.Services {
             var exception = Assert.Throws<ArgumentException>(() => 
                 _aggregateTypeService.GetAggregateTypeName("conten_87656335-9169-4314-b1e2-c4568b59ebf9"));
         }
+
+        [Fact]
+        public void GetPrefixForAggregateType_Valid_ReturnPrefix() {
+            //act
+            string prefix = _aggregateTypeService.GetPrefixForAggregateType(
+                AggregateTypeRepository.CONTENT_AGGREGATE_TYPE
+            );
+
+            //assert
+            Assert.Equal(AggregateTypeRepository.CONTENT_AGGREGATE_PREFIX, prefix);
+        }
+
+        [Fact]
+        public void GetPrefixForAggregateType_Valid_EmptyPrefix() {
+            //act
+            string prefix = _aggregateTypeService.GetPrefixForAggregateType(
+                AggregateTypeRepository.GAME_AGGREGATE_TYPE
+            );
+
+            //assert
+            Assert.Null(prefix);
+        }
+
+        [Fact]
+        public void GetPrefixForAggregateType_InValid_Exception() {
+            var exception = Assert.Throws<ArgumentException>(() => 
+                _aggregateTypeService.GetPrefixForAggregateType("grapes"));
+        }
     }
 }
