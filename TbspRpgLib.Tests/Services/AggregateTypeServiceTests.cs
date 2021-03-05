@@ -69,5 +69,46 @@ namespace TbspRpgLib.Tests.Services {
             var exception = Assert.Throws<ArgumentException>(() => 
                 _aggregateTypeService.GetPrefixForAggregateType("grapes"));
         }
+
+        [Fact]
+        public void GenerateAggregateIdForAggregateType_Valid_ReturnPrefix() {
+            //arrange
+            string idwoprefix = "87656335-9169-4314-b1e2-c4568b59ebf9";
+            //act
+            string id = _aggregateTypeService.GenerateAggregateIdForAggregateType(
+                idwoprefix,
+                AggregateTypeRepository.CONTENT_AGGREGATE_TYPE
+            );
+
+            //assert
+            Assert.Equal(
+                $"{AggregateTypeRepository.CONTENT_AGGREGATE_PREFIX}_{idwoprefix}", id);
+        }
+
+        [Fact]
+        public void GenerateAggregateIdForAggregateType_Valid_EmptyPrefix() {
+            //arrange
+            string idwoprefix = "87656335-9169-4314-b1e2-c4568b59ebf9";
+            //act
+            string id = _aggregateTypeService.GenerateAggregateIdForAggregateType(
+                idwoprefix,
+                AggregateTypeRepository.GAME_AGGREGATE_TYPE
+            );
+
+            //assert
+            Assert.Equal(idwoprefix, id);
+        }
+
+        [Fact]
+        public void GenerateAggregateIdForAggregateType_InValid_Exception() {
+            //arrange
+            string idwoprefix = "87656335-9169-4314-b1e2-c4568b59ebf9";
+            //act,assert
+            var exception = Assert.Throws<ArgumentException>(() => 
+                _aggregateTypeService.GenerateAggregateIdForAggregateType(
+                    idwoprefix,
+                    "bananas"
+            ));
+        }
     }
 }
