@@ -110,5 +110,66 @@ namespace TbspRpgLib.Tests.Services {
                     "bananas"
             ));
         }
+
+        [Fact]
+        public void IsIdAlreadyPrefixed_HasPrefix_ReturnTrue() {
+            string idwprefix = $"{AggregateTypeRepository.CONTENT_AGGREGATE_PREFIX}_87656335-9169-4314-b1e2-c4568b59ebf9";
+
+            //act
+            bool prefixed = _aggregateTypeService.IsIdAlreadyPrefixed(
+                idwprefix, AggregateTypeRepository.CONTENT_AGGREGATE_TYPE);
+            
+            Assert.True(prefixed);
+        }
+
+
+        [Fact]
+        public void IsIdAlreadyPrefixed_HasNullPrefix_ReturnTrue() {
+            string idwprefix = "87656335-9169-4314-b1e2-c4568b59ebf9";
+
+            //act
+            bool prefixed = _aggregateTypeService.IsIdAlreadyPrefixed(
+                idwprefix, AggregateTypeRepository.GAME_AGGREGATE_TYPE);
+            
+            Assert.True(prefixed);
+        }
+
+
+        [Fact]
+        public void IsIdAlreadyPrefixed_NoPrefix_ReturnFalse() {
+            string idwprefix = "87656335-9169-4314-b1e2-c4568b59ebf9";
+
+            //act
+            bool prefixed = _aggregateTypeService.IsIdAlreadyPrefixed(
+                idwprefix, AggregateTypeRepository.CONTENT_AGGREGATE_TYPE);
+            
+            Assert.False(prefixed);
+        }
+
+        [Fact]
+        public void IsIdAlreadyPrefixed_WrongPrefix_Exception() {
+            //arrange
+            string idwprefix = "conten_87656335-9169-4314-b1e2-c4568b59ebf9";
+            //act,assert
+            var exception = Assert.Throws<Exception>(() => 
+                _aggregateTypeService.IsIdAlreadyPrefixed(
+                    idwprefix,
+                    AggregateTypeRepository.CONTENT_AGGREGATE_TYPE
+                )
+            );
+        }
+
+        [Fact]
+        public void IsIdAlreadyPrefixed_WrongNullPrefix_Exception() {
+            //arrange
+            string idwprefix = "content_87656335-9169-4314-b1e2-c4568b59ebf9";
+            //act,assert
+            var exception = Assert.Throws<Exception>(() => 
+                _aggregateTypeService.IsIdAlreadyPrefixed(
+                    idwprefix,
+                    AggregateTypeRepository.GAME_AGGREGATE_TYPE
+                )
+            );
+        }
     }
 }
