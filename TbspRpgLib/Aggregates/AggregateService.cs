@@ -34,6 +34,8 @@ namespace TbspRpgLib.Aggregates {
     }
 
     public class AggregateService : IAggregateService {
+        public const string CONTENT_AGGREGATE_TYPE = "ContentAggregate";
+        public const string GAME_AGGREGATE_TYPE = "GameAggregate";
         private IEventService _eventService;
         private IAggregateTypeService _aggregateTypeService;
 

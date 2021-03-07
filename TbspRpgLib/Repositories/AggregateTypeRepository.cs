@@ -15,21 +15,19 @@ namespace TbspRpgLib.Repositories {
         private List<AggregateType> _aggregateTypes;
 
         public const string CONTENT_AGGREGATE_PREFIX = "content";
-        public const string CONTENT_AGGREGATE_TYPE = "ContentAggregate";
-        public const string GAME_AGGREGATE_TYPE = "GameAggregate";
-        public const string DEFAULT_AGGREGATE_TYPE = GAME_AGGREGATE_TYPE;
+        public const string DEFAULT_AGGREGATE_TYPE = AggregateService.GAME_AGGREGATE_TYPE;
         public const char AGGREGATE_ID_DIVIDER = '_';
 
         public AggregateTypeRepository() {
             _aggregateTypes = new List<AggregateType>();
 
             _aggregateTypes.Add(new AggregateType {
-                TypeName = GAME_AGGREGATE_TYPE,
+                TypeName = AggregateService.GAME_AGGREGATE_TYPE,
                 AggregateIdPrefix = null
             });
 
             _aggregateTypes.Add(new AggregateType {
-                TypeName = CONTENT_AGGREGATE_TYPE,
+                TypeName = AggregateService.CONTENT_AGGREGATE_TYPE,
                 AggregateIdPrefix = CONTENT_AGGREGATE_PREFIX
             });
         }

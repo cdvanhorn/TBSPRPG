@@ -2,6 +2,7 @@ using Xunit;
 
 using TbspRpgLib.Services;
 using TbspRpgLib.Repositories;
+using TbspRpgLib.Aggregates;
 
 using System;
 
@@ -20,7 +21,7 @@ namespace TbspRpgLib.Tests.Services {
             string typeName = _aggregateTypeService.GetAggregateTypeName("content_87656335-9169-4314-b1e2-c4568b59ebf9");
             
             //assert
-            Assert.Equal(AggregateTypeRepository.CONTENT_AGGREGATE_TYPE, typeName);
+            Assert.Equal(AggregateService.CONTENT_AGGREGATE_TYPE, typeName);
         }
 
         [Fact]
@@ -46,7 +47,7 @@ namespace TbspRpgLib.Tests.Services {
         public void GetPrefixForAggregateType_Valid_ReturnPrefix() {
             //act
             string prefix = _aggregateTypeService.GetPrefixForAggregateType(
-                AggregateTypeRepository.CONTENT_AGGREGATE_TYPE
+                AggregateService.CONTENT_AGGREGATE_TYPE
             );
 
             //assert
@@ -57,7 +58,7 @@ namespace TbspRpgLib.Tests.Services {
         public void GetPrefixForAggregateType_Valid_EmptyPrefix() {
             //act
             string prefix = _aggregateTypeService.GetPrefixForAggregateType(
-                AggregateTypeRepository.GAME_AGGREGATE_TYPE
+                AggregateService.GAME_AGGREGATE_TYPE
             );
 
             //assert
@@ -77,7 +78,7 @@ namespace TbspRpgLib.Tests.Services {
             //act
             string id = _aggregateTypeService.GenerateAggregateIdForAggregateType(
                 idwoprefix,
-                AggregateTypeRepository.CONTENT_AGGREGATE_TYPE
+                AggregateService.CONTENT_AGGREGATE_TYPE
             );
 
             //assert
@@ -92,7 +93,7 @@ namespace TbspRpgLib.Tests.Services {
             //act
             string id = _aggregateTypeService.GenerateAggregateIdForAggregateType(
                 idwoprefix,
-                AggregateTypeRepository.GAME_AGGREGATE_TYPE
+                AggregateService.GAME_AGGREGATE_TYPE
             );
 
             //assert
@@ -117,7 +118,7 @@ namespace TbspRpgLib.Tests.Services {
 
             //act
             bool prefixed = _aggregateTypeService.IsIdAlreadyPrefixed(
-                idwprefix, AggregateTypeRepository.CONTENT_AGGREGATE_TYPE);
+                idwprefix, AggregateService.CONTENT_AGGREGATE_TYPE);
             
             Assert.True(prefixed);
         }
@@ -129,7 +130,7 @@ namespace TbspRpgLib.Tests.Services {
 
             //act
             bool prefixed = _aggregateTypeService.IsIdAlreadyPrefixed(
-                idwprefix, AggregateTypeRepository.GAME_AGGREGATE_TYPE);
+                idwprefix, AggregateService.GAME_AGGREGATE_TYPE);
             
             Assert.True(prefixed);
         }
@@ -141,7 +142,7 @@ namespace TbspRpgLib.Tests.Services {
 
             //act
             bool prefixed = _aggregateTypeService.IsIdAlreadyPrefixed(
-                idwprefix, AggregateTypeRepository.CONTENT_AGGREGATE_TYPE);
+                idwprefix, AggregateService.CONTENT_AGGREGATE_TYPE);
             
             Assert.False(prefixed);
         }
@@ -154,7 +155,7 @@ namespace TbspRpgLib.Tests.Services {
             var exception = Assert.Throws<Exception>(() => 
                 _aggregateTypeService.IsIdAlreadyPrefixed(
                     idwprefix,
-                    AggregateTypeRepository.CONTENT_AGGREGATE_TYPE
+                    AggregateService.CONTENT_AGGREGATE_TYPE
                 )
             );
         }
@@ -167,7 +168,7 @@ namespace TbspRpgLib.Tests.Services {
             var exception = Assert.Throws<Exception>(() => 
                 _aggregateTypeService.IsIdAlreadyPrefixed(
                     idwprefix,
-                    AggregateTypeRepository.GAME_AGGREGATE_TYPE
+                    AggregateService.GAME_AGGREGATE_TYPE
                 )
             );
         }
