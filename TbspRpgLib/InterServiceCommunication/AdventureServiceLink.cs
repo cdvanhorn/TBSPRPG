@@ -1,14 +1,14 @@
 using System.Threading.Tasks;
 
 namespace TbspRpgLib.InterServiceCommunication {
-    public interface IAdventureServiceCom {
+    public interface IAdventureServiceLink {
         Task<IscResponse> GetInitialLocation(string adventureId, string userId);
     }
 
-    public class AdventureServiceCom : IAdventureServiceCom {
+    public class AdventureServiceLink : IAdventureServiceLink {
         private IServiceCommunication _serviceCommunication;
 
-        public AdventureServiceCom(IServiceCommunication serviceCommuncation) {
+        public AdventureServiceLink(IServiceCommunication serviceCommuncation) {
             _serviceCommunication = serviceCommuncation;
         }
 

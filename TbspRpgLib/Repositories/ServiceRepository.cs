@@ -22,6 +22,11 @@ namespace TbspRpgLib.Repositories {
             _services = new List<Service>();
             //create service objects
             _services.Add(new Service () {
+                Id = new Guid("43dac84c-0388-4db2-94c5-3ac1ddcb97d1"),
+                Name = "user",
+                Url = "http://userapi:8001/api"
+            });
+            _services.Add(new Service () {
                 Id = new Guid("828786b0-e046-48a6-bb94-64b79bb24eaf"),
                 Name = "game",
                 Url = "http://gameapi:8003/api"

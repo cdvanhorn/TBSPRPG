@@ -12,6 +12,8 @@ using TbspRpgLib.Settings;
 namespace TbspRpgLib.InterServiceCommunication {
     public interface IServiceCommunication {
         Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId);
+
+        Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, dynamic postData);
     }
 
     public class ServiceCommunication : IServiceCommunication {
@@ -53,6 +55,11 @@ namespace TbspRpgLib.InterServiceCommunication {
             return await MakeGetServiceRequest(clientTask, endPoint, token);
         }
 
+        public async Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, dynamic postData) {
+            var clientTask = GetClientForServiceName(serviceName);
+            return await MakePostServiceRequestNoAuth(clientTask, endPoint, postData);
+        }
+
         private Task<IRestResponse> MakeGetServiceRequest(RestClient client, string endPoint, string jwtToken) {
             var request = new RestRequest(endPoint, DataFormat.Json);
             Console.WriteLine($"calling endpoint {endPoint}");
@@ -63,6 +70,17 @@ namespace TbspRpgLib.InterServiceCommunication {
             
             //let's make the request
             return client.ExecuteGetAsync(request);
+        }
+
+        private Task<IRestResponse> MakePostServiceRequestNoAuth(RestClient client, string endPoint, dynamic postData) {
+            var request = new RestRequest(endPoint, DataFormat.Json);
+            Console.WriteLine($"calling endpoint {endPoint}");
+
+            //add the post data
+            request.AddJsonBody(postData);
+
+            //make the request
+            return client.ExecutePostAsync(request);
         }
     }
 }

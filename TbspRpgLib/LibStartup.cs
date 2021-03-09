@@ -35,7 +35,7 @@ namespace TbspRpgLib {
             services.AddScoped<IServiceRepository, ServiceRepository>();
             services.AddScoped<IServiceService, ServiceService>();
             services.AddScoped<IServiceCommunication, ServiceCommunication>();
-            services.AddScoped<IAdventureServiceCom, AdventureServiceCom>();
+            services.AddScoped<IAdventureServiceLink, AdventureServiceLink>();
             services.AddScoped<IAggregateService, AggregateService>();
             services.AddScoped<IAggregateTypeRepository, AggregateTypeRepository>();
             services.AddScoped<IAggregateTypeService, AggregateTypeService>();
