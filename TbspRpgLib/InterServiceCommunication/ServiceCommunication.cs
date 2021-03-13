@@ -12,8 +12,8 @@ using TbspRpgLib.Settings;
 namespace TbspRpgLib.InterServiceCommunication {
     public interface IServiceCommunication {
         Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId);
-
         Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, dynamic postData);
+        void AddTokenForUserId(string userId, string token);
     }
 
     public class ServiceCommunication : IServiceCommunication {
@@ -47,6 +47,13 @@ namespace TbspRpgLib.InterServiceCommunication {
             }
             Console.WriteLine($"getting token {_tokens[userId]}");
             return _tokens[userId];
+        }
+
+        public void AddTokenForUserId(string userId, string token) {
+            if(!_tokens.ContainsKey(userId))
+                _tokens.Add(userId, token);
+            else
+                _tokens[userId] = token;
         }
 
         public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId) {

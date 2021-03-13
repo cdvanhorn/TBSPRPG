@@ -5,11 +5,8 @@ namespace TbspRpgLib.InterServiceCommunication {
         Task<IscResponse> GetInitialLocation(string adventureId, string userId);
     }
 
-    public class AdventureServiceLink : IAdventureServiceLink {
-        private IServiceCommunication _serviceCommunication;
-
-        public AdventureServiceLink(IServiceCommunication serviceCommuncation) {
-            _serviceCommunication = serviceCommuncation;
+    public class AdventureServiceLink : BaseServiceLink, IAdventureServiceLink {
+        public AdventureServiceLink(IServiceCommunication serviceCommuncation) : base(serviceCommuncation) {
         }
 
         public async Task<IscResponse> GetInitialLocation(string adventureId, string userId) {

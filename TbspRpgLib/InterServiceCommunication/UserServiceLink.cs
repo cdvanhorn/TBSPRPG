@@ -7,11 +7,9 @@ namespace TbspRpgLib.InterServiceCommunication {
         Task<IscResponse> GetUsers(string userId);
     }
 
-    public class UserServiceLink : IUserServiceLink {
-        private IServiceCommunication _serviceCommunication;
+    public class UserServiceLink : BaseServiceLink, IUserServiceLink {
 
-        public UserServiceLink(IServiceCommunication serviceCommunication) {
-            _serviceCommunication = serviceCommunication;
+        public UserServiceLink(IServiceCommunication serviceCommunication) : base(serviceCommunication){
         }
 
         public async Task<IscResponse> Authenticate(string userName, string password) {
