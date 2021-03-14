@@ -5,6 +5,7 @@ namespace TbspRpgLib.InterServiceCommunication {
     public interface IUserServiceLink {
         Task<IscResponse> Authenticate(string userName, string password);
         Task<IscResponse> GetUsers(string userId);
+        Task<IscResponse> CR_GetUsers(string userId, string token);
     }
 
     public class UserServiceLink : BaseServiceLink, IUserServiceLink {
@@ -26,6 +27,16 @@ namespace TbspRpgLib.InterServiceCommunication {
         }
 
         public async Task<IscResponse> GetUsers(string userId) {
+            var response = await _serviceCommunication.MakeRequestForUser(
+                "user", 
+                "users",
+                userId);
+            return new IscResponse() { Response = response };
+        }
+
+        public async Task<IscResponse> CR_GetUsers(string userId, string token) {
+            AddJwtTokenForUser(userId, token);
+            DisableServiceCache();
             var response = await _serviceCommunication.MakeRequestForUser(
                 "user", 
                 "users",

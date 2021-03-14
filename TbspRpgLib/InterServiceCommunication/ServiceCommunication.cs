@@ -14,6 +14,7 @@ namespace TbspRpgLib.InterServiceCommunication {
         Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId);
         Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, dynamic postData);
         void AddTokenForUserId(string userId, string token);
+        bool CacheService { get; set; }
     }
 
     public class ServiceCommunication : IServiceCommunication {
@@ -27,22 +28,33 @@ namespace TbspRpgLib.InterServiceCommunication {
             _tokens = new Dictionary<string, string>();
             _serviceService = serviceService;
             _jwtHelper = new JwtHelper(jwtSettings.Secret);
+            CacheService = true;
+        }
+
+        public bool CacheService { get; set; }
+
+        private RestClient CreateRestClient(string serviceName) {
+            Service service = _serviceService.GetServiceByName(serviceName);
+            if(service == null)
+                throw new ArgumentException($"invalid service name {serviceName}");
+            Console.WriteLine($"creating service with url {service.Url}");
+            return new RestClient(service.Url);
         }
 
         private RestClient GetClientForServiceName(string serviceName) {
+            if(!CacheService)
+                return CreateRestClient(serviceName);
+
             if(!_clients.ContainsKey(serviceName)) {
                 //create the client
-                Service service = _serviceService.GetServiceByName(serviceName);
-                if(service == null)
-                    throw new ArgumentException($"invalid service name {serviceName}");
-                Console.WriteLine($"creating service with url {service.Url}");
-                _clients.Add(serviceName, new RestClient(service.Url));
+                _clients.Add(serviceName, CreateRestClient(serviceName));
             }
             return _clients[serviceName];
         }
 
         private string GetTokenForUserId(string userId) {
             if(!_tokens.ContainsKey(userId)) {
+                Console.WriteLine($"generating token for {userId}");
                 _tokens.Add(userId, _jwtHelper.GenerateToken(userId));
             }
             Console.WriteLine($"getting token {_tokens[userId]}");

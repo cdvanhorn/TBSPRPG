@@ -9,5 +9,9 @@ namespace TbspRpgLib.InterServiceCommunication {
         public void AddJwtTokenForUser(string userId, string token) {
             _serviceCommunication.AddTokenForUserId(userId, token);
         }
+
+        public void DisableServiceCache() {
+            _serviceCommunication.CacheService = false;
+        }
     }
 }
