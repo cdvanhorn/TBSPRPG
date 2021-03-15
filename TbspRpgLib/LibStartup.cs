@@ -44,6 +44,7 @@ namespace TbspRpgLib {
             services.AddScoped<IUserServiceLink, UserServiceLink>();
             services.AddScoped<IGameServiceLink, GameServiceLink>();
             services.AddScoped<IMapServiceLink, MapServiceLink>();
+            services.AddScoped<IContentServiceLink, ContentServiceLink>();
         }
 
         public static void ConfigureTbspRpg(IApplicationBuilder app) {
