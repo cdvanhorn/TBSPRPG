@@ -34,12 +34,16 @@ namespace TbspRpgLib {
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IServiceRepository, ServiceRepository>();
             services.AddScoped<IServiceService, ServiceService>();
-            services.AddScoped<IServiceCommunication, ServiceCommunication>();
-            services.AddScoped<IAdventureServiceLink, AdventureServiceLink>();
-            services.AddScoped<IUserServiceLink, UserServiceLink>();
+            
             services.AddScoped<IAggregateService, AggregateService>();
             services.AddScoped<IAggregateTypeRepository, AggregateTypeRepository>();
             services.AddScoped<IAggregateTypeService, AggregateTypeService>();
+
+            services.AddScoped<IServiceCommunication, ServiceCommunication>();
+            services.AddScoped<IAdventureServiceLink, AdventureServiceLink>();
+            services.AddScoped<IUserServiceLink, UserServiceLink>();
+            services.AddScoped<IGameServiceLink, GameServiceLink>();
+            services.AddScoped<IMapServiceLink, MapServiceLink>();
         }
 
         public static void ConfigureTbspRpg(IApplicationBuilder app) {
