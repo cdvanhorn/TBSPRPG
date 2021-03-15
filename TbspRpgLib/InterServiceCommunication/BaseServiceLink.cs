@@ -1,3 +1,5 @@
+using RestSharp;
+
 namespace TbspRpgLib.InterServiceCommunication {
     public class BaseServiceLink {
         protected IServiceCommunication _serviceCommunication;
@@ -6,8 +8,17 @@ namespace TbspRpgLib.InterServiceCommunication {
             _serviceCommunication = serviceCommuncation;
         }
 
-        public void AddJwtTokenForUser(string userId, string token) {
-            _serviceCommunication.AddTokenForUserId(userId, token);
+        public void PrepareControllerRequest(Credentials creds) {
+            AddJwtTokenForUser(creds);
+            DisableServiceCache();
+        }
+
+        public IscResponse ReturnResponse(IRestResponse response) {
+            return new IscResponse() { Response = response };
+        }
+
+        public void AddJwtTokenForUser(Credentials creds) {
+            _serviceCommunication.AddTokenForUserId(creds.UserId, creds.Token);
         }
 
         public void DisableServiceCache() {

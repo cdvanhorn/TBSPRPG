@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 namespace TbspRpgLib.InterServiceCommunication {
     public interface IUserServiceLink {
         Task<IscResponse> Authenticate(string userName, string password);
-        Task<IscResponse> GetUsers(string userId);
-        Task<IscResponse> CR_GetUsers(string userId, string token);
+        Task<IscResponse> GetUsers(Credentials creds);
+        Task<IscResponse> CR_GetUsers(Credentials creds);
     }
 
     public class UserServiceLink : BaseServiceLink, IUserServiceLink {
@@ -26,22 +26,17 @@ namespace TbspRpgLib.InterServiceCommunication {
             return new IscResponse() { Response = response };
         }
 
-        public async Task<IscResponse> GetUsers(string userId) {
+        public async Task<IscResponse> GetUsers(Credentials creds) {
             var response = await _serviceCommunication.MakeRequestForUser(
                 "user", 
                 "users",
-                userId);
-            return new IscResponse() { Response = response };
+                creds.UserId);
+            return ReturnResponse(response);
         }
 
-        public async Task<IscResponse> CR_GetUsers(string userId, string token) {
-            AddJwtTokenForUser(userId, token);
-            DisableServiceCache();
-            var response = await _serviceCommunication.MakeRequestForUser(
-                "user", 
-                "users",
-                userId);
-            return new IscResponse() { Response = response };
+        public Task<IscResponse> CR_GetUsers(Credentials creds) {
+            PrepareControllerRequest(creds);
+            return GetUsers(creds);
         }
     }
 }
