@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 
 using RestSharp;
 
@@ -12,6 +13,7 @@ using TbspRpgLib.Settings;
 namespace TbspRpgLib.InterServiceCommunication {
     public interface IServiceCommunication {
         Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId);
+        Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId, object parameters);
         Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, dynamic postData);
         void AddTokenForUserId(string userId, string token);
         bool CacheService { get; set; }
@@ -71,7 +73,13 @@ namespace TbspRpgLib.InterServiceCommunication {
         public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId) {
             var clientTask = GetClientForServiceName(serviceName);
             var token = GetTokenForUserId(userId);
-            return await MakeGetServiceRequest(clientTask, endPoint, token);
+            return await MakeGetServiceRequest(clientTask, endPoint, token, null);
+        }
+
+        public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId, object parameters) {
+            var clientTask = GetClientForServiceName(serviceName);
+            var token = GetTokenForUserId(userId);
+            return await MakeGetServiceRequest(clientTask, endPoint, token, null);
         }
 
         public async Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, dynamic postData) {
@@ -79,13 +87,20 @@ namespace TbspRpgLib.InterServiceCommunication {
             return await MakePostServiceRequestNoAuth(clientTask, endPoint, postData);
         }
 
-        private Task<IRestResponse> MakeGetServiceRequest(RestClient client, string endPoint, string jwtToken) {
+        private Task<IRestResponse> MakeGetServiceRequest(RestClient client, string endPoint, string jwtToken, object parameters) {
             var request = new RestRequest(endPoint, DataFormat.Json);
             Console.WriteLine($"calling endpoint {endPoint}");
 
             //if jwtToken is null assume no authorization
             if(jwtToken != null)
                 request.AddHeader("Authorization", $"Bearer {jwtToken}");
+            
+            if(parameters != null) {
+                foreach(var propertyInfo in parameters.GetType().GetProperties()) {
+                    if(propertyInfo.GetValue(parameters) != null)
+                        request.AddParameter(propertyInfo.Name, propertyInfo.GetValue(parameters));
+                }
+            }
             
             //let's make the request
             return client.ExecuteGetAsync(request);
