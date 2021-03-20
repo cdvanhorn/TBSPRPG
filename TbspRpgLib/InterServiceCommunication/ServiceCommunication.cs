@@ -14,7 +14,7 @@ namespace TbspRpgLib.InterServiceCommunication {
     public interface IServiceCommunication {
         Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId);
         Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId, object parameters);
-        Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, dynamic postData);
+        Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, object postData);
         void AddTokenForUserId(string userId, string token);
         bool CacheService { get; set; }
     }
@@ -106,7 +106,7 @@ namespace TbspRpgLib.InterServiceCommunication {
             return client.ExecuteGetAsync(request);
         }
 
-        private Task<IRestResponse> MakePostServiceRequestNoAuth(RestClient client, string endPoint, dynamic postData) {
+        private Task<IRestResponse> MakePostServiceRequestNoAuth(RestClient client, string endPoint, object postData) {
             var request = new RestRequest(endPoint, DataFormat.Json);
             Console.WriteLine($"calling endpoint {endPoint}");
 

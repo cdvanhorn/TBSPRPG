@@ -1,13 +1,14 @@
 using System.Threading.Tasks;
+using TbspRpgLib.InterServiceCommunication.RequestModels;
 
 namespace TbspRpgLib.InterServiceCommunication {
     public interface IGameServiceLink {
         Task<IscResponse> GetGames(Credentials creds);
         Task<IscResponse> CR_GetGames(Credentials creds);
-        Task<IscResponse> StartGame(string adventureName, Credentials creds);
-        Task<IscResponse> CR_StartGame(string adventureName, Credentials creds);
-        Task<IscResponse> GetGameForAdventure(string adventureName, Credentials creds);
-        Task<IscResponse> CR_GetGameForAdventure(string adventureName, Credentials creds);
+        Task<IscResponse> StartGame(GameRequest requestData, Credentials creds);
+        Task<IscResponse> CR_StartGame(GameRequest requestData, Credentials creds);
+        Task<IscResponse> GetGameForAdventure(GameRequest requestData, Credentials creds);
+        Task<IscResponse> CR_GetGameForAdventure(GameRequest requestData, Credentials creds);
     }
 
     public class GameServiceLink : BaseServiceLink, IGameServiceLink {
@@ -27,32 +28,32 @@ namespace TbspRpgLib.InterServiceCommunication {
             return GetGames(creds);
         }
 
-        public async Task<IscResponse> StartGame(string adventureName, Credentials creds) {
+        public async Task<IscResponse> StartGame(GameRequest requestData, Credentials creds) {
             var response = await _serviceCommunication.MakeRequestForUser(
                 "game",
-                $"games/start/{adventureName}",
+                $"games/start/{requestData.AdventureId}",
                 creds.UserId
             );
             return ReturnResponse(response);
         }
 
-        public Task<IscResponse> CR_StartGame(string adventureName, Credentials creds) {
+        public Task<IscResponse> CR_StartGame(GameRequest requestData, Credentials creds) {
             PrepareControllerRequest(creds);
-            return StartGame(adventureName, creds);
+            return StartGame(requestData, creds);
         }
 
-        public async Task<IscResponse> GetGameForAdventure(string adventureName, Credentials creds) {
+        public async Task<IscResponse> GetGameForAdventure(GameRequest requestData, Credentials creds) {
             var response = await _serviceCommunication.MakeRequestForUser(
                 "game",
-                $"games/{adventureName}",
+                $"games/{requestData.AdventureId}",
                 creds.UserId
             );
             return ReturnResponse(response);
         }
 
-        public Task<IscResponse> CR_GetGameForAdventure(string adventureName, Credentials creds) {
+        public Task<IscResponse> CR_GetGameForAdventure(GameRequest requestData, Credentials creds) {
             PrepareControllerRequest(creds);
-            return GetGameForAdventure(adventureName, creds);
+            return GetGameForAdventure(requestData, creds);
         }
     }
 }

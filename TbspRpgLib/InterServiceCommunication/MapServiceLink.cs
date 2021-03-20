@@ -1,11 +1,12 @@
 using System.Threading.Tasks;
+using TbspRpgLib.InterServiceCommunication.RequestModels;
 
 namespace TbspRpgLib.InterServiceCommunication {
     public interface IMapServiceLink {
         Task<IscResponse> GetLocations(Credentials creds);
         Task<IscResponse> CR_GetLocations(Credentials creds);
-        Task<IscResponse> GetLocationByGameId(string gameId, Credentials creds);
-        Task<IscResponse> CR_GetLocationByGameId(string gameId, Credentials creds);
+        Task<IscResponse> GetLocationByGameId(MapRequest requestData, Credentials creds);
+        Task<IscResponse> CR_GetLocationByGameId(MapRequest requestData, Credentials creds);
     }
 
     public class MapServiceLink : BaseServiceLink, IMapServiceLink {
@@ -25,18 +26,18 @@ namespace TbspRpgLib.InterServiceCommunication {
             return GetLocations(creds);
         }
 
-        public async Task<IscResponse> GetLocationByGameId(string gameId, Credentials creds) {
+        public async Task<IscResponse> GetLocationByGameId(MapRequest requestData, Credentials creds) {
             var response = await _serviceCommunication.MakeRequestForUser(
                 "map",
-                $"locations/{gameId}",
+                $"locations/{requestData.GameId}",
                 creds.UserId
             );
             return ReturnResponse(response);
         }
 
-        public Task<IscResponse> CR_GetLocationByGameId(string gameId, Credentials creds) {
+        public Task<IscResponse> CR_GetLocationByGameId(MapRequest requestData, Credentials creds) {
             PrepareControllerRequest(creds);
-            return GetLocationByGameId(gameId, creds);
+            return GetLocationByGameId(requestData, creds);
         }
     }
 }
