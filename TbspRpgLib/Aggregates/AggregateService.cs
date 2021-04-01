@@ -9,6 +9,7 @@ using TbspRpgLib.Services;
 namespace TbspRpgLib.Aggregates {
     public interface IAggregateService {
         Task<Aggregate> BuildAggregate(string aggregateId, string aggregateTypeName);
+        Task<Aggregate> BuildAggregateReverse(string aggregateId, string aggregateTypeName);
         Task<Aggregate> BuildPartialAggregate(
             string aggregateId,
             string aggregateTypeName,
@@ -21,11 +22,11 @@ namespace TbspRpgLib.Aggregates {
         Task<Aggregate> BuildPartialAggregateReverse(
             string aggregateId,
             string aggregateTypeName,
-            ulong start);
+            long start);
         Task<Aggregate> BuildPartialAggregateReverse(
             string aggregateId,
             string aggregateTypeName,
-            ulong start,
+            long start,
             long count);
         Task<Aggregate> BuildPartialAggregateLatest(string aggregateId, string aggregateTypeName);
         void SubscribeByType(string typeName, Func<Aggregate, Event, Task> eventHandler, ulong subscriptionStart = 0);
@@ -88,8 +89,19 @@ namespace TbspRpgLib.Aggregates {
         public async Task<Aggregate> BuildAggregate(string aggregateId, string aggregateTypeName) {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
-            //get all of the events in the aggregrate id stream
+            //get all of the events in the aggregate id stream
             var events = await _eventService.GetAllEventsInStreamAsync(
+                PrepareAggregateId(aggregateId, aggregateTypeName)
+            );
+            CompileAggregate(aggregate, events);
+            return aggregate;
+        }
+        
+        public async Task<Aggregate> BuildAggregateReverse(string aggregateId, string aggregateTypeName) {
+            //create a new aggregate of the appropriate type
+            Aggregate aggregate = CreateAggregate(aggregateTypeName);
+            //get all of the events in the aggregate id stream
+            var events = await _eventService.GetAllEventsInStreamReverseAsync(
                 PrepareAggregateId(aggregateId, aggregateTypeName)
             );
             CompileAggregate(aggregate, events);
@@ -103,7 +115,7 @@ namespace TbspRpgLib.Aggregates {
         {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
-            //get all of the events in the aggregrate id stream
+            //get all of the events in the aggregate id stream
             var events = await _eventService.GetEventsInStreamAsync(
                 PrepareAggregateId(aggregateId, aggregateTypeName),
                 start
@@ -120,7 +132,7 @@ namespace TbspRpgLib.Aggregates {
         {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
-            //get all of the events in the aggregrate id stream
+            //get all of the events in the aggregate id stream
             var events = await _eventService.GetEventsInStreamAsync(
                 PrepareAggregateId(aggregateId, aggregateTypeName),
                 start,
@@ -133,11 +145,11 @@ namespace TbspRpgLib.Aggregates {
         public async Task<Aggregate> BuildPartialAggregateReverse(
             string aggregateId,
             string aggregateTypeName,
-            ulong start)
+            long start)
         {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
-            //get all of the events in the aggregrate id stream
+            //get all of the events in the aggregate id stream
             var events = await _eventService.GetEventsInStreamReverseAsync(
                 PrepareAggregateId(aggregateId, aggregateTypeName),
                 start
@@ -149,12 +161,12 @@ namespace TbspRpgLib.Aggregates {
         public async Task<Aggregate> BuildPartialAggregateReverse(
             string aggregateId,
             string aggregateTypeName,
-            ulong start,
+            long start,
             long count)
         {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
-            //get all of the events in the aggregrate id stream
+            //get all of the events in the aggregate id stream
             var events = await _eventService.GetEventsInStreamReverseAsync(
                 PrepareAggregateId(aggregateId, aggregateTypeName),
                 start,
@@ -168,7 +180,7 @@ namespace TbspRpgLib.Aggregates {
         {
             //create a new aggregate of the appropriate type
             Aggregate aggregate = CreateAggregate(aggregateTypeName);
-            //get all of the events in the aggregrate id stream
+            //get all of the events in the aggregate id stream
             var evnt = await _eventService.GetLatestEventInStreamAsync(
                 PrepareAggregateId(aggregateId, aggregateTypeName)
             );

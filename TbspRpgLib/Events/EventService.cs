@@ -24,8 +24,8 @@ namespace TbspRpgLib.Events
         Task<Event> GetEventInStreamAsync(string streamId, ulong index);
         Task<List<Event>> GetEventsInStreamAsync(string streamId, ulong start);
         Task<List<Event>> GetEventsInStreamAsync(string streamId, ulong start, long count);
-        Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, ulong start);
-        Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, ulong start, long count);
+        Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, long start);
+        Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, long start, long count);
     }
 
     internal class EventService : IEventService {
@@ -160,20 +160,20 @@ namespace TbspRpgLib.Events
         }
 
         //get the events in reverse from the specified position to the beginning
-        public async Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, ulong start) {
+        public async Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, long start) {
             return await GetEventsInStreamAsync(
                 streamId,
                 Direction.Backwards,
-                (long)start
+                start
             );
         }
 
         //get the specified number of events in reverse from the specified position
-        public async Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, ulong start, long count) {
+        public async Task<List<Event>> GetEventsInStreamReverseAsync(string streamId, long start, long count) {
             return await GetEventsInStreamAsync(
                 streamId,
                 Direction.Backwards,
-                (long)start,
+                start,
                 count
             );
         }
