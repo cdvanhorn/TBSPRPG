@@ -79,7 +79,7 @@ namespace TbspRpgLib.InterServiceCommunication {
         public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId, object parameters) {
             var clientTask = GetClientForServiceName(serviceName);
             var token = GetTokenForUserId(userId);
-            return await MakeGetServiceRequest(clientTask, endPoint, token, null);
+            return await MakeGetServiceRequest(clientTask, endPoint, token, parameters);
         }
 
         public async Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, dynamic postData) {
