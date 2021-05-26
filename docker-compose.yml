@@ -113,6 +113,21 @@ services:
       - postgres
       - eventstore
       - adventureapi
+
+  admin:
+    build: ./TBSPRPG_Admin
+    ports:
+      - '8080:8000'
+    volumes:
+      - './TBSPRPG_Admin:/app'
+    environment:
+      - 'SECRET_KEY=${SECRET_KEY}'
+      - 'DATABASE_USER=${POSTGRESUSER}'
+      - 'DATABASE_PASSWORD=${POSTGRESPASSWORD}'
+      - 'DATABASE_HOST=postgres'
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - postgres
   
   postgres:
     image: postgres:12-alpine
@@ -143,3 +158,4 @@ services:
     volumes:
       - './TBSPRPG_UI/tbsprpg:/app'
     command: npm install
+        #command: sh -c "ng update @angular/cli @angular/core && ng update @angular/cdk @angular/material --force && ng update rxjs && ng update @angular/flex-layout && ng update"
