@@ -42,7 +42,6 @@ namespace TbspRpgLib {
 
             services.AddScoped<ITokenManager, TokenManager>();
             services.AddScoped<IServiceManager, ServiceManager>();
-            services.AddScoped<IServiceCommunication, ServiceCommunication>();
             services.AddScoped<IAdventureServiceLink, AdventureServiceLink>();
             services.AddScoped<IUserServiceLink, UserServiceLink>();
             services.AddScoped<IGameServiceLink, GameServiceLink>();

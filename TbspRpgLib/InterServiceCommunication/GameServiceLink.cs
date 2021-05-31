@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using TbspRpgLib.InterServiceCommunication.RequestModels;
+using TbspRpgLib.InterServiceCommunication.Utilities;
 
 namespace TbspRpgLib.InterServiceCommunication {
     public interface IGameServiceLink {
@@ -12,11 +13,14 @@ namespace TbspRpgLib.InterServiceCommunication {
     }
 
     public class GameServiceLink : BaseServiceLink, IGameServiceLink {
-        public GameServiceLink(IServiceCommunication serviceCommuncation) : base(serviceCommuncation) { }
+        public GameServiceLink(ITokenManager tokenManager, IServiceManager serviceManager) :
+            base(tokenManager, serviceManager)
+        {
+            ServiceName = "game";
+        }
 
         public async Task<IscResponse> GetGames(Credentials creds) {
-            var response = await _serviceCommunication.MakeRequestForUser(
-                "game",
+            var response = await MakeRequestForUser(
                 "games",
                 creds.UserId
             );
@@ -29,8 +33,7 @@ namespace TbspRpgLib.InterServiceCommunication {
         }
 
         public async Task<IscResponse> StartGame(GameRequest requestData, Credentials creds) {
-            var response = await _serviceCommunication.MakeRequestForUser(
-                "game",
+            var response = await MakeRequestForUser(
                 $"games/start/{requestData.AdventureId}",
                 creds.UserId
             );
@@ -43,8 +46,7 @@ namespace TbspRpgLib.InterServiceCommunication {
         }
 
         public async Task<IscResponse> GetGameForAdventure(GameRequest requestData, Credentials creds) {
-            var response = await _serviceCommunication.MakeRequestForUser(
-                "game",
+            var response = await MakeRequestForUser(
                 $"games/{requestData.AdventureId}",
                 creds.UserId
             );

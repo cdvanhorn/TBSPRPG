@@ -1,6 +1,7 @@
 using System.Dynamic;
 using System.Threading.Tasks;
 using TbspRpgLib.InterServiceCommunication.RequestModels;
+using TbspRpgLib.InterServiceCommunication.Utilities;
 
 namespace TbspRpgLib.InterServiceCommunication {
     public interface IUserServiceLink {
@@ -11,12 +12,14 @@ namespace TbspRpgLib.InterServiceCommunication {
 
     public class UserServiceLink : BaseServiceLink, IUserServiceLink {
 
-        public UserServiceLink(IServiceCommunication serviceCommunication) : base(serviceCommunication){
+        public UserServiceLink(ITokenManager tokenManager, IServiceManager serviceManager) : 
+            base(tokenManager, serviceManager)
+        {
+            ServiceName = "user";
         }
 
         public async Task<IscResponse> Authenticate(UserRequest requestData) {
-            var response = await _serviceCommunication.MakePostNoAuth(
-                "user",
+            var response = await MakePostNoAuth(
                 "users/authenticate",
                 requestData
             );
@@ -24,8 +27,7 @@ namespace TbspRpgLib.InterServiceCommunication {
         }
 
         public async Task<IscResponse> GetUsers(Credentials creds) {
-            var response = await _serviceCommunication.MakeRequestForUser(
-                "user", 
+            var response = await MakeRequestForUser(
                 "users",
                 creds.UserId);
             return ReturnResponse(response);
