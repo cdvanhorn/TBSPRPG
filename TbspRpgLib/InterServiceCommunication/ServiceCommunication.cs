@@ -1,15 +1,9 @@
-using System;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
 
 using RestSharp;
 
-using TbspRpgLib.Entities;
+using TbspRpgLib.InterServiceCommunication.RequestModels;
 using TbspRpgLib.InterServiceCommunication.Utilities;
-using TbspRpgLib.Services;
-using TbspRpgLib.Jwt;
-using TbspRpgLib.Settings;
 
 namespace TbspRpgLib.InterServiceCommunication {
     public interface IServiceCommunication {
@@ -40,50 +34,33 @@ namespace TbspRpgLib.InterServiceCommunication {
         }
 
         public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId) {
-            var clientTask = _serviceManager.GetClientForServiceName(serviceName);
             var token = _tokenManager.GetTokenForUserId(userId);
-            return await MakeGetServiceRequest(clientTask, endPoint, token, null);
+            return await _serviceManager.MakeGetServiceRequest(new Request()
+            {
+                ServiceName = serviceName,
+                EndPoint = endPoint,
+                Token = token
+            });
         }
 
         public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId, object parameters) {
-            var clientTask = _serviceManager.GetClientForServiceName(serviceName);
             var token = _tokenManager.GetTokenForUserId(userId);
-            return await MakeGetServiceRequest(clientTask, endPoint, token, parameters);
+            return await _serviceManager.MakeGetServiceRequest(new Request()
+            {
+                ServiceName = serviceName,
+                EndPoint = endPoint,
+                Token = token,
+                Parameters = parameters
+            });
         }
 
         public async Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, dynamic postData) {
-            var clientTask = _serviceManager.GetClientForServiceName(serviceName);
-            return await MakePostServiceRequestNoAuth(clientTask, endPoint, postData);
-        }
-
-        private Task<IRestResponse> MakeGetServiceRequest(RestClient client, string endPoint, string jwtToken, object parameters) {
-            var request = new RestRequest(endPoint, DataFormat.Json);
-            Console.WriteLine($"calling endpoint {endPoint}");
-
-            //if jwtToken is null assume no authorization
-            if(jwtToken != null)
-                request.AddHeader("Authorization", $"Bearer {jwtToken}");
-            
-            if(parameters != null) {
-                foreach(var propertyInfo in parameters.GetType().GetProperties()) {
-                    if(propertyInfo.GetValue(parameters) != null)
-                        request.AddParameter(propertyInfo.Name, propertyInfo.GetValue(parameters));
-                }
-            }
-            
-            //let's make the request
-            return client.ExecuteGetAsync(request);
-        }
-
-        private Task<IRestResponse> MakePostServiceRequestNoAuth(RestClient client, string endPoint, object postData) {
-            var request = new RestRequest(endPoint, DataFormat.Json);
-            Console.WriteLine($"calling endpoint {endPoint}");
-
-            //add the post data
-            request.AddJsonBody(postData);
-
-            //make the request
-            return client.ExecutePostAsync(request);
+            return await _serviceManager.MakePostServiceRequestNoAuth(new Request()
+            {
+                ServiceName = serviceName,
+                EndPoint = endPoint,
+                PostData = postData
+            });
         }
     }
 }
