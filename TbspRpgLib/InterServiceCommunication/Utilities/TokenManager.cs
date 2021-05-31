@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using TbspRpgLib.Jwt;
 using TbspRpgLib.Settings;
@@ -13,29 +14,27 @@ namespace TbspRpgLib.InterServiceCommunication.Utilities
     
     public class TokenManager : ITokenManager
     {
-        private readonly Dictionary<string, string> _tokens;
+        private static readonly ConcurrentDictionary<string, string> _tokens
+            = new ConcurrentDictionary<string, string>();
         private readonly IJwtHelper _jwtHelper;
 
         public TokenManager(IJwtSettings jwtSettings)
         {
-            _tokens = new Dictionary<string, string>();
             _jwtHelper = new JwtHelper(jwtSettings.Secret);
         }
         
         public string GetTokenForUserId(string userId)
         {
-            if(!_tokens.ContainsKey(userId)) {
-                _tokens.Add(userId, _jwtHelper.GenerateToken(userId));
+            if(!_tokens.ContainsKey(userId))
+            {
+                _tokens[userId] = _jwtHelper.GenerateToken(userId);
             }
             return _tokens[userId];
         }
 
         public void AddTokenForUserId(string userId, string token)
         {
-            if(!_tokens.ContainsKey(userId))
-                _tokens.Add(userId, token);
-            else
-                _tokens[userId] = token;
+            _tokens[userId] = token;
         }
     }
 }
