@@ -17,19 +17,16 @@ namespace TbspRpgLib.InterServiceCommunication {
         Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId, object parameters);
         Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, object postData);
         void AddTokenForUserId(string userId, string token);
-        bool CacheService { get; set; }
+        void DisableServiceCache();
     }
 
     public class ServiceCommunication : IServiceCommunication {
-        private readonly Dictionary<string, RestClient> _clients;
-        private readonly IServiceService _serviceService;
         private readonly ITokenManager _tokenManager;
+        private readonly IServiceManager _serviceManager;
 
-        public ServiceCommunication(IServiceService serviceService, ITokenManager tokenManager) {
-            _clients = new Dictionary<string, RestClient>();
-            _serviceService = serviceService;
+        public ServiceCommunication(ITokenManager tokenManager, IServiceManager serviceManager) {
             _tokenManager = tokenManager;
-            CacheService = true;
+            _serviceManager = serviceManager;
         }
 
         public void AddTokenForUserId(string userId, string token)
@@ -37,41 +34,25 @@ namespace TbspRpgLib.InterServiceCommunication {
             _tokenManager.AddTokenForUserId(userId, token);
         }
 
-        public bool CacheService { get; set; }
-
-        private RestClient CreateRestClient(string serviceName) {
-            Service service = _serviceService.GetServiceByName(serviceName);
-            if(service == null)
-                throw new ArgumentException($"invalid service name {serviceName}");
-            Console.WriteLine($"creating service with url {service.Url}");
-            return new RestClient(service.Url);
-        }
-
-        private RestClient GetClientForServiceName(string serviceName) {
-            if(!CacheService)
-                return CreateRestClient(serviceName);
-
-            if(!_clients.ContainsKey(serviceName)) {
-                //create the client
-                _clients.Add(serviceName, CreateRestClient(serviceName));
-            }
-            return _clients[serviceName];
+        public void DisableServiceCache()
+        {
+            _serviceManager.CacheService = false;
         }
 
         public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId) {
-            var clientTask = GetClientForServiceName(serviceName);
+            var clientTask = _serviceManager.GetClientForServiceName(serviceName);
             var token = _tokenManager.GetTokenForUserId(userId);
             return await MakeGetServiceRequest(clientTask, endPoint, token, null);
         }
 
         public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId, object parameters) {
-            var clientTask = GetClientForServiceName(serviceName);
+            var clientTask = _serviceManager.GetClientForServiceName(serviceName);
             var token = _tokenManager.GetTokenForUserId(userId);
             return await MakeGetServiceRequest(clientTask, endPoint, token, parameters);
         }
 
         public async Task<IRestResponse> MakePostNoAuth(string serviceName, string endPoint, dynamic postData) {
-            var clientTask = GetClientForServiceName(serviceName);
+            var clientTask = _serviceManager.GetClientForServiceName(serviceName);
             return await MakePostServiceRequestNoAuth(clientTask, endPoint, postData);
         }
 
