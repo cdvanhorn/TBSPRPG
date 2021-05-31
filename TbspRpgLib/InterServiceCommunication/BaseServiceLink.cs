@@ -23,7 +23,7 @@ namespace TbspRpgLib.InterServiceCommunication {
         }
 
         public void DisableServiceCache() {
-            _serviceCommunication.CacheService = false;
+            _serviceCommunication.DisableServiceCache();
         }
     }
 }
