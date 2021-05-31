@@ -6,6 +6,7 @@ using System.Linq;
 using RestSharp;
 
 using TbspRpgLib.Entities;
+using TbspRpgLib.InterServiceCommunication.Utilities;
 using TbspRpgLib.Services;
 using TbspRpgLib.Jwt;
 using TbspRpgLib.Settings;
@@ -20,17 +21,20 @@ namespace TbspRpgLib.InterServiceCommunication {
     }
 
     public class ServiceCommunication : IServiceCommunication {
-        private Dictionary<string, RestClient> _clients;
-        private Dictionary<string, string> _tokens;
-        private IServiceService _serviceService;
-        private IJwtHelper _jwtHelper;
+        private readonly Dictionary<string, RestClient> _clients;
+        private readonly IServiceService _serviceService;
+        private readonly ITokenManager _tokenManager;
 
-        public ServiceCommunication(IServiceService serviceService, IJwtSettings jwtSettings) {
+        public ServiceCommunication(IServiceService serviceService, ITokenManager tokenManager) {
             _clients = new Dictionary<string, RestClient>();
-            _tokens = new Dictionary<string, string>();
             _serviceService = serviceService;
-            _jwtHelper = new JwtHelper(jwtSettings.Secret);
+            _tokenManager = tokenManager;
             CacheService = true;
+        }
+
+        public void AddTokenForUserId(string userId, string token)
+        {
+            _tokenManager.AddTokenForUserId(userId, token);
         }
 
         public bool CacheService { get; set; }
@@ -54,31 +58,15 @@ namespace TbspRpgLib.InterServiceCommunication {
             return _clients[serviceName];
         }
 
-        private string GetTokenForUserId(string userId) {
-            if(!_tokens.ContainsKey(userId)) {
-                Console.WriteLine($"generating token for {userId}");
-                _tokens.Add(userId, _jwtHelper.GenerateToken(userId));
-            }
-            Console.WriteLine($"getting token {_tokens[userId]}");
-            return _tokens[userId];
-        }
-
-        public void AddTokenForUserId(string userId, string token) {
-            if(!_tokens.ContainsKey(userId))
-                _tokens.Add(userId, token);
-            else
-                _tokens[userId] = token;
-        }
-
         public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId) {
             var clientTask = GetClientForServiceName(serviceName);
-            var token = GetTokenForUserId(userId);
+            var token = _tokenManager.GetTokenForUserId(userId);
             return await MakeGetServiceRequest(clientTask, endPoint, token, null);
         }
 
         public async Task<IRestResponse> MakeRequestForUser(string serviceName, string endPoint, string userId, object parameters) {
             var clientTask = GetClientForServiceName(serviceName);
-            var token = GetTokenForUserId(userId);
+            var token = _tokenManager.GetTokenForUserId(userId);
             return await MakeGetServiceRequest(clientTask, endPoint, token, parameters);
         }
 

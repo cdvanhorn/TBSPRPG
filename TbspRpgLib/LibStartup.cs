@@ -13,6 +13,7 @@ using TbspRpgLib.InterServiceCommunication;
 using TbspRpgLib.Aggregates;
 
 using System;
+using TbspRpgLib.InterServiceCommunication.Utilities;
 
 namespace TbspRpgLib {
     public class LibStartup {
@@ -39,6 +40,7 @@ namespace TbspRpgLib {
             services.AddScoped<IAggregateTypeRepository, AggregateTypeRepository>();
             services.AddScoped<IAggregateTypeService, AggregateTypeService>();
 
+            services.AddScoped<ITokenManager, TokenManager>();
             services.AddScoped<IServiceCommunication, ServiceCommunication>();
             services.AddScoped<IAdventureServiceLink, AdventureServiceLink>();
             services.AddScoped<IUserServiceLink, UserServiceLink>();

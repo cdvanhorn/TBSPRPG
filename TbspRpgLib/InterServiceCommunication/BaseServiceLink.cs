@@ -1,11 +1,12 @@
 using RestSharp;
+using TbspRpgLib.InterServiceCommunication.Utilities;
 
 namespace TbspRpgLib.InterServiceCommunication {
     public class BaseServiceLink {
-        protected IServiceCommunication _serviceCommunication;
+        protected readonly IServiceCommunication _serviceCommunication;
 
-        public BaseServiceLink(IServiceCommunication serviceCommuncation) {
-            _serviceCommunication = serviceCommuncation;
+        public BaseServiceLink(IServiceCommunication serviceCommunication) {
+            _serviceCommunication = serviceCommunication;
         }
 
         public void PrepareControllerRequest(Credentials creds) {
