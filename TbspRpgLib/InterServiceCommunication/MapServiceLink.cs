@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using TbspRpgLib.InterServiceCommunication.RequestModels;
+using TbspRpgLib.InterServiceCommunication.Utilities;
 
 namespace TbspRpgLib.InterServiceCommunication {
     public interface IMapServiceLink {
@@ -10,11 +11,14 @@ namespace TbspRpgLib.InterServiceCommunication {
     }
 
     public class MapServiceLink : BaseServiceLink, IMapServiceLink {
-        public MapServiceLink(IServiceCommunication serviceCommuncation) : base(serviceCommuncation) { }
+        public MapServiceLink(ITokenManager tokenManager, IServiceManager serviceManager) :
+            base(tokenManager, serviceManager)
+        {
+            ServiceName = "map";
+        }
 
         public async Task<IscResponse> GetLocations(Credentials creds) {
-            var response = await _serviceCommunication.MakeRequestForUser(
-                "map",
+            var response = await MakeRequestForUser(
                 "locations",
                 creds.UserId
             );
@@ -27,8 +31,7 @@ namespace TbspRpgLib.InterServiceCommunication {
         }
 
         public async Task<IscResponse> GetLocationByGameId(MapRequest requestData, Credentials creds) {
-            var response = await _serviceCommunication.MakeRequestForUser(
-                "map",
+            var response = await MakeRequestForUser(
                 $"locations/{requestData.GameId}",
                 creds.UserId
             );

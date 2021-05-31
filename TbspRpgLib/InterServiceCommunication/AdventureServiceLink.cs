@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using TbspRpgLib.InterServiceCommunication.RequestModels;
+using TbspRpgLib.InterServiceCommunication.Utilities;
 
 namespace TbspRpgLib.InterServiceCommunication {
     public interface IAdventureServiceLink {
@@ -12,11 +13,14 @@ namespace TbspRpgLib.InterServiceCommunication {
     }
 
     public class AdventureServiceLink : BaseServiceLink, IAdventureServiceLink {
-        public AdventureServiceLink(IServiceCommunication serviceCommuncation) : base(serviceCommuncation) { }
+        public AdventureServiceLink(ITokenManager tokenManager, IServiceManager serviceManager) :
+            base(tokenManager, serviceManager)
+        {
+            ServiceName = "adventure";
+        }
 
         public async Task<IscResponse> GetInitialLocation(AdventureRequest requestData, Credentials creds) {
-            var response = await _serviceCommunication.MakeRequestForUser(
-                "adventure", 
+            var response = await MakeRequestForUser(
                 $"adventures/initiallocation/{requestData.Id}",
                 creds.UserId);
             return ReturnResponse(response);
@@ -28,8 +32,7 @@ namespace TbspRpgLib.InterServiceCommunication {
         }
 
         public async Task<IscResponse> GetAdventureByName(AdventureRequest requestData, Credentials creds) {
-            var response = await _serviceCommunication.MakeRequestForUser(
-                "adventure",
+            var response = await MakeRequestForUser(
                 $"adventures/{requestData.Name}",
                 creds.UserId
             );
@@ -42,8 +45,7 @@ namespace TbspRpgLib.InterServiceCommunication {
         }
 
         public async Task<IscResponse> GetAdventures(Credentials creds) {
-            var response = await _serviceCommunication.MakeRequestForUser(
-                "adventure",
+            var response = await MakeRequestForUser(
                 "adventures",
                 creds.UserId
             );
