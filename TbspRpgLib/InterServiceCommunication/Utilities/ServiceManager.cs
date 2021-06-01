@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using RestSharp;
@@ -12,19 +13,21 @@ namespace TbspRpgLib.InterServiceCommunication.Utilities
     {
         bool CacheService { get; set; }
         RestClient GetClientForServiceName(string serviceName);
+        void AddClientForServiceName(string serviceName, RestClient client);
         Task<IRestResponse> MakeGetServiceRequest(Request request);
         Task<IRestResponse> MakePostServiceRequestNoAuth(Request request);
     }
     
     public class ServiceManager : IServiceManager
     {
-        private readonly Dictionary<string, RestClient> _clients;
+        private static readonly ConcurrentDictionary<string, RestClient> _clients
+            = new ConcurrentDictionary<string, RestClient>();
         private readonly IServiceService _serviceService;
 
         public ServiceManager(IServiceService serviceService)
         {
-            _clients = new Dictionary<string, RestClient>();
             _serviceService = serviceService;
+            CacheService = true;
         }
         
         public bool CacheService { get; set; }
@@ -36,13 +39,17 @@ namespace TbspRpgLib.InterServiceCommunication.Utilities
             return new RestClient(service.Url);
         }
 
+        public void AddClientForServiceName(string serviceName, RestClient client)
+        {
+            _clients[serviceName] = client;
+        }
+
         public RestClient GetClientForServiceName(string serviceName) {
             if(!CacheService)
                 return CreateRestClient(serviceName);
 
             if(!_clients.ContainsKey(serviceName)) {
-                //create the client
-                _clients.Add(serviceName, CreateRestClient(serviceName));
+                AddClientForServiceName(serviceName, CreateRestClient(serviceName));
             }
             return _clients[serviceName];
         }
