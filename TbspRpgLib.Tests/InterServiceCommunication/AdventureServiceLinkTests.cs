@@ -1,33 +1,109 @@
+using System;
+using System.Dynamic;
+using System.Text.Json;
+using Moq;
+using RestSharp;
+using TbspRpgLib.InterServiceCommunication;
+using TbspRpgLib.InterServiceCommunication.RequestModels;
+using TbspRpgLib.InterServiceCommunication.Utilities;
 using Xunit;
 
 namespace TbspRpgLib.Tests.InterServiceCommunication
 {
     public class AdventureServiceLinkTests
     {
-        public AdventureServiceLinkTests()
+
+        #region Setup
+
+        private readonly Guid _userToken = Guid.NewGuid();
+
+        public AdventureServiceLink CreateServiceLink()
         {
-            //moq service communication the CreateRestClient method to return our moq version of RestClient
-            //may need to break RestClient creation in to it's own Class to make it easier to test
-            //Service communication isn't really testable as it is.
+            var mockTokenManager = new Mock<ITokenManager>();
+            mockTokenManager.Setup(manager => manager.GetTokenForUserId(It.IsAny<string>()))
+                .Returns((string userid) => _userToken.ToString());
+
+            var mockServiceManager = new Mock<IServiceManager>();
+            mockServiceManager.Setup(sm => sm.MakeGetServiceRequest(It.IsAny<Request>()))
+                .ReturnsAsync((Request request) =>
+                {
+                    return new RestResponse()
+                    {
+                        Content = $"{request.ServiceName}_{request.EndPoint}_{request.Token}_{request.Parameters}"
+                    };
+                });
+            
+            return new AdventureServiceLink(mockTokenManager.Object, mockServiceManager.Object);
         }
+
+        #endregion
+        
 
         #region GetAdventures
 
-        // [Fact]
-        // public async void GetAdventures_
-        //verify token is found if not created
-        //verify token added to header
-        //verify if parameters are added
-        //verify that it is trying to contact the correct endpoint
-        //verify that the service is found and created
+        [Fact]
+        public async void GetAdventures_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = CreateServiceLink();
+            
+            //act
+            var response = await serviceLink.GetAdventures(new Credentials()
+            {
+                UserId = "userid"
+            });
+            
+            //assert
+            Assert.Equal($"adventure_adventures_{_userToken}_", response.Response.Content);
+        }
+
+        #endregion
+
+        #region GetAdventureByName
+
+        [Fact]
+        public async void GetAdventureByName_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = CreateServiceLink();
+            
+            //act
+            var response = await serviceLink.GetAdventureByName(new AdventureRequest()
+            {
+                Name = "demo"
+            }, new Credentials()
+            {
+                UserId = "userid"
+            });
+            
+            //assert
+            Assert.Equal($"adventure_adventures/demo_{_userToken}_", response.Response.Content);
+        }
+
+        #endregion
         
-        //create a token manager class
-        //test token creation for a given user id
-        //this will be injected in to the service communication object
-        
-        //create a restsharp manager class
-        //gets a client based on a service name
-        //generate a request method so I can pass in a moq rest request and check generated correctly
+        #region GetInitialLocation
+
+        [Fact]
+        public async void GetInitialLocation_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = CreateServiceLink();
+            var adventureId = Guid.NewGuid();
+            
+            //act
+            var response = await serviceLink.GetInitialLocation(new AdventureRequest()
+            {
+                Id = adventureId,
+                Name = "demo"
+            }, new Credentials()
+            {
+                UserId = "userid"
+            });
+            
+            //assert
+            Assert.Equal($"adventure_adventures/initiallocation/{adventureId}_{_userToken}_", response.Response.Content);
+        }
 
         #endregion
     }
