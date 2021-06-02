@@ -43,7 +43,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
             });
             
             //assert
-            Assert.Equal($"adventure_adventures_{_userToken}_", response.Response.Content);
+            Assert.Equal($"adventure_adventures_{_userToken}_null", response.Response.Content);
         }
 
         #endregion
@@ -66,7 +66,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
             });
             
             //assert
-            Assert.Equal($"adventure_adventures/demo_{_userToken}_", response.Response.Content);
+            Assert.Equal($"adventure_adventures/demo_{_userToken}_null", response.Response.Content);
         }
 
         #endregion
@@ -91,7 +91,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
             });
             
             //assert
-            Assert.Equal($"adventure_adventures/initiallocation/{adventureId}_{_userToken}_", response.Response.Content);
+            Assert.Equal($"adventure_adventures/initiallocation/{adventureId}_{_userToken}_null", response.Response.Content);
         }
 
         #endregion

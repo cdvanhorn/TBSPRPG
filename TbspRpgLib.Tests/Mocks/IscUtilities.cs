@@ -1,4 +1,5 @@
 using System;
+using System.Text.Json;
 using Moq;
 using RestSharp;
 using TbspRpgLib.InterServiceCommunication.RequestModels;
@@ -14,7 +15,7 @@ namespace TbspRpgLib.Tests.Mocks
             mockServiceManager.Setup(sm => sm.MakeGetServiceRequest(It.IsAny<Request>()))
                 .ReturnsAsync((Request request) => new RestResponse()
                 {
-                    Content = $"{request.ServiceName}_{request.EndPoint}_{request.Token}_{request.Parameters}"
+                    Content = $"{request.ServiceName}_{request.EndPoint}_{request.Token}_{JsonSerializer.Serialize(request.Parameters)}"
                 });
             return mockServiceManager.Object;
         }
