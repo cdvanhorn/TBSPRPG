@@ -43,7 +43,10 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
             });
             
             //assert
-            Assert.Equal($"adventure_adventures_{_userToken}_null", response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            Assert.Equal("adventure", request.ServiceName);
+            Assert.Equal($"adventures", request.EndPoint);
+            Assert.Equal(_userToken.ToString(), request.Token);
         }
 
         #endregion
@@ -66,7 +69,10 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
             });
             
             //assert
-            Assert.Equal($"adventure_adventures/demo_{_userToken}_null", response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            Assert.Equal("adventure", request.ServiceName);
+            Assert.Equal($"adventures/demo", request.EndPoint);
+            Assert.Equal(_userToken.ToString(), request.Token);
         }
 
         #endregion
@@ -91,7 +97,10 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
             });
             
             //assert
-            Assert.Equal($"adventure_adventures/initiallocation/{adventureId}_{_userToken}_null", response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            Assert.Equal("adventure", request.ServiceName);
+            Assert.Equal($"adventures/initiallocation/{adventureId}", request.EndPoint);
+            Assert.Equal(_userToken.ToString(), request.Token);
         }
 
         #endregion
