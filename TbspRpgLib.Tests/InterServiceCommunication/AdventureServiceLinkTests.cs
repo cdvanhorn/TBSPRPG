@@ -6,6 +6,7 @@ using RestSharp;
 using TbspRpgLib.InterServiceCommunication;
 using TbspRpgLib.InterServiceCommunication.RequestModels;
 using TbspRpgLib.InterServiceCommunication.Utilities;
+using TbspRpgLib.Tests.Mocks;
 using Xunit;
 
 namespace TbspRpgLib.Tests.InterServiceCommunication
@@ -17,23 +18,11 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
 
         private readonly Guid _userToken = Guid.NewGuid();
 
-        public AdventureServiceLink CreateServiceLink()
+        private AdventureServiceLink CreateServiceLink()
         {
-            var mockTokenManager = new Mock<ITokenManager>();
-            mockTokenManager.Setup(manager => manager.GetTokenForUserId(It.IsAny<string>()))
-                .Returns((string userid) => _userToken.ToString());
-
-            var mockServiceManager = new Mock<IServiceManager>();
-            mockServiceManager.Setup(sm => sm.MakeGetServiceRequest(It.IsAny<Request>()))
-                .ReturnsAsync((Request request) =>
-                {
-                    return new RestResponse()
-                    {
-                        Content = $"{request.ServiceName}_{request.EndPoint}_{request.Token}_{request.Parameters}"
-                    };
-                });
-            
-            return new AdventureServiceLink(mockTokenManager.Object, mockServiceManager.Object);
+            return new AdventureServiceLink(
+                IscUtilities.MockTokenManager(_userToken),
+                IscUtilities.MockServiceManager());
         }
 
         #endregion
