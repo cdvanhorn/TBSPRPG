@@ -41,7 +41,10 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
                 });
             
             //assert
-            Assert.Equal($"content_content/{_testGameId}_{_testUserToken}_null", response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            Assert.Equal("content", request.ServiceName);
+            Assert.Equal($"content/{_testGameId}", request.EndPoint);
+            Assert.Equal(_testUserToken.ToString(), request.Token);
         }
 
         #endregion
@@ -65,7 +68,10 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
                 });
             
             //assert
-            Assert.Equal($"content_content/latest/{_testGameId}_{_testUserToken}_null", response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            Assert.Equal("content", request.ServiceName);
+            Assert.Equal($"content/latest/{_testGameId}", request.EndPoint);
+            Assert.Equal(_testUserToken.ToString(), request.Token);
         }
 
         #endregion
@@ -93,7 +99,11 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
                 });
             
             //assert
-            Assert.Equal($"content_content/filter/{_testGameId}_{_testUserToken}_{JsonSerializer.Serialize(filterRequest)}", response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            Assert.Equal("content", request.ServiceName);
+            Assert.Equal($"content/filter/{_testGameId}", request.EndPoint);
+            Assert.Equal(_testUserToken.ToString(), request.Token);
+            Assert.Equal(JsonSerializer.Serialize(filterRequest), request.Parameters.ToString());
         }
 
         #endregion

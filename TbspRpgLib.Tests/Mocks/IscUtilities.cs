@@ -15,7 +15,7 @@ namespace TbspRpgLib.Tests.Mocks
             mockServiceManager.Setup(sm => sm.MakeGetServiceRequest(It.IsAny<Request>()))
                 .ReturnsAsync((Request request) => new RestResponse()
                 {
-                    Content = $"{request.ServiceName}_{request.EndPoint}_{request.Token}_{JsonSerializer.Serialize(request.Parameters)}"
+                    Content = JsonSerializer.Serialize(request)
                 });
             return mockServiceManager.Object;
         }
