@@ -7,12 +7,17 @@ using TbspRpgLib.InterServiceCommunication.Utilities;
 
 namespace TbspRpgLib.Tests.Mocks
 {
-    public class IscUtilities
+    public static class IscUtilities
     {
         public static IServiceManager MockServiceManager()
         {
             var mockServiceManager = new Mock<IServiceManager>();
             mockServiceManager.Setup(sm => sm.MakeGetServiceRequest(It.IsAny<Request>()))
+                .ReturnsAsync((Request request) => new RestResponse()
+                {
+                    Content = JsonSerializer.Serialize(request)
+                });
+            mockServiceManager.Setup(sm => sm.MakePostServiceRequestNoAuth(It.IsAny<Request>()))
                 .ReturnsAsync((Request request) => new RestResponse()
                 {
                     Content = JsonSerializer.Serialize(request)
