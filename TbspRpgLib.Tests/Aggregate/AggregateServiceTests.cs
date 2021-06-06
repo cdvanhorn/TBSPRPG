@@ -2,21 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Moq;
-
-using Xunit;
-
 using TbspRpgLib.Aggregates;
 using TbspRpgLib.Events;
-using TbspRpgLib.Events.Location.Content;
-using TbspRpgLib.Events.Location;
-using TbspRpgLib.Events.Game.Content;
-using TbspRpgLib.Events.Game;
 using TbspRpgLib.Events.Content;
-using TbspRpgLib.Tests.Mocks;
-using TbspRpgLib.Services;
+using TbspRpgLib.Events.Game;
+using TbspRpgLib.Events.Game.Content;
+using TbspRpgLib.Events.Location;
+using TbspRpgLib.Events.Location.Content;
 using TbspRpgLib.Repositories;
+using TbspRpgLib.Services;
+using Xunit;
 
 namespace TbspRpgLib.Tests.Aggregate {
     public class AggregateServiceTests {
@@ -60,7 +56,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         DestinationLocation = "foo",
-                        DestinationRoutes = new List<string> { "One", "Two" }
+                        DestinationRoutes = new List<string> { "One", "Two" },
+                        DestinationViaRoute = "beef"
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -87,6 +84,7 @@ namespace TbspRpgLib.Tests.Aggregate {
             Assert.Equal("foo", game.MapData.DestinationLocation);
             Assert.Equal(2, game.MapData.DestinationRoutes.Count);
             Assert.Equal("One", game.MapData.DestinationRoutes[0]);
+            Assert.Equal("beef", game.MapData.DestinationViaRoute);
             Assert.True(game.Checks.Location);
         }
 
@@ -112,7 +110,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         DestinationLocation = "foo",
-                        DestinationRoutes = new List<string> { "One", "Two" }
+                        DestinationRoutes = new List<string> { "One", "Two" },
+                        DestinationViaRoute = "beef"
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -146,7 +145,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         DestinationLocation = "foo",
-                        DestinationRoutes = new List<string> { "One", "Two" }
+                        DestinationRoutes = new List<string> { "One", "Two" },
+                        DestinationViaRoute = "beef"
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -179,7 +179,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         DestinationLocation = "foo",
-                        DestinationRoutes = new List<string> { "One", "Two" }
+                        DestinationRoutes = new List<string> { "One", "Two" },
+                        DestinationViaRoute = "beef"
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -221,7 +222,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         DestinationLocation = "foo",
-                        DestinationRoutes = new List<string> { "One", "Two" }
+                        DestinationRoutes = new List<string> { "One", "Two" },
+                        DestinationViaRoute = "beef"
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -243,6 +245,7 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         DestinationLocation = "",
                         DestinationRoutes = new List<string>(),
+                        DestinationViaRoute = "",
                         CurrentLocation = "foo",
                         CurrentRoutes = new List<string> { "One", "Two" }
                     }
@@ -262,6 +265,7 @@ namespace TbspRpgLib.Tests.Aggregate {
             Assert.Equal("", game.MapData.DestinationLocation);
             Assert.Equal(2, game.MapData.CurrentRoutes.Count);
             Assert.Empty(game.MapData.DestinationRoutes);
+            Assert.Equal("", game.MapData.DestinationViaRoute);
             Assert.False(game.Checks.Location);
         }
 
@@ -287,7 +291,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         DestinationLocation = "bar",
-                        DestinationRoutes = new List<string> { "One", "Two", "Three" }
+                        DestinationRoutes = new List<string> { "One", "Two", "Three" },
+                        DestinationViaRoute = "dead"
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -309,6 +314,7 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         DestinationLocation = "",
                         DestinationRoutes = new List<string>(),
+                        DestinationViaRoute = "",
                         CurrentLocation = "bar",
                         CurrentRoutes = new List<string> { "One", "Two", "Three" }
                     }
@@ -321,7 +327,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         DestinationLocation = "foo",
-                        DestinationRoutes = new List<string> { "Uno", "Dos" }
+                        DestinationRoutes = new List<string> { "Uno", "Dos" },
+                        DestinationViaRoute = "beef"
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -342,7 +349,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                     new LocationEnterFail {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         DestinationLocation = "",
-                        DestinationRoutes = new List<string>()
+                        DestinationRoutes = new List<string>(),
+                        DestinationViaRoute = ""
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -361,6 +369,7 @@ namespace TbspRpgLib.Tests.Aggregate {
             Assert.Equal("One", game.MapData.CurrentRoutes[0]);
             Assert.Equal("", game.MapData.DestinationLocation);
             Assert.Empty(game.MapData.DestinationRoutes);
+            Assert.Equal("", game.MapData.DestinationViaRoute);
             Assert.False(game.Checks.Location);
         }
 
@@ -391,7 +400,7 @@ namespace TbspRpgLib.Tests.Aggregate {
 
             var evnt = events.FirstOrDefault();
             bool didItRun = false;
-            TbspRpgLib.Aggregates.Aggregate agg = null;
+            Aggregates.Aggregate agg = null;
             //act
             await GetAggregateService(events).HandleEvent(evnt,
                 (aggregate, eventid) => {

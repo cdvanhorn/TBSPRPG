@@ -9,5 +9,7 @@ namespace TbspRpgLib.Events.Location.Content {
         public string DestinationLocation { get; set; }
         
         public List<string> DestinationRoutes { get; set; }
+        
+        public string DestinationViaRoute { get; set; }
     }
 }

@@ -5,12 +5,12 @@ using System.Text.Json;
 
 namespace TbspRpgLib.Events.Location {
     public class LocationEnterCheckEvent : EventCore {
-        public LocationEnterCheckEvent(LocationEnterCheck data) : base() {
+        public LocationEnterCheckEvent(LocationEnterCheck data) {
             Type = LOCATION_ENTER_CHECK_EVENT_TYPE;
             Data = data;
         }
 
-        public LocationEnterCheckEvent() : base() {
+        public LocationEnterCheckEvent() {
             Type = LOCATION_ENTER_CHECK_EVENT_TYPE;
         }
 
