@@ -5,12 +5,12 @@ using System.Text.Json;
 
 namespace TbspRpgLib.Events.Location {
     public class LocationEnterFailEvent : EventCore {
-        public LocationEnterFailEvent(LocationEnterFail data) : base() {
+        public LocationEnterFailEvent(LocationEnterFail data) {
             Type = Event.LOCATION_ENTER_FAIL_EVENT_TYPE;
             Data = data;
         }
 
-        public LocationEnterFailEvent() : base() {
+        public LocationEnterFailEvent() {
             Type = Event.LOCATION_ENTER_FAIL_EVENT_TYPE;
         }
 
@@ -19,6 +19,7 @@ namespace TbspRpgLib.Events.Location {
             var data = (LocationEnterFail)Data;
             aggregate.MapData.DestinationLocation = data.DestinationLocation;
             aggregate.MapData.DestinationRoutes = data.DestinationRoutes;
+            aggregate.MapData.DestinationViaRoute = data.DestinationViaRoute;
             aggregate.Checks.Location = false;
         }
 

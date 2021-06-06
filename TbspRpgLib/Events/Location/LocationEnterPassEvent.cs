@@ -19,6 +19,7 @@ namespace TbspRpgLib.Events.Location {
             var data = (LocationEnterPass)Data;
             aggregate.MapData.DestinationLocation = data.DestinationLocation;
             aggregate.MapData.DestinationRoutes = data.DestinationRoutes;
+            aggregate.MapData.DestinationViaRoute = data.DestinationViaRoute;
             aggregate.MapData.CurrentLocation = data.CurrentLocation;
             aggregate.MapData.CurrentRoutes = data.CurrentRoutes;
             aggregate.Checks.Location = false;

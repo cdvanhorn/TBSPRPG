@@ -6,12 +6,12 @@ using TbspRpgLib.Aggregates;
 
 namespace TbspRpgLib.Events.Location {
     public class LocationEnterEvent : EventCore {
-        public LocationEnterEvent(LocationEnter data) : base() {
+        public LocationEnterEvent(LocationEnter data) {
             Type = LOCATION_ENTER_EVENT_TYPE;
             Data = data;
         }
 
-        public LocationEnterEvent() : base() {
+        public LocationEnterEvent() {
             Type = LOCATION_ENTER_EVENT_TYPE;
         }
 
@@ -20,6 +20,7 @@ namespace TbspRpgLib.Events.Location {
             var data = (LocationEnter)Data;
             aggregate.MapData.DestinationLocation = data.DestinationLocation;
             aggregate.MapData.DestinationRoutes = data.DestinationRoutes;
+            aggregate.MapData.DestinationViaRoute = data.DestinationViaRoute;
         }
 
         protected override void SetData(string jsonString) {
