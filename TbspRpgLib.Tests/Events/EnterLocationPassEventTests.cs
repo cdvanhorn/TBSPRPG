@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 
 using Xunit;
@@ -14,7 +15,9 @@ namespace TbspRpgLib.Tests.Events {
                 new LocationEnterPass {
                     Id = "2",
                     CurrentLocation = "foo",
-                    Destination = ""
+                    CurrentRoutes = new List<string> { "One", "Two", "Three" },
+                    DestinationLocation = "",
+                    DestinationRoutes = new List<string>()
                 }
             );
         }
@@ -40,7 +43,10 @@ namespace TbspRpgLib.Tests.Events {
             Assert.IsType<LocationEnterPass>(content);
             Assert.Equal("2", content.Id);
             Assert.Equal("foo", content.CurrentLocation);
-            Assert.Equal("", content.Destination);
+            Assert.Equal("", content.DestinationLocation);
+            Assert.Equal(3, content.CurrentRoutes.Count);
+            Assert.Equal("One", content.CurrentRoutes[0]);
+            Assert.Empty(content.DestinationRoutes);
         }
 
         // [Fact]
