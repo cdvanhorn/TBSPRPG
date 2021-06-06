@@ -8,7 +8,8 @@
     <Company>GitHub</Company>
     <PackageDescription>TbspRpgLib</PackageDescription>
     <RepositoryUrl>https://github.com/cdvanhorn/TBSPRPG</RepositoryUrl>
-    <PackageVersion>1.1.47</PackageVersion>
+    <PackageVersion>1.2.0</PackageVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>

@@ -15,15 +15,15 @@ namespace TbspRpgLib.Events.Location {
         }
 
         public override void UpdateAggregate(Aggregate agg) {
-            GameAggregate aggregate = (GameAggregate)agg;
-            LocationEnterCheck data = (LocationEnterCheck)Data;
+            var aggregate = (GameAggregate)agg;
+            var data = (LocationEnterCheck)Data;
             aggregate.Checks.Location = data.Result;
         }
 
         protected override void SetData(string jsonString) {
             //parse the string as json and set the content
-            LocationEnterCheck newdata = JsonSerializer.Deserialize<LocationEnterCheck>(jsonString);
-            Data = newdata;
+            var locationEnterCheck = JsonSerializer.Deserialize<LocationEnterCheck>(jsonString);
+            Data = locationEnterCheck;
         }
 
         public override string GetDataJson()

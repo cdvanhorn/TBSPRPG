@@ -21,15 +21,15 @@ using TbspRpgLib.Repositories;
 namespace TbspRpgLib.Tests.Aggregate {
     public class AggregateServiceTests {
 
-        public AggregateService GetAggregateService(List<Event> events) {
+        private static AggregateService GetAggregateService(IReadOnlyCollection<Event> events) {
             //we need to mock _eventService.GetEventsInStreamAsync for BuildAggregate
             //it needs to return a list of event like objects
             var mockEventService = new Mock<IEventService>();
             mockEventService.Setup(service => 
                 service.GetAllEventsInStreamAsync(It.IsAny<string>())
             ).ReturnsAsync(
-                (string eventid) =>
-                    events.Where(evnt => evnt.StreamId == eventid).ToList()
+                (string eventId) =>
+                    events.Where(evnt => evnt.StreamId == eventId).ToList()
             );
 
             var atr = new AggregateTypeRepository();
@@ -59,7 +59,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                 new LocationEnterEvent(
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Destination = "foo"
+                        DestinationLocation = "foo",
+                        DestinationRoutes = new List<string> { "One", "Two" }
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -83,7 +84,9 @@ namespace TbspRpgLib.Tests.Aggregate {
             //assert
             Assert.Equal("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", game.Id);
             Assert.Equal("Demo", game.AdventureName);
-            Assert.Equal("foo", game.Destination);
+            Assert.Equal("foo", game.MapData.DestinationLocation);
+            Assert.Equal(2, game.MapData.DestinationRoutes.Count);
+            Assert.Equal("One", game.MapData.DestinationRoutes[0]);
             Assert.True(game.Checks.Location);
         }
 
@@ -108,7 +111,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                 new LocationEnterEvent(
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Destination = "foo"
+                        DestinationLocation = "foo",
+                        DestinationRoutes = new List<string> { "One", "Two" }
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -141,7 +145,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                 new LocationEnterEvent(
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Destination = "foo"
+                        DestinationLocation = "foo",
+                        DestinationRoutes = new List<string> { "One", "Two" }
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -173,7 +178,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                 new LocationEnterEvent(
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Destination = "foo"
+                        DestinationLocation = "foo",
+                        DestinationRoutes = new List<string> { "One", "Two" }
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -214,7 +220,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                 new LocationEnterEvent(
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Destination = "foo"
+                        DestinationLocation = "foo",
+                        DestinationRoutes = new List<string> { "One", "Two" }
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -234,8 +241,10 @@ namespace TbspRpgLib.Tests.Aggregate {
                 new LocationEnterPassEvent(
                     new LocationEnterPass {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Destination = "",
-                        CurrentLocation = "foo"
+                        DestinationLocation = "",
+                        DestinationRoutes = new List<string>(),
+                        CurrentLocation = "foo",
+                        CurrentRoutes = new List<string> { "One", "Two" }
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -249,8 +258,10 @@ namespace TbspRpgLib.Tests.Aggregate {
             //assert
             Assert.Equal("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", game.Id);
             Assert.Equal("Demo", game.AdventureName);
-            Assert.Equal("foo", game.CurrentLocation);
-            Assert.Equal("", game.Destination);
+            Assert.Equal("foo", game.MapData.CurrentLocation);
+            Assert.Equal("", game.MapData.DestinationLocation);
+            Assert.Equal(2, game.MapData.CurrentRoutes.Count);
+            Assert.Empty(game.MapData.DestinationRoutes);
             Assert.False(game.Checks.Location);
         }
 
@@ -275,7 +286,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                 new LocationEnterEvent(
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Destination = "bar"
+                        DestinationLocation = "bar",
+                        DestinationRoutes = new List<string> { "One", "Two", "Three" }
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -295,8 +307,10 @@ namespace TbspRpgLib.Tests.Aggregate {
                 new LocationEnterPassEvent(
                     new LocationEnterPass {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Destination = "",
-                        CurrentLocation = "bar"
+                        DestinationLocation = "",
+                        DestinationRoutes = new List<string>(),
+                        CurrentLocation = "bar",
+                        CurrentRoutes = new List<string> { "One", "Two", "Three" }
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -306,7 +320,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                 new LocationEnterEvent(
                     new LocationEnter {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Destination = "foo"
+                        DestinationLocation = "foo",
+                        DestinationRoutes = new List<string> { "Uno", "Dos" }
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -326,7 +341,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                 new LocationEnterFailEvent(
                     new LocationEnterFail {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Destination = ""
+                        DestinationLocation = "",
+                        DestinationRoutes = new List<string>()
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -340,8 +356,11 @@ namespace TbspRpgLib.Tests.Aggregate {
             //assert
             Assert.Equal("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", game.Id);
             Assert.Equal("Demo", game.AdventureName);
-            Assert.Equal("bar", game.CurrentLocation);
-            Assert.Equal("", game.Destination);
+            Assert.Equal("bar", game.MapData.CurrentLocation);
+            Assert.Equal(3, game.MapData.CurrentRoutes.Count);
+            Assert.Equal("One", game.MapData.CurrentRoutes[0]);
+            Assert.Equal("", game.MapData.DestinationLocation);
+            Assert.Empty(game.MapData.DestinationRoutes);
             Assert.False(game.Checks.Location);
         }
 

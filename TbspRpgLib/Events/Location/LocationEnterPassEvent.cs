@@ -15,17 +15,19 @@ namespace TbspRpgLib.Events.Location {
         }
 
         public override void UpdateAggregate(Aggregate agg) {
-            GameAggregate aggregate = (GameAggregate)agg;
-            LocationEnterPass data = (LocationEnterPass)Data;
-            aggregate.Destination = data.Destination;
-            aggregate.CurrentLocation = data.CurrentLocation;
+            var aggregate = (GameAggregate)agg;
+            var data = (LocationEnterPass)Data;
+            aggregate.MapData.DestinationLocation = data.DestinationLocation;
+            aggregate.MapData.DestinationRoutes = data.DestinationRoutes;
+            aggregate.MapData.CurrentLocation = data.CurrentLocation;
+            aggregate.MapData.CurrentRoutes = data.CurrentRoutes;
             aggregate.Checks.Location = false;
         }
 
         protected override void SetData(string jsonString) {
             //parse the string as json and set the content
-            LocationEnterPass newdata = JsonSerializer.Deserialize<LocationEnterPass>(jsonString);
-            Data = newdata;
+            var locationEnterPass = JsonSerializer.Deserialize<LocationEnterPass>(jsonString);
+            Data = locationEnterPass;
         }
 
         public override string GetDataJson()

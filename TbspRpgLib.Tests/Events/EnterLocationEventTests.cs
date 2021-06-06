@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json;
 
 using Xunit;
@@ -9,11 +10,12 @@ using TbspRpgLib.Events.Location;
 
 namespace TbspRpgLib.Tests.Events {
     public class EnterLocationEventTests {
-        private LocationEnterEvent CreateEnterLocationEvent() {
+        private static LocationEnterEvent CreateEnterLocationEvent() {
             return new LocationEnterEvent(
                 new LocationEnter {
                     Id = "2",
-                    Destination = "foo"
+                    DestinationLocation = "foo",
+                    DestinationRoutes = new List<string> { "One", "Two", "Three" }
                 }
             );
         }
@@ -38,7 +40,9 @@ namespace TbspRpgLib.Tests.Events {
             //assert
             Assert.IsType<LocationEnter>(content);
             Assert.Equal("2", content.Id);
-            Assert.Equal("foo", content.Destination);
+            Assert.Equal("foo", content.DestinationLocation);
+            Assert.Equal(3, content.DestinationRoutes.Count);
+            Assert.Equal("One", content.DestinationRoutes[0]);
         }
 
         // [Fact]
