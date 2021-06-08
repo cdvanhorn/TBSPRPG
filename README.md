@@ -1,5 +1,7 @@
 # TBSPRPG
 
+[![.NET](https://github.com/cdvanhorn/TBSPRPG/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/cdvanhorn/TBSPRPG/actions/workflows/dotnet.yml)
+
 This is a game engine for text based online single player role playing games (TBSPRPG).  This will be written in a Javascript framework, probably Angular.  This project will have everything you need to write your own TBSPRPG.  What will make the games unique is the data retrieved from the backend API.
 
 This is the root project.  The backend has been divided up in to microservices, and front end is an Angular application.
