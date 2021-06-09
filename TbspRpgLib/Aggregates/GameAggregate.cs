@@ -32,7 +32,7 @@ namespace TbspRpgLib.Aggregates {
         public string UserId { get; set; }
         public string AdventureId { get; set; }
         public string AdventureName { get; set; }
-        public MapData MapData { get; }
-        public GameAggregateChecks Checks { get; }
+        public MapData MapData { get; set; }
+        public GameAggregateChecks Checks { get; set; }
     }
 }
