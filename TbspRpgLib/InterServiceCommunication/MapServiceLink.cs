@@ -8,6 +8,8 @@ namespace TbspRpgLib.InterServiceCommunication {
         Task<IscResponse> CR_GetLocations(Credentials creds);
         Task<IscResponse> GetLocationByGameId(MapRequest requestData, Credentials creds);
         Task<IscResponse> CR_GetLocationByGameId(MapRequest requestData, Credentials creds);
+        Task<IscResponse> GetRoutesForGame(MapRequest requestData, Credentials credentials);
+        Task<IscResponse> CR_GetRoutesForGame(MapRequest requestData, Credentials credentials);
     }
 
     public class MapServiceLink : BaseServiceLink, IMapServiceLink {
@@ -41,6 +43,21 @@ namespace TbspRpgLib.InterServiceCommunication {
         public Task<IscResponse> CR_GetLocationByGameId(MapRequest requestData, Credentials creds) {
             PrepareControllerRequest(creds);
             return GetLocationByGameId(requestData, creds);
+        }
+
+        public async Task<IscResponse> GetRoutesForGame(MapRequest requestData, Credentials credentials)
+        {
+            var response = await MakeRequestForUser(
+                $"routes/{requestData.GameId}",
+                credentials.UserId
+            );
+            return ReturnResponse(response);
+        }
+
+        public Task<IscResponse> CR_GetRoutesForGame(MapRequest requestData, Credentials credentials)
+        {
+            PrepareControllerRequest(credentials);
+            return GetRoutesForGame(requestData, credentials);
         }
     }
 }

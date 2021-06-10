@@ -73,5 +73,33 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
         }
 
         #endregion
+
+        #region GetRoutesForGame
+
+        [Fact]
+        public async void GetRoutesForGame_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = NewServiceLink();
+            
+            //act
+            var response = await serviceLink.GetRoutesForGame(
+                new MapRequest()
+                {
+                    GameId = _testGameId
+                },
+                new Credentials()
+                {
+                    UserId = "userid"
+                });
+            
+            //assert
+            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            Assert.Equal("map", request.ServiceName);
+            Assert.Equal($"routes/{_testGameId}", request.EndPoint);
+            Assert.Equal(_testUserToken.ToString(), request.Token);
+        }
+
+        #endregion
     }
 }
