@@ -107,5 +107,60 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
         }
 
         #endregion
+
+        #region GetSourceContent
+
+        [Fact]
+        public async void GetSourceContent_WithLanguage_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = NewServiceLink();
+            var sourceKey = Guid.NewGuid();
+            
+            //act
+            var response = await serviceLink.GetSourceContent(
+                new ContentRequest()
+                {
+                    GameId = _testGameId,
+                    Language = "en",
+                    SourceKey = sourceKey
+                }, new Credentials()
+                {
+                    UserId = "userid"
+                });
+            
+            //assert
+            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            Assert.Equal("content", request.ServiceName);
+            Assert.Equal($"content/source/en/{sourceKey}", request.EndPoint);
+            Assert.Equal(_testUserToken.ToString(), request.Token);
+        }
+        
+        [Fact]
+        public async void GetSourceContent_WithGame_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = NewServiceLink();
+            var sourceKey = Guid.NewGuid();
+            
+            //act
+            var response = await serviceLink.GetSourceContent(
+                new ContentRequest()
+                {
+                    GameId = _testGameId,
+                    SourceKey = sourceKey
+                }, new Credentials()
+                {
+                    UserId = "userid"
+                });
+            
+            //assert
+            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            Assert.Equal("content", request.ServiceName);
+            Assert.Equal($"content/source/{_testGameId}/{sourceKey}", request.EndPoint);
+            Assert.Equal(_testUserToken.ToString(), request.Token);
+        }
+
+        #endregion
     }
 }

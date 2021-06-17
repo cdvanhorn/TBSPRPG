@@ -1,3 +1,4 @@
+using System.Text;
 using System.Threading.Tasks;
 using TbspRpgLib.InterServiceCommunication.RequestModels;
 using TbspRpgLib.InterServiceCommunication.Utilities;
@@ -10,6 +11,8 @@ namespace TbspRpgLib.InterServiceCommunication {
         Task<IscResponse> CR_GetLatestContentForGame(ContentRequest requestData, Credentials creds);
         Task<IscResponse> FilterContent(ContentFilterRequest requestData, Credentials creds);
         Task<IscResponse> CR_FilterContent(ContentFilterRequest requestData, Credentials creds);
+        Task<IscResponse> GetSourceContent(ContentRequest requestData, Credentials creds);
+        Task<IscResponse> CR_GetSourceContent(ContentRequest requestData, Credentials creds);
     }
 
     public class ContentServiceLink : BaseServiceLink, IContentServiceLink {
@@ -57,6 +60,28 @@ namespace TbspRpgLib.InterServiceCommunication {
         public Task<IscResponse> CR_FilterContent(ContentFilterRequest requestData, Credentials creds) {
             PrepareControllerRequest(creds);
             return FilterContent(requestData, creds);
+        }
+
+        public async Task<IscResponse> GetSourceContent(ContentRequest requestData, Credentials creds)
+        {
+            var url = new StringBuilder();
+            url.Append("content/source/");
+            if (requestData.Language != null)
+                url.Append($"{requestData.Language}/");
+            else if (requestData.GameId != null)
+                url.Append($"{requestData.GameId}/");
+            url.Append(requestData.SourceKey);
+
+            var response = await MakeRequestForUser(
+                url.ToString(),
+                creds.UserId);
+            return ReturnResponse(response);
+        }
+
+        public Task<IscResponse> CR_GetSourceContent(ContentRequest requestData, Credentials creds)
+        {
+            PrepareControllerRequest(creds);
+            return GetSourceContent(requestData, creds);
         }
     }
 }
