@@ -34,6 +34,32 @@ namespace TbspRpgLib.Tests.Aggregate {
                 mockEventService.Object, new AggregateTypeService(atr));
         }
 
+        [Fact]
+        public async void BuildAggregate_NewGameEventDefaultLanguage_IsValid() {
+            //arrange
+            List<Event> events = new List<Event>();
+            events.Add(
+                new GameNewEvent(
+                    new GameNew {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        UserId = "1",
+                        AdventureName = "Demo",
+                        AdventureId = "1"
+                    }
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
+            );
+
+            //act
+            var aggregate = await GetAggregateService(events).BuildAggregate("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", "GameAggregate");
+            var game = (GameAggregate)aggregate;
+
+            //assert
+            Assert.Equal("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", game.Id);
+            Assert.Equal("Demo", game.AdventureName);
+            Assert.Equal("en", game.Settings.Language);
+        }
 
         [Fact]
         public async void BuildAggregate_NewGameEvent_IsValid() {
@@ -45,7 +71,8 @@ namespace TbspRpgLib.Tests.Aggregate {
                         Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
                         UserId = "1",
                         AdventureName = "Demo",
-                        AdventureId = "1"
+                        AdventureId = "1",
+                        Language = "en"
                     }
                 ) {
                     StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
@@ -86,6 +113,7 @@ namespace TbspRpgLib.Tests.Aggregate {
             Assert.Equal("One", game.MapData.DestinationRoutes[0]);
             Assert.Equal("beef", game.MapData.DestinationViaRoute);
             Assert.True(game.Checks.Location);
+            Assert.Equal("en", game.Settings.Language);
         }
 
         [Fact]

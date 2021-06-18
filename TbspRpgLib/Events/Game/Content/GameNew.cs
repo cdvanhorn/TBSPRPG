@@ -5,5 +5,7 @@ namespace TbspRpgLib.Events.Game.Content {
         public string AdventureName { get; set; }
 
         public string AdventureId { get; set; }
+        
+        public string Language { get; set; }
     }
 }

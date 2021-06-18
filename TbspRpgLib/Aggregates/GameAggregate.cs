@@ -16,11 +16,18 @@ namespace TbspRpgLib.Aggregates {
         public List<string> DestinationRoutes { get; set; }
         
         public string DestinationViaRoute { get; set; }
-    } 
+    }
+
+    public class Settings
+    {
+        public string Language { get; set; }
+    }
 
     // ReSharper disable once ClassNeverInstantiated.Global
     public class GameAggregate : Aggregate {
-        public GameAggregate() {
+        public GameAggregate()
+        {
+            Settings = new Settings();
             Checks = new GameAggregateChecks();
             MapData = new MapData
             {
@@ -32,6 +39,7 @@ namespace TbspRpgLib.Aggregates {
         public string UserId { get; set; }
         public string AdventureId { get; set; }
         public string AdventureName { get; set; }
+        public Settings Settings { get; set; }
         public MapData MapData { get; set; }
         public GameAggregateChecks Checks { get; set; }
     }

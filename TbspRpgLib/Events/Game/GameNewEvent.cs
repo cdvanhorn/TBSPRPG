@@ -2,6 +2,7 @@ using System.Text.Json;
 
 using TbspRpgLib.Aggregates;
 using TbspRpgLib.Events.Game.Content;
+using TbspRpgLib.Settings;
 
 namespace TbspRpgLib.Events.Game {
     public class GameNewEvent : EventCore {
@@ -21,6 +22,10 @@ namespace TbspRpgLib.Events.Game {
             aggregate.UserId = gdata.UserId;
             aggregate.AdventureId = gdata.AdventureId;
             aggregate.AdventureName = gdata.AdventureName;
+            if (gdata.Language != null)
+                aggregate.Settings.Language = gdata.Language;
+            else
+                aggregate.Settings.Language = Languages.DEFAULT;
         }
 
         protected override void SetData(string jsonString) {

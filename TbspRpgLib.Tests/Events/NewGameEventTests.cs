@@ -15,7 +15,8 @@ namespace TbspRpgLib.Tests.Events {
                     Id = "1",
                     UserId = "1",
                     AdventureId = "1",
-                    AdventureName = "Demo"
+                    AdventureName = "Demo",
+                    Language = "en"
                 }
             );
         }
@@ -43,6 +44,7 @@ namespace TbspRpgLib.Tests.Events {
             Assert.Equal("1", content.UserId);
             Assert.Equal("1", content.AdventureId);
             Assert.Equal("Demo", content.AdventureName);
+            Assert.Equal("en", content.Language);
         }
 
         // [Fact]
