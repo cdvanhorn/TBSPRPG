@@ -11,6 +11,17 @@ services:
     depends_on:
       - publicapi
 
+  frontend-test:
+    build:
+      context: ./TBSPRPG_UI/tbsprpg
+      dockerfile: DockerfileTest
+    ports:
+      - '9876:9876'
+    volumes:
+      - './TBSPRPG_UI/tbsprpg:/app'
+      - /app/node_modules
+    command: ng test
+
   publicapi:
     build: ./TBSPRPG_PAPI
     ports:
@@ -157,5 +168,5 @@ services:
       - '4200:4200'
     volumes:
       - './TBSPRPG_UI/tbsprpg:/app'
-    command: npm install
+    command: tail -f README.md
         #command: sh -c "ng update @angular/cli @angular/core && ng update @angular/cdk @angular/material --force && ng update rxjs && ng update @angular/flex-layout && ng update"
