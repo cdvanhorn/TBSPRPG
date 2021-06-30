@@ -43,7 +43,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
             });
             
             //assert
-            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
             Assert.Equal("adventure", request.ServiceName);
             Assert.Equal($"adventures", request.EndPoint);
             Assert.Equal(_userToken.ToString(), request.Token);
@@ -69,7 +69,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
             });
             
             //assert
-            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
             Assert.Equal("adventure", request.ServiceName);
             Assert.Equal($"adventures/demo", request.EndPoint);
             Assert.Equal(_userToken.ToString(), request.Token);
@@ -97,7 +97,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
             });
             
             //assert
-            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
             Assert.Equal("adventure", request.ServiceName);
             Assert.Equal($"adventures/initiallocation/{adventureId}", request.EndPoint);
             Assert.Equal(_userToken.ToString(), request.Token);
@@ -127,7 +127,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
             });
             
             //assert
-            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
             Assert.Equal("adventure", request.ServiceName);
             Assert.Equal($"locations/routes/{locationId}", request.EndPoint);
             Assert.Equal(_userToken.ToString(), request.Token);

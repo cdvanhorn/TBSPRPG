@@ -23,7 +23,7 @@ namespace TbspRpgLib.InterServiceCommunication {
                 "users/authenticate",
                 requestData
             );
-            return new IscResponse() { Response = response };
+            return ReturnResponse(response);
         }
 
         public async Task<IscResponse> GetUsers(Credentials creds) {

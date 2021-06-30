@@ -39,7 +39,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
                 });
             
             //assert
-            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
             Assert.Equal("user", request.ServiceName);
             Assert.Equal("users", request.EndPoint);
             Assert.Equal(_testUserToken.ToString(), request.Token);
@@ -64,7 +64,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
             var response = await serviceLink.Authenticate(userRequest);
             
             //assert
-            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
             Assert.Equal("user", request.ServiceName);
             Assert.Equal("users/authenticate", request.EndPoint);
             Assert.Null(request.Token);

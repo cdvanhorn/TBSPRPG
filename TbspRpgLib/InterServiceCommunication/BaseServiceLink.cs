@@ -22,7 +22,12 @@ namespace TbspRpgLib.InterServiceCommunication {
         }
 
         protected static IscResponse ReturnResponse(IRestResponse response) {
-            return new IscResponse() { Response = response };
+            return new IscResponse()
+            {
+                Content = response.Content,
+                StatusCode = (int)response.StatusCode,
+                IsSuccessful = response.IsSuccessful
+            };
         }
 
         protected void AddJwtTokenForUser(Credentials creds) {

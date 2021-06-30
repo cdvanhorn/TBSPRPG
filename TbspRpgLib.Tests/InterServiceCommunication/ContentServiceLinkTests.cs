@@ -41,7 +41,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
                 });
             
             //assert
-            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
             Assert.Equal("content", request.ServiceName);
             Assert.Equal($"content/{_testGameId}", request.EndPoint);
             Assert.Equal(_testUserToken.ToString(), request.Token);
@@ -68,7 +68,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
                 });
             
             //assert
-            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
             Assert.Equal("content", request.ServiceName);
             Assert.Equal($"content/latest/{_testGameId}", request.EndPoint);
             Assert.Equal(_testUserToken.ToString(), request.Token);
@@ -99,7 +99,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
                 });
             
             //assert
-            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
             Assert.Equal("content", request.ServiceName);
             Assert.Equal($"content/filter/{_testGameId}", request.EndPoint);
             Assert.Equal(_testUserToken.ToString(), request.Token);
@@ -130,7 +130,7 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
                 });
             
             //assert
-            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
             Assert.Equal("content", request.ServiceName);
             Assert.Equal($"content/source/en/{sourceKey}", request.EndPoint);
             Assert.Equal(_testUserToken.ToString(), request.Token);
@@ -155,9 +155,37 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
                 });
             
             //assert
-            var request = JsonSerializer.Deserialize<Request>(response.Response.Content);
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
             Assert.Equal("content", request.ServiceName);
             Assert.Equal($"content/source/{_testGameId}/{sourceKey}", request.EndPoint);
+            Assert.Equal(_testUserToken.ToString(), request.Token);
+        }
+
+        #endregion
+        
+        #region GetContentForGameAfterPosition
+
+        [Fact]
+        public async void GetContentForGameAfterPosition_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = NewServiceLink();
+            
+            //act
+            var response = await serviceLink.GetContentForGameAfterPosition(
+                new ContentRequest()
+                {
+                    GameId = _testGameId,
+                    Position = 40
+                }, new Credentials()
+                {
+                    UserId = "userid"
+                });
+            
+            //assert
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
+            Assert.Equal("content", request.ServiceName);
+            Assert.Equal($"content/{_testGameId}/after/40", request.EndPoint);
             Assert.Equal(_testUserToken.ToString(), request.Token);
         }
 

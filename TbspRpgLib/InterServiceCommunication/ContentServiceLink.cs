@@ -13,6 +13,8 @@ namespace TbspRpgLib.InterServiceCommunication {
         Task<IscResponse> CR_FilterContent(ContentFilterRequest requestData, Credentials creds);
         Task<IscResponse> GetSourceContent(ContentRequest requestData, Credentials creds);
         Task<IscResponse> CR_GetSourceContent(ContentRequest requestData, Credentials creds);
+        Task<IscResponse> GetContentForGameAfterPosition(ContentRequest requestData, Credentials creds);
+        Task<IscResponse> CR_GetContentForGameAfterPosition(ContentRequest requestData, Credentials creds);
     }
 
     public class ContentServiceLink : BaseServiceLink, IContentServiceLink {
@@ -82,6 +84,21 @@ namespace TbspRpgLib.InterServiceCommunication {
         {
             PrepareControllerRequest(creds);
             return GetSourceContent(requestData, creds);
+        }
+
+        public async Task<IscResponse> GetContentForGameAfterPosition(ContentRequest requestData, Credentials creds)
+        {
+            var response = await MakeRequestForUser(
+                $"content/{requestData.GameId}/after/{requestData.Position}",
+                creds.UserId
+            );
+            return ReturnResponse(response);
+        }
+
+        public Task<IscResponse> CR_GetContentForGameAfterPosition(ContentRequest requestData, Credentials creds)
+        {
+            PrepareControllerRequest(creds);
+            return GetContentForGameAfterPosition(requestData, creds);
         }
     }
 }
