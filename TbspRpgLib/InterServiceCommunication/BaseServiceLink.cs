@@ -26,7 +26,8 @@ namespace TbspRpgLib.InterServiceCommunication {
             {
                 Content = response.Content,
                 StatusCode = (int)response.StatusCode,
-                IsSuccessful = response.IsSuccessful
+                IsSuccessful = response.IsSuccessful,
+                ErrorMessage = response.ErrorMessage
             };
         }
 
