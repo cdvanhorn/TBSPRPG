@@ -134,5 +134,34 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
         }
 
         #endregion
+
+        #region GetSourceForKey
+
+        [Fact]
+        public async void GetSourceForKey_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = CreateServiceLink();
+            var sourceKey = Guid.NewGuid();
+            var language = Settings.Languages.ENGLISH;
+            
+            //act
+            var response = await serviceLink.GetSourceForKey(new AdventureRequest()
+            {
+                SourceKey = sourceKey,
+                Language = language
+            }, new Credentials()
+            {
+                UserId = "userid"
+            });
+            
+            //assert
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
+            Assert.Equal("adventure", request.ServiceName);
+            Assert.Equal($"sources/{language}/{sourceKey}", request.EndPoint);
+            Assert.Equal(_userToken.ToString(), request.Token);
+        }
+
+        #endregion
     }
 }

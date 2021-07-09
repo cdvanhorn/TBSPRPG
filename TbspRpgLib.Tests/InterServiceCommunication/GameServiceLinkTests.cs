@@ -101,5 +101,95 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
         }
 
         #endregion
+
+        #region GetContentForGameAfterPosition
+        
+        [Fact]
+        public async void GetContentForGameAfterPosition_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = NewServiceLink();
+            var testGameId = Guid.NewGuid();
+            
+            //act
+            var response = await serviceLink.GetContentForGameAfterPosition(
+                new GameRequest()
+                {
+                    GameId = testGameId,
+                    Position = 40
+                }, new Credentials()
+                {
+                    UserId = "userid"
+                });
+            
+            //assert
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
+            Assert.Equal("game", request.ServiceName);
+            Assert.Equal($"content/{testGameId}/after/40", request.EndPoint);
+            Assert.Equal(_testUserToken.ToString(), request.Token);
+        }
+
+        #endregion
+        
+        #region GetLatestContentForGame
+
+        [Fact]
+        public async void GetLatestContentForGame_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = NewServiceLink();
+            var testGameId = Guid.NewGuid();
+            
+            //act
+            var response = await serviceLink.GetLatestContentForGame(
+                new GameRequest()
+                {
+                    GameId = testGameId
+                }, new Credentials()
+                {
+                    UserId = "userid"
+                });
+            
+            //assert
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
+            Assert.Equal("game", request.ServiceName);
+            Assert.Equal($"content/{testGameId}/latest", request.EndPoint);
+            Assert.Equal(_testUserToken.ToString(), request.Token);
+        }
+
+        #endregion
+
+        #region FilterContent
+
+        [Fact]
+        public async void FilterContent_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = NewServiceLink();
+            var testGameId = Guid.NewGuid();
+            var filterRequest = new ContentFilterRequest()
+            {
+                GameId = testGameId,
+                Direction = "f",
+                Start = 0,
+                Count = 1
+            };
+            
+            //act
+            var response = await serviceLink.FilterContent(
+                filterRequest, new Credentials()
+                {
+                    UserId = "userid"
+                });
+            
+            //assert
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
+            Assert.Equal("game", request.ServiceName);
+            Assert.Equal($"content/{testGameId}/filter", request.EndPoint);
+            Assert.Equal(_testUserToken.ToString(), request.Token);
+            Assert.Equal(JsonSerializer.Serialize(filterRequest), request.Parameters.ToString());
+        }
+
+        #endregion
     }
 }

@@ -10,6 +10,12 @@ namespace TbspRpgLib.InterServiceCommunication {
         Task<IscResponse> CR_StartGame(GameRequest requestData, Credentials creds);
         Task<IscResponse> GetGameForAdventure(GameRequest requestData, Credentials creds);
         Task<IscResponse> CR_GetGameForAdventure(GameRequest requestData, Credentials creds);
+        Task<IscResponse> GetLatestContentForGame(GameRequest requestData, Credentials creds);
+        Task<IscResponse> CR_GetLatestContentForGame(GameRequest requestData, Credentials creds);
+        Task<IscResponse> FilterContent(ContentFilterRequest requestData, Credentials creds);
+        Task<IscResponse> CR_FilterContent(ContentFilterRequest requestData, Credentials creds);
+        Task<IscResponse> GetContentForGameAfterPosition(GameRequest requestData, Credentials creds);
+        Task<IscResponse> CR_GetContentForGameAfterPosition(GameRequest requestData, Credentials creds);
     }
 
     public class GameServiceLink : BaseServiceLink, IGameServiceLink {
@@ -56,6 +62,50 @@ namespace TbspRpgLib.InterServiceCommunication {
         public Task<IscResponse> CR_GetGameForAdventure(GameRequest requestData, Credentials creds) {
             PrepareControllerRequest(creds);
             return GetGameForAdventure(requestData, creds);
+        }
+
+        public async Task<IscResponse> GetLatestContentForGame(GameRequest requestData, Credentials creds)
+        {
+            var response = await MakeRequestForUser(
+                $"content/{requestData.GameId}/latest",
+                creds.UserId
+            );
+            return ReturnResponse(response);
+        }
+
+        public Task<IscResponse> CR_GetLatestContentForGame(GameRequest requestData, Credentials creds)
+        {
+            PrepareControllerRequest(creds);
+            return GetLatestContentForGame(requestData, creds);
+        }
+
+        public async Task<IscResponse> FilterContent(ContentFilterRequest requestData, Credentials creds) {
+            var response = await MakeRequestForUser(
+                $"content/{requestData.GameId}/filter",
+                creds.UserId,
+                requestData
+            );
+            return ReturnResponse(response);
+        }
+
+        public Task<IscResponse> CR_FilterContent(ContentFilterRequest requestData, Credentials creds) {
+            PrepareControllerRequest(creds);
+            return FilterContent(requestData, creds);
+        }
+
+        public async Task<IscResponse> GetContentForGameAfterPosition(GameRequest requestData, Credentials creds)
+        {
+            var response = await MakeRequestForUser(
+                $"content/{requestData.GameId}/after/{requestData.Position}",
+                creds.UserId
+            );
+            return ReturnResponse(response);
+        }
+
+        public Task<IscResponse> CR_GetContentForGameAfterPosition(GameRequest requestData, Credentials creds)
+        {
+            PrepareControllerRequest(creds);
+            return GetContentForGameAfterPosition(requestData, creds);
         }
     }
 }
