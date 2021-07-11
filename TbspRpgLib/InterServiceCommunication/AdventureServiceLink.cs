@@ -8,6 +8,8 @@ namespace TbspRpgLib.InterServiceCommunication {
         Task<IscResponse> CR_GetInitialLocation(AdventureRequest requestData, Credentials creds);
         Task<IscResponse> GetAdventureByName(AdventureRequest requestData, Credentials creds);
         Task<IscResponse> CR_GetAdventureByName(AdventureRequest requestData, Credentials creds);
+        Task<IscResponse> GetAdventureById(AdventureRequest requestData, Credentials creds);
+        Task<IscResponse> CR_GetAdventureById(AdventureRequest requestData, Credentials creds);
         Task<IscResponse> GetAdventures(Credentials creds);
         Task<IscResponse> CR_GetAdventures(Credentials creds);
         Task<IscResponse> GetRoutesForLocation(AdventureRequest requestData, Credentials creds);
@@ -44,6 +46,19 @@ namespace TbspRpgLib.InterServiceCommunication {
         }
 
         public Task<IscResponse> CR_GetAdventureByName(AdventureRequest requestData, Credentials creds) {
+            PrepareControllerRequest(creds);
+            return GetAdventureByName(requestData, creds);
+        }
+        
+        public async Task<IscResponse> GetAdventureById(AdventureRequest requestData, Credentials creds) {
+            var response = await MakeRequestForUser(
+                $"adventures/{requestData.Id}",
+                creds.UserId
+            );
+            return ReturnResponse(response);
+        }
+
+        public Task<IscResponse> CR_GetAdventureById(AdventureRequest requestData, Credentials creds) {
             PrepareControllerRequest(creds);
             return GetAdventureByName(requestData, creds);
         }

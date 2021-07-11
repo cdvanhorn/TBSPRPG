@@ -163,5 +163,32 @@ namespace TbspRpgLib.Tests.InterServiceCommunication
         }
 
         #endregion
+        
+        #region GetAdventureById
+
+        [Fact]
+        public async void GetAdventureById_CorrectRequest()
+        {
+            //arrange
+            var serviceLink = CreateServiceLink();
+            var adventureId = Guid.NewGuid();
+
+            //act
+            var response = await serviceLink.GetAdventureById(new AdventureRequest()
+            {
+                Id = adventureId
+            }, new Credentials()
+            {
+                UserId = "userid"
+            });
+            
+            //assert
+            var request = JsonSerializer.Deserialize<Request>(response.Content);
+            Assert.Equal("adventure", request.ServiceName);
+            Assert.Equal($"adventures/{adventureId}", request.EndPoint);
+            Assert.Equal(_userToken.ToString(), request.Token);
+        }
+
+        #endregion
     }
 }
