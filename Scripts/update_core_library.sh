@@ -21,6 +21,9 @@ docker-compose down --rmi local
 cd ./TBSPRPG/TbspRpgLib
 dotnet pack --configuration Release
 
+cd ../TbspRpgLib.Tests
+dotnet pack --configuration Release
+
 #copy the libraries to the individual projects
 cd ../Scripts
 ./link_library.sh ../../TBSPRPG_PAPI

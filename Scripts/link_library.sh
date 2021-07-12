@@ -7,3 +7,4 @@ mkdir -p Packages
 cd Packages
 rm *.nupkg 2> /dev/null
 ln ../../TBSPRPG/TbspRpgLib/bin/Release/*.nupkg ./
+ln ../../TBSPRPG/TbspRpgLib.Tests/bin/Release/*.nupkg ./
