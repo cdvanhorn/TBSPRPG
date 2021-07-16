@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Moq;
 using TbspRpgLib.Aggregates;
 using TbspRpgLib.Events;
-using TbspRpgLib.Events.Content;
 using TbspRpgLib.Events.Game;
 using TbspRpgLib.Events.Game.Content;
 using TbspRpgLib.Events.Location;
@@ -399,51 +398,6 @@ namespace TbspRpgLib.Tests.Aggregate {
             Assert.Empty(game.MapData.DestinationRoutes);
             Assert.Equal("", game.MapData.DestinationViaRoute);
             Assert.False(game.Checks.Location);
-        }
-
-        [Fact]
-        public async void HandleContentEvent_UnProcessed_ExecuteHandler() {
-            //arrange
-            List<Event> events = new List<Event>();
-            events.Add(
-                new ContentEvent(
-                    new ContentContent {
-                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Text = "Event1"
-                    }
-                ) {
-                    StreamId = "content_6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
-                }
-            );
-            events.Add(
-                new ContentEvent(
-                    new ContentContent {
-                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
-                        Text = "Event2"
-                    }
-                ) {
-                    StreamId = "content_6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
-                }
-            );
-
-            var evnt = events.FirstOrDefault();
-            bool didItRun = false;
-            Aggregates.Aggregate agg = null;
-            //act
-            await GetAggregateService(events).HandleEvent(evnt,
-                (aggregate, eventid) => {
-                    agg = aggregate;
-                    didItRun = true;
-                    return Task.CompletedTask;
-                }
-            );
-
-            //assert
-            var cagg = (ContentAggregate)agg;
-            Assert.True(didItRun);
-            Assert.IsType<ContentAggregate>(agg);
-            Assert.IsType<List<string>>(cagg.Text);
-            Assert.Equal("Event1", cagg.Text[0]);
         }
     }
 }
