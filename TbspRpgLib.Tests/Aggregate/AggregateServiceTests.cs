@@ -114,6 +114,47 @@ namespace TbspRpgLib.Tests.Aggregate {
             Assert.True(game.Checks.Location);
             Assert.Equal("en", game.Settings.Language);
         }
+        
+        [Fact]
+        public async void BuildAggregate_GameAddSourceKey_IsValid() {
+            //arrange
+            List<Event> events = new List<Event>();
+            events.Add(
+                new GameNewEvent(
+                    new GameNew {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        UserId = "1",
+                        AdventureName = "Demo",
+                        AdventureId = "1",
+                        Language = "en"
+                    }
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
+            );
+            var sourceKey = Guid.NewGuid();
+            events.Add(
+                new GameAddSourceKeyEvent(
+                    new GameAddSourceKey() {
+                        Id = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b",
+                        SourceKey = sourceKey
+                    }
+                ) {
+                    StreamId = "6891aad3-b0fd-4f57-b93b-5ee4fe88917b"
+                }
+            );
+
+            //act
+            var aggregate = await GetAggregateService(events).BuildAggregate("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", "GameAggregate");
+            var game = (GameAggregate)aggregate;
+
+            //assert
+            Assert.Equal("6891aad3-b0fd-4f57-b93b-5ee4fe88917b", game.Id);
+            Assert.Equal("Demo", game.AdventureName);
+            Assert.Equal("en", game.Settings.Language);
+            Assert.Single(game.SourceKeys);
+            Assert.Equal(sourceKey, game.SourceKeys[0]);
+        }
 
         [Fact]
         public async void BuildAggregate_NewGameEvent_InvalidId() {
