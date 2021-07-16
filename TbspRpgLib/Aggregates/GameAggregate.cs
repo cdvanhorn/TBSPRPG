@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace TbspRpgLib.Aggregates {
@@ -27,6 +28,7 @@ namespace TbspRpgLib.Aggregates {
     public class GameAggregate : Aggregate {
         public GameAggregate()
         {
+            SourceKeys = new List<Guid>();
             Settings = new Settings();
             Checks = new GameAggregateChecks();
             MapData = new MapData
@@ -39,6 +41,7 @@ namespace TbspRpgLib.Aggregates {
         public string UserId { get; set; }
         public string AdventureId { get; set; }
         public string AdventureName { get; set; }
+        public List<Guid> SourceKeys { get; set; }
         public Settings Settings { get; set; }
         public MapData MapData { get; set; }
         public GameAggregateChecks Checks { get; set; }
